@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'index.css' %}">
+    <title>Document</title>
+</head>
+<body>
+    <p>Dies Namen werden aus der DB geladen!</p>
+    <div class="name-container">
+        <h1>Stundenplan: </h1>
+        {% for name in names %}
+            <h1>{{ name.first_name }}, {{ name.last_name }}</h1>
+        {% endfor %}
+
+    </div>
+    <table class="table table-striped table-bordered table-hover doFixed">
+        <thead>
+            <tr class="darkrow">
+                <th rowspan="2">Zeit</th>
+                <th colspan="2">Montag</th>
+                <th colspan="2">Dienstag</th>
+                <th colspan="2">Mittwoch</th>
+                <th colspan="2">Donnerstag</th>
+                <th colspan="2">Freitag</th>
+            </tr>
+            <tr>
+                <th>A</th>
+                <th>B</th>
+                <th>A</th>
+                <th>B</th>
+                <th>A</th>
+                <th>B</th>
+                <th>A</th>
+                <th>B</th>
+                <th>A</th>
+                <th>B</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="darkrow 1.Stunde">
+                <td data-label="Zeit">08:00 - 08:45</td>
+                <td data-label="Montag A" colspan="1">IF1&nbsp;Wf<br>1.5</td>
+                <td data-label="Montag B" colspan="1">IF1&nbsp;Wf<br>1.5</td>
+                <td data-label="Dienstag A"colspan="1">MA1&nbsp;Me<br>3.4</td>
+                <td data-label="Dienstag B" colspan="1">IF1&nbsp;Wf<br>1.5</td>
+                <td data-label="Mittwoch A" colspan="2">ek2&nbsp;Mo<br>5.2</td>
+                <td data-label="Donnerstag A" colspan="1">ku3&nbsp;Bw<br>4.7</td>
+                <td data-label="Donnerstag B" colspan="1">en1&nbsp;Bg<br>5.6</td>
+                <td data-label="Freitag A" colspan="1">bi1&nbsp;Ka<br>4.2</td>
+                <td data-label="Freitag B" colspan="1">de1&nbsp;Nb<br>2.1</td>
+            </tr>
+            <tr class=" 2.Stunde">
+                <td data-label="Zeit">08:55 - 09:40</td>
+                <td data-label="Montag A" colspan="2">IF1&nbsp;Wf<br>1.5</td>
+                <td data-label="Dienstag A" colspan="1">MA1&nbsp;Me<br>3.4</td>
+                <td data-label="Dienstag B" colspan="1">IF1&nbsp;Wf<br>1.5</td>
+                <td data-label="Mittwoch A" colspan="2">ek2&nbsp;Mo<br>5.2</td>
+                <td data-label="Donnerstag A" colspan="1">ku3&nbsp;Bw<br>4.7</td>
+                <td data-label="Donnerstag B" colspan="1">en1&nbsp;Bg<br>5.6</td>
+                <td data-label="Freitag A" colspan="1">bi1&nbsp;Ka<br>4.2</td>
+                <td data-label="Freitag B" colspan="1">de1&nbsp;Nb<br>2.1</td>
+            </tr>
+            <tr class="darkrow 3./4.Stunde">
+                <td data-label="Zeit">10:00 - 11:30</td>
+                <td data-label="Montag A" colspan="2">IF1&nbsp;Wf<br>1.5</td>
+                <td data-label="Dienstag A" colspan="1">MA1&nbsp;Me<br>3.4</td>
+                <td data-label="Dienstag B" colspan="1">IF1&nbsp;Wf<br>1.5</td>
+                <td data-label="Mittwoch A" colspan="2">ek2&nbsp;Mo<br>5.2</td>
+                <td data-label="Donnerstag A" colspan="1">ku3&nbsp;Bw<br>4.7</td>
+                <td data-label="Donnerstag B" colspan="1">en1&nbsp;Bg<br>5.6</td>
+                <td data-label="Freitag A" colspan="1">bi1&nbsp;Ka<br>4.2</td>
+                <td data-label="Freitag B" colspan="1">de1&nbsp;Nb<br>2.1</td>
+            </tr>
+            <tr class=" 5./6.Stunde">
+                <td data-label="Zeit">11:40 - 13:10</td>
+                <td data-label="Montag A" colspan="2">IF1&nbsp;Wf<br>1.5</td>
+                <td data-label="Dienstag A" colspan="1">MA1&nbsp;Me<br>3.4</td>
+                <td data-label="Dienstag B" colspan="1">IF1&nbsp;Wf<br>1.5</td>
+                <td data-label="Mittwoch A" colspan="2">ek2&nbsp;Mo<br>5.2</td>
+                <td data-label="Donnerstag A" colspan="1">ku3&nbsp;Bw<br>4.7</td>
+                <td data-label="Donnerstag B" colspan="1">en1&nbsp;Bg<br>5.6</td>
+                <td data-label="Freitag A" colspan="1">bi1&nbsp;Ka<br>4.2</td>
+                <td data-label="Freitag B" colspan="1">de1&nbsp;Nb<br>2.1</td>
+            </tr>
+            <tr class="darkrow 7./8.Stunde">
+                <td data-label="Zeit">08:55 - 08:40</td>
+                <td data-label="Montag A" colspan="2">IF1&nbsp;Wf<br>1.5</td>
+                <td data-label="Dienstag A" colspan="1">MA1&nbsp;Me<br>3.4</td>
+                <td data-label="Dienstag B" colspan="1">IF1&nbsp;Wf<br>1.5</td>
+                <td data-label="Mittwoch A" colspan="2">ek2&nbsp;Mo<br>5.2</td>
+                <td data-label="Donnerstag A" colspan="1">ku3&nbsp;Bw<br>4.7</td>
+                <td data-label="Donnerstag B" colspan="1">en1&nbsp;Bg<br>5.6</td>
+                <td data-label="Freitag A" colspan="1">bi1&nbsp;Ka<br>4.2</td>
+                <td data-label="Freitag B" colspan="1">de1&nbsp;Nb<br>2.1</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
