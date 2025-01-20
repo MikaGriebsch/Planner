@@ -23,4 +23,4 @@ class Class(models.Model):
 class Teached_Subjects(models.Model):
     klasse = models.ForeignKey(Class, on_delete=models.CASCADE)
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
-    
+    subject = models.CharField(max_length=100, default='')
