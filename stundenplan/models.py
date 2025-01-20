@@ -4,4 +4,5 @@ class Name(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
 
-#Test
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
