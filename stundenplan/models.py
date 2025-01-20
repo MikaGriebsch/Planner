@@ -4,7 +4,7 @@ class Name(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
 
-class Lehrer(models.Model):
+class Teacher(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     short_name = models.CharField(max_length=3)
@@ -15,7 +15,12 @@ class Lehrer(models.Model):
 class Class(models.Model):
     name = models.CharField(max_length=10)
     nr_of_students = models.IntegerField()
-    teachers = models.ManyToManyField(Lehrer)
+    teachers = models.ManyToManyField(Teacher, through="Teached_Subjects")
 
     def __str__(self):
         return self.name
+
+class Teached_Subjects(models.Model):
+    klasse = models.ForeignKey(Class, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    
