@@ -1,12 +1,7 @@
 from django.shortcuts import render
-#from stundenplan.models import Name
+from stundenplan.models import Subject
 
 def index(request):
-    #context = {
-     #   'name': 'Mika',
-      #  'class': '7A'
-    #}
-    #names = Name.objects.all()
-    #return render(request, 'index.html', {'names': names})
-    return render(request, 'index.html')
+  subjects = Subject.objects.all()
+  return render(request, 'index.html', {'subjects': subjects})
 
