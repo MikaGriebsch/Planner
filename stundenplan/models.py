@@ -35,3 +35,9 @@ class Teached_Subject(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     klasse = models.ForeignKey(Class, on_delete=models.CASCADE)
     subject = models.CharField(max_length=100)
+
+
+class Subject_Grade(models.Model):
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    grade = models.ForeignKey(Grade, on_delete=models.CASCADE)
+    wochenstunden = models.IntegerField()
