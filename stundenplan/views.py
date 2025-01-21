@@ -10,8 +10,16 @@ def index(request):
   subjects = Subject.objects.all()
   return render(request, 'index.html', 
     {
+    #first lesson
     'subjects': subjects, 
     'monA1': monA1, 
     'monA1Name': monA1Name, 
     'monA1Nr': monA1Nr
+    #second lesson
+    
+    #third/fourth lesson
+    
+    #fifth/sixth lesson
+    
+    #seventh/eighth lesson
     })
