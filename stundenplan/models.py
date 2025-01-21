@@ -17,7 +17,7 @@ class Grade(models.Model):
 class Class(models.Model):
     name = models.CharField(max_length=10)
     schueleranzahl = models.IntegerField()
-    teachers = models.ManyToManyField(Teacher, through='Teached_Subject')
+    teachers = models.ManyToManyField(Teacher, through='Teacher_Class')
     grade = models.ForeignKey(Grade, on_delete=models.CASCADE, default=-1) #wenn ID==1 ist etwas falsch
 
     def __str__(self):
@@ -32,7 +32,7 @@ class Subject(models.Model):
         return f"{self.name} ({self.abkuerzung})"
 
 
-class Teached_Subject(models.Model):
+class Teacher_Class(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     klasse = models.ForeignKey(Class, on_delete=models.CASCADE)
     subject = models.CharField(max_length=100)
