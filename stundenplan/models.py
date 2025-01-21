@@ -19,6 +19,7 @@ class Class(models.Model):
     name = models.CharField(max_length=10)
     schueleranzahl = models.IntegerField()
     teachers = models.ManyToManyField(Teacher, through='Teached_Subject')
+    grade = models.ForeignKey(Grade, on_delete=models.CASCADE, default=-1) #wenn ID==1 ist etwas falsch
 
     def __str__(self):
         return f"{self.name} hat {self.schueleranzahl} Schüler"
