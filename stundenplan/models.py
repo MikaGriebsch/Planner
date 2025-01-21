@@ -11,7 +11,6 @@ class Teacher(models.Model):
 
 class Grade(models.Model):
     grade = models.IntegerField()
-
     def __str__(self):
         return f"{self.grade}"
     
@@ -28,9 +27,10 @@ class Class(models.Model):
 class Subject(models.Model):
     abkuerzung = models.CharField(max_length=10)
     name = models.CharField(max_length=100)
-
+    grade = models.ManyToManyField(Grade, through='Subject_Grade')
     def __str__(self):
         return f"{self.name} ({self.abkuerzung})"
+
 
 class Teached_Subject(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
