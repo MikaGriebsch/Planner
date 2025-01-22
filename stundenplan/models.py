@@ -33,7 +33,7 @@ class Class(models.Model):
     grade = models.ForeignKey(Grade, on_delete=models.CASCADE, default=-1) #wenn ID==1 ist etwas falsch
 
     def __str__(self):
-        return f"{self.name} hat {self.schueleranzahl} Schüler"
+        return f"{self.name}"
 
 
 class Teacher_Class(models.Model):
@@ -44,7 +44,7 @@ class Teacher_Class(models.Model):
     def clean(self):
         if self.subject not in self.teacher.subjects.all():
             raise ValidationError(f"The subject {self.subject} is not taught by {self.teacher}")
-        if self.subject in self.teacher.subjects.all(): 
+        if Teacher_Class.objects.filter(teacher=self.teacher, klasse=self.klasse, subject=self.subject).exists(): 
             raise ValidationError(f"The teacher {self.teacher} already taugth {self.subject} in {self.klasse}")
 
 class Subject_Grade(models.Model):
