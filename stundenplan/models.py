@@ -44,7 +44,8 @@ class Teacher_Class(models.Model):
     def clean(self):
         if self.subject not in self.teacher.subjects.all():
             raise ValidationError(f"The subject {self.subject} is not taught by {self.teacher}")
-
+        if self.subject in self.teacher.subjects.all(): 
+            raise ValidationError(f"The teacher {self.teacher} already taugth {self.subject} in {self.klasse}")
 
 class Subject_Grade(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
