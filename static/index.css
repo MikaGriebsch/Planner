@@ -2,7 +2,7 @@
 :root {
     --background-color: #F1F0E8; 
     --second-background-color: #E5E1DA;
-    --darkrow: rgb(221, 216, 208);
+    --darkrow: #23456718;
     --dark-accent: #526D82;
     --ligth-accent: #b1dae7;
     --dark-font: #27374D;
@@ -61,17 +61,12 @@ th {
     height: 30px !important;
 }
 
-.headrow {
-    /* border: 3px solid #cecece; */
-    border-top: 3px solid #cecece;
-}
-
 th, td {
     text-align: center;
     vertical-align: middle;
     font-size: 10pt;
     height: 60px;
-    border: 1px solid #cecece;
+    border: 1px solid var(--darkrow);
 }
 
 /* th:hover, td:hover {
@@ -88,11 +83,16 @@ th[rowspan="2"] {
 }
 
 .darkrow {
-    background-color: var(--second-background-color);
+    background-color: var(--darkrow);
 }
 
 .name-container {
     background-color: cadetblue;
     display: flex;
     flex-direction: row;
+}
+
+.clock {
+    height: 30px;
+    width: auto;
 }

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from stundenplan.models import Subject
+from stundenplan.models import Subject, Class
 from django.http import HttpResponse
 
 
@@ -7,6 +7,9 @@ def index_view(request, klassenname):
   monA1 = "IF"
   monA1Name = "Wf"
   monA1Nr = "1.5"
+
+  if not Class.objects.filter(name=klassenname).exists():
+    klassenname = "'Klasse nicht vergeben'"
 
   subjects = Subject.objects.all()
 
