@@ -30,4 +30,7 @@ def index_view(request, klassenname):
     #fifth/sixth lesson
     
     #seventh/eighth lesson
-  })
+})
+
+def default_view(request):
+  return render(request, 'default.html')
