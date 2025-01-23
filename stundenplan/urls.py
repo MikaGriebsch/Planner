@@ -2,15 +2,16 @@ from django.urls import path
 from . import views
 from django.contrib.auth.views import LoginView, LogoutView
 from .views import register
+from django.views.generic import RedirectView
 
 
 urlpatterns = [
     path('default/', views.default_view, name='default_view'),
     path('planner/<str:klassenname>/', views.index_view, name='index_view'),
-    path('', LoginView.as_view(template_name='login.html'), name='login'),
+    path('login/', LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
     path('register/', views.register, name='register'),
-    
+    path('', RedirectView.as_view(url='login/')),
 ]
 
 

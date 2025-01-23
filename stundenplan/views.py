@@ -1,9 +1,10 @@
 from stundenplan.models import Subject, Class
 from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
-
+@login_required # Test: Seite nur für eingelogte zugänglich
 def index_view(request, klassenname):
     monA1 = "IF"
     monA1Name = "Wf"
