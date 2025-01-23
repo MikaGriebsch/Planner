@@ -51,3 +51,34 @@ class Subject_Grade(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     grade = models.ForeignKey(Grade, on_delete=models.CASCADE)
     wochenstunden = models.IntegerField()
+    
+
+class Lesson(models.Model):
+    LESSON_NUMBER_CHOICES = [
+        ('1', '1 Stunde'),
+        ('2', '2 Stunde'),
+        ('3/4', '3/4 Stunde'),
+        ('5/6', '5/6 Stunde'),
+        ('7/8', '7/8 Stunde'),
+    ]
+    lesson_number = models.TextField(
+        choices=LESSON_NUMBER_CHOICES
+
+    )
+
+    WEEKDAY_CHOICES = [
+        ('MO', 'Montag'),
+        ('DI', 'Dienstag'),
+        ('MI', 'Mittwoch'),
+        ('DO', 'Donnerstag'),
+        ('FR', 'Freitag'),
+    ]
+
+    weekday = models.CharField(
+        max_length=2,
+        choices=WEEKDAY_CHOICES,
+
+    )
+
+    def __str__(self):
+        return self.weekday 

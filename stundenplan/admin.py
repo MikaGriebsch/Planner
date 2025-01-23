@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Teacher, Grade, Class, Subject, Teacher_Class, Subject_Grade
+from .models import Teacher, Grade, Class, Subject, Teacher_Class, Subject_Grade, Lesson
 
 
 @admin.register(Teacher)
@@ -32,3 +32,9 @@ class Subject(admin.ModelAdmin):
 class Subject(admin.ModelAdmin):
     list_display = ("subject", "grade", "wochenstunden")
     search_fields = ("subject", "grade", "wochenstunden")
+    
+
+@admin.register(Lesson)
+class Lesson(admin.ModelAdmin):
+    list_display = ("lesson_number", "weekday")
+    search_fields = ("lesson_number", "weekday")
