@@ -61,9 +61,9 @@ class Lesson(models.Model):
         ('5/6', '5/6 Stunde'),
         ('7/8', '7/8 Stunde'),
     ]
-    lesson_number = models.TextField(
+    lesson_number = models.CharField(
+        max_length=5,
         choices=LESSON_NUMBER_CHOICES
-
     )
 
     WEEKDAY_CHOICES = [
@@ -77,8 +77,24 @@ class Lesson(models.Model):
     weekday = models.CharField(
         max_length=2,
         choices=WEEKDAY_CHOICES,
-
     )
 
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, null=True)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    klasse = models.ForeignKey(Class, on_delete=models.CASCADE, null=True)
+
+    class Meta:
+        unique_together = ('teacher', 'subject', 'klasse', 'weekday', 'lesson_number')
+
+    def clean(self):
+        if Lesson.objects.filter(
+            teacher=self.teacher,
+            subject=self.subject,
+            klasse=self.klasse,
+            weekday=self.weekday,
+            lesson_number=self.lesson_number
+        ).exists():
+            raise ValidationError("Diese Kombination existiert bereits.")
+
     def __str__(self):
-        return self.weekday 
+        return f"{self.weekday} - {self.lesson_number} - {self.klasse} ({self.subject})"

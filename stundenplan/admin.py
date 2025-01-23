@@ -36,5 +36,5 @@ class Subject(admin.ModelAdmin):
 
 @admin.register(Lesson)
 class Lesson(admin.ModelAdmin):
-    list_display = ("lesson_number", "weekday")
+    list_display = ("lesson_number", "weekday", "teacher", "klasse", "subject")
     search_fields = ("lesson_number", "weekday")
