@@ -32,3 +32,6 @@ def index_view(request, klassenname):
 
 def default_view(request):
   return render(request, 'default.html')
+  # else :
+    # not found page
+
