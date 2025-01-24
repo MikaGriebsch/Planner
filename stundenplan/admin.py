@@ -1,6 +1,5 @@
-from .models import UserProfile
 from django.contrib import admin
-from .models import Teacher, Grade, Class, Subject, Teacher_Class, Subject_Grade, Lesson
+from .models import Teacher, Grade, Class, Subject, Teacher_Class, Subject_Grade, Lesson, UserProfile
 
 
 @admin.register(Teacher)
