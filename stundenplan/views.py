@@ -6,8 +6,9 @@ from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import user_passes_test
 
-@login_required # Test: Seite nur für eingelogte zugänglich
+@login_required 
 def index_view(request, klassenname):
     monA1 = "IF"
     monA1Name = "Wf"
@@ -15,7 +16,7 @@ def index_view(request, klassenname):
 
     subjects = Subject.objects.all()
     
-    if Class.objects.filter(name=klassenname).exists():
+    if request.user.profile.grade_with_char.name == klassenname:
         return render(request, 'index.html', {
             # Klassenname
             'klassenname': klassenname,
