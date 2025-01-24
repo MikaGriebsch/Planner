@@ -27,7 +27,7 @@ def index_view(request, klassenname):
             'monA1Nr': monA1Nr
         })
     else:
-        return render(request, 'class_not_found.html', {'klassenname': klassenname})
+        return render(request, '404.html')
 
 def default_view(request):
     return render(request, 'default.html')
