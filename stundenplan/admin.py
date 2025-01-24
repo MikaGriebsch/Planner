@@ -1,3 +1,4 @@
+from .models import UserProfile
 from django.contrib import admin
 from .models import Teacher, Grade, Class, Subject, Teacher_Class, Subject_Grade, Lesson
 
@@ -38,3 +39,10 @@ class Subject(admin.ModelAdmin):
 class Lesson(admin.ModelAdmin):
     list_display = ("lesson_number", "weekday", "teacher", "klasse", "subject")
     search_fields = ("lesson_number", "weekday")
+    
+    
+
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'date_of_birth', 'phone_number', 'address')
+
+admin.site.register(UserProfile, UserProfileAdmin)

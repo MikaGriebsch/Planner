@@ -1,3 +1,6 @@
+
+from django.contrib.auth.views import LoginView
+from django.urls import reverse
 from stundenplan.models import Subject, Class
 from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
@@ -23,7 +26,6 @@ def index_view(request, klassenname):
             'monA1Nr': monA1Nr
         })
     else:
-        # Fallback: Fehlerseite oder Standardseite anzeigen
         return render(request, 'class_not_found.html', {'klassenname': klassenname})
 
 def default_view(request):
@@ -39,3 +41,12 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'register.html', {'form': form})
+
+
+class CustomLoginView(LoginView):
+    def get_success_url(self):
+        if hasattr(self.request.user, 'profile') and self.request.user.profile.grade_with_char:
+            klassenname = self.request.user.profile.grade_with_char.name
+            return reverse('index_view', kwargs={'klassenname': klassenname})
+        
+        return '/default/'
