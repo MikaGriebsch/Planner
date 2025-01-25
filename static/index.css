@@ -30,8 +30,31 @@ body {
     color: var(--ligth-font);
     display: flex;
     align-items: center;
-    justify-content: center;
-    height: 100px; 
+    justify-content: space-between;
+    height: 100px;
+
+    .header-heading {
+        padding-left: 30px;
+    }
+
+    .logout-left {
+        padding-right: 30px;
+        padding-left: 30px;
+        height: 30px;
+
+        fill: #234567;
+    }
+    .logout-container {
+        background-color: #526D82;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .logout {
+        padding-right: 30px;
+        padding-left: 10px;
+        height: 30px;
+    }
 }
 
 .content {

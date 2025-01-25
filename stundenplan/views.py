@@ -15,9 +15,15 @@ def index_view(request, klassenname):
     monA1Nr = "1.5"
 
     subjects = Subject.objects.all()
-    
+
+    #usernme
+    username = request.user.profile.user.username
+
     if request.user.profile.grade_with_char.name == klassenname:
         return render(request, 'index.html', {
+            #usrenmae
+            'username': username,
+
             # Klassenname
             'klassenname': klassenname,
 
