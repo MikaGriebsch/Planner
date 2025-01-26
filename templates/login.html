@@ -1,10 +1,32 @@
-<form method="post">
-    {% csrf_token %}
-    <label for="username">E-Mail oder Benutzername:</label>
-    <input type="text" name="username" id="username" required>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'login.css' %}">
+    <title>Login</title>
+</head>
+<body>
+    <div class="header">
+        <h1 class="header-heading">Login</h1>
+    </div>
+
+    <div class="user-data-input-container">
+        <form method="post">
+            {% csrf_token %}
+            
+            <label for="username">E-Mail oder Benutzername:</label>
+            <input type="text" name="username" id="username" placeholder="Enter Your E-Mail or Username" required >
+             
+            <label for="password">Passwort:</label>
+            <input type="password" name="password" id="password" placeholder="Enter Your Password" required>
+            <button type="submit" class="submit">Login</button>
+
+        </form>
+
+    </div>
     
-    <label for="password">Passwort:</label>
-    <input type="password" name="password" id="password" required>
-    
-    <button type="submit">Login</button>
-</form>
+</body>
+</html>
