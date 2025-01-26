@@ -45,7 +45,7 @@ body {
         fill: #234567;
     }
     .logout-container {
-        background-color: #526D82;
+        background-color: #234567;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -54,7 +54,19 @@ body {
         padding-right: 30px;
         padding-left: 10px;
         height: 30px;
+        fill: var(--ligth-font);
     }
+    .logout-button {
+        background-color: #234567;
+        color: var(--ligth-font);
+        border: none;
+        font-size: 15px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: row;
+        align-items: center;    
+    }
+
 }
 
 .content {
