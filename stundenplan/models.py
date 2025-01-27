@@ -88,10 +88,9 @@ class Lesson(models.Model):
     room_number = models.ForeignKey(Room, on_delete=models.CASCADE, null=True)
 
     class Meta:
-        class Meta:
-            constraints = [
-                UniqueConstraint(fields=['teacher', 'subject', 'klasse', 'weekday', 'lesson_number'], name='unique_lesson')
-            ]
+        constraints = [
+            UniqueConstraint(fields=['teacher', 'subject', 'klasse', 'weekday', 'lesson_number'], name='unique_lesson')
+        ]
 
     def clean(self):
         if Lesson.objects.filter(
