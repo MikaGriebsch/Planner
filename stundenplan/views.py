@@ -18,7 +18,7 @@ def index_view(request, klassenname):
     #usernamw
     user = request.user
 
-    if request.user.profile.klasse.name == klassenname:
+    if request.user.profile.klasse.name == klassenname or request.user.is_superuser:
         context = get_plan(user, klassenname)
         return render(request, 'index.html', context)
     else:

@@ -28,7 +28,7 @@ def custom_room_filter(klasse, lesson_number, weekday):
     return lesson.room_number if lesson else ""
 
 def get_plan(user, klassenname):
-    klasse = user.profile.klasse
+    klasse = Class.objects.get(name=klassenname) # muss bei Erweiterung auf mehrere Schulen angepasst werden
 
     # Montag
     monA1 = custom_subject_filter(klasse, "1", "MO")

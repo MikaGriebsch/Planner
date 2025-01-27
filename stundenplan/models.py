@@ -48,7 +48,7 @@ class Subject_Grade(models.Model):
             grade=self.grade
         ).exclude(pk=self.pk).exists():
             raise ValidationError(
-                f"Das Fach {self.subject} wird bereits in diesem Jahrgang unterrichtet."
+                f"Das Fach {self.subject} wird in diesem Jahrgang bereits unterrichtet."
             )
 
 class Room(models.Model):
