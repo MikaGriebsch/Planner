@@ -6,6 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'register.css' %}">
+    <script src="{% static 'register.js' %}" defer></script>
+
     <title>Document</title>
 </head>
 <body>
@@ -42,7 +44,7 @@
                     <p class="help-text">{{ form.password2.help_text }}</p>
                 </div>
             </div>
-            <button type="submit" class="submit">Registrieren</button>
+            <button type="submit" class="submit"><a href="/login">Registrieren</a></button>
         </form>
     </div>
 </body>
