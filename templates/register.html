@@ -14,9 +14,34 @@
     </div>
 
     <div class="registration-container">
-        <form method="post"></form>
+        <form method="post">
             {% csrf_token %}
-            {{ form.as_p }}
+            <div class="input-field-container"> 
+                <!-- Benutzername -->
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}">Username</label>
+                    {{ form.username }}
+                    <p class="help-text">{{ form.username.help_text }}</p>
+                </div>
+                <!-- E-Mail -->
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}">E-Mail Adresse</label>
+                    {{ form.email }}
+                    <p class="help-text">{{ form.email.help_text }}</p>
+                </div>
+                <!-- Passwort -->
+                <div class="form-group">
+                    <label for="{{ form.password1.id_for_label }}">Password</label>
+                    {{ form.password1 }}
+                    <p class="help-text">{{ form.password1.help_text }}</p>
+                </div>
+                <!-- Passwort bestätigen -->
+                <div class="form-group">
+                    <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
+                    {{ form.password2 }}
+                    <p class="help-text">{{ form.password2.help_text }}</p>
+                </div>
+            </div>
             <button type="submit" class="submit">Registrieren</button>
         </form>
     </div>

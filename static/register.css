@@ -44,25 +44,59 @@ body {
     border-radius: 10px;
     margin-top: 100px;
     padding: 20px;
+
+    form{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 }
 
-form input {
-    width: 100%;              /* Breite auf 100% setzen, damit das Feld die gesamte Breite des Containers einnimmt */
-    padding: 12px 15px;       /* Innenabstand (links und rechts) */
-    font-size: 16px;          /* Schriftgröße */
-    border-radius: 5px;       /* Abgerundete Ecken */
-    border: 1px solid #ccc;   /* Hellgraue Umrandung */
-    margin-bottom: 15px;      /* Abstand nach unten zwischen den Feldern */
-    box-sizing: border-box;   /* Stellt sicher, dass Padding und Border in die Gesamtbreite des Elements einfließen */
+.form-input {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid var(--dark-accent);
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    background-color: var(--second-background-color);
+    color: var(--dark-font);
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
+.form-input:focus {
+    border-color: var(--light-accent);
+    box-shadow: 0 0 5px var(--light-accent);
+}
+p{
+    font-size: 14px;
+    color: #526D82; /* Helle Schriftfarbe */
+    margin-top: -10px; /* Etwas Platz sparen */
+    margin-bottom: 15px; /* Abstand zum nächsten Feld */
+}
+form label{
+    font-weight: bold;
+}
 
-#email{
-    width: 100%;              /* Breite auf 100% setzen, damit das Feld die gesamte Breite des Containers einnimmt */
-    padding: 12px 15px;       /* Innenabstand (links und rechts) */
-    font-size: 16px;          /* Schriftgröße */
-    border-radius: 5px;       /* Abgerundete Ecken */
-    border: 1px solid #8f0000;   /* Hellgraue Umrandung */
-    margin-bottom: 15px;      /* Abstand nach unten zwischen den Feldern */
-    box-sizing: border-box;   /* Stellt sicher, dass Padding und Border in die Gesamtbreite des Elements einfließen */
+button.submit {
+    width: 60%;
+    padding: 12px 20px;
+    background-color: var(--dark-accent);
+    color: var(--light-font);
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+button.submit:hover {
+    background-color: var(--light-accent);
+    transform: scale(1.05);
+}
+
+button.submit:active {
+    transform: scale(0.95);
 }
