@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Teacher, Grade, Class, Subject, Teacher_Class, Subject_Grade, Lesson, UserProfile
+from .models import Teacher, Grade, Class, Subject, Teacher_Class, Subject_Grade, Lesson, UserProfile,Room
 
 
 @admin.register(Teacher)
@@ -36,10 +36,13 @@ class Subject(admin.ModelAdmin):
 
 @admin.register(Lesson)
 class Lesson(admin.ModelAdmin):
-    list_display = ("lesson_number", "weekday", "teacher", "klasse", "subject")
+    list_display = ("lesson_number", "weekday", "teacher", "klasse", "subject", "room_number")
     search_fields = ("lesson_number", "weekday")
     
-    
+@admin.register(Room)
+class RoomAdmin(admin.ModelAdmin):
+    list_display = ("room_number",)
+
 
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'date_of_birth', 'phone_number', 'address')

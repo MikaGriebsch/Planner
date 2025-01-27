@@ -52,7 +52,11 @@ class Subject_Grade(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     grade = models.ForeignKey(Grade, on_delete=models.CASCADE)
     wochenstunden = models.IntegerField()
-    
+
+class Room(models.Model):
+    room_number = models.CharField(max_length=3)
+    def __str__(self):
+        return f"{self.room_number}"
 
 class Lesson(models.Model):
     LESSON_NUMBER_CHOICES = [
@@ -83,6 +87,7 @@ class Lesson(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, null=True)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     klasse = models.ForeignKey(Class, on_delete=models.CASCADE, null=True)
+    room_number = models.ForeignKey(Room, on_delete=models.CASCADE, null=True)
 
     class Meta:
         unique_together = ('teacher', 'subject', 'klasse', 'weekday', 'lesson_number')
