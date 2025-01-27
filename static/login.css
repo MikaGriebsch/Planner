@@ -68,5 +68,10 @@ body {
         padding: 5px;
         border-radius: 5px;
         width: 50%;
+
+        a {
+            color: var(--ligth-font);
+            text-decoration: none;
+        }
     }
 }
