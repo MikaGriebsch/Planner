@@ -1,0 +1,68 @@
+
+:root {
+    --background-color: #F1F0E8; 
+    --second-background-color: #E5E1DA;
+    --darkrow: #23456718;
+    --dark-accent: #526D82;
+    --ligth-accent: #b1dae7;
+    --dark-font: #27374D;
+    --ligth-font: white;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: var(--background-color);
+    height: 100vh; 
+    margin: 0; 
+    padding: 0;
+}
+
+.header {
+    position: fixed;
+    background-color: #234567;
+    width: 100%;
+    left: 0;
+    top: 0;
+    color: var(--ligth-font);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+}
+.registration-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(177, 218, 231, 0.5);
+    width: 40vw;
+    min-height: 25%;
+    border-radius: 10px;
+    margin-top: 100px;
+    padding: 20px;
+}
+
+form input {
+    width: 100%;              /* Breite auf 100% setzen, damit das Feld die gesamte Breite des Containers einnimmt */
+    padding: 12px 15px;       /* Innenabstand (links und rechts) */
+    font-size: 16px;          /* Schriftgröße */
+    border-radius: 5px;       /* Abgerundete Ecken */
+    border: 1px solid #ccc;   /* Hellgraue Umrandung */
+    margin-bottom: 15px;      /* Abstand nach unten zwischen den Feldern */
+    box-sizing: border-box;   /* Stellt sicher, dass Padding und Border in die Gesamtbreite des Elements einfließen */
+}
+
+
+#email{
+    width: 100%;              /* Breite auf 100% setzen, damit das Feld die gesamte Breite des Containers einnimmt */
+    padding: 12px 15px;       /* Innenabstand (links und rechts) */
+    font-size: 16px;          /* Schriftgröße */
+    border-radius: 5px;       /* Abgerundete Ecken */
+    border: 1px solid #8f0000;   /* Hellgraue Umrandung */
+    margin-bottom: 15px;      /* Abstand nach unten zwischen den Feldern */
+    box-sizing: border-box;   /* Stellt sicher, dass Padding und Border in die Gesamtbreite des Elements einfließen */
+}

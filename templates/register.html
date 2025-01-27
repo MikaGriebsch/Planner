@@ -1,3 +1,4 @@
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -8,11 +9,16 @@
     <title>Document</title>
 </head>
 <body>
-    <form method="post"></form>
-        {% csrf_token %}
-        {{ form.as_p }}
-        <h1>hallo</h1>
-        <button type="submit" class="submit">Registrieren Hallo</button>
-    </form>
+    <div class="header">
+        <h1 class="header-heading">Registration</h1>
+    </div>
+
+    <div class="registration-container">
+        <form method="post"></form>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="submit">Registrieren</button>
+        </form>
+    </div>
 </body>
 </html>

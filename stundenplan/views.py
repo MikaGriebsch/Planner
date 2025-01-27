@@ -7,6 +7,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import user_passes_test
+from .forms import CustomUserCreationForm
+
 
 @login_required 
 def index_view(request, klassenname):
@@ -42,14 +44,13 @@ def default_view(request):
 
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('login')
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
     return render(request, 'register.html', {'form': form})
-
 
 class CustomLoginView(LoginView):
     def get_success_url(self):
