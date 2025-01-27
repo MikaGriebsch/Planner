@@ -1,16 +1,18 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db.models.constraints import UniqueConstraint
 
 class Grade(models.Model):
-    grade = models.IntegerField()
+    name = models.IntegerField(unique=True, validators=[MinValueValidator(1), MaxValueValidator(13)])
     def __str__(self):
-        return f"{self.grade}"
+        return f"{self.name}"
     
 
 class Subject(models.Model):
-    abkuerzung = models.CharField(max_length=10)
-    name = models.CharField(max_length=100)
+    abkuerzung = models.CharField(max_length=10, unique=True)
+    name = models.CharField(max_length=100, unique=True)
     grade = models.ManyToManyField(Grade, through='Subject_Grade')
     def __str__(self):
         return f"{self.name} ({self.abkuerzung})"
@@ -28,33 +30,29 @@ class Teacher(models.Model):
     pass
 
 class Class(models.Model):
-    name = models.CharField(max_length=10)
-    schueleranzahl = models.IntegerField()
-    teachers = models.ManyToManyField(Teacher, through='Teacher_Class')
+    name = models.CharField(max_length=10, unique=True)
+    schueleranzahl = models.IntegerField(validators=[MinValueValidator(1),MaxValueValidator(40)])
     grade = models.ForeignKey(Grade, on_delete=models.CASCADE, default=-1) #wenn ID==1 ist etwas falsch
 
     def __str__(self):
         return f"{self.name}"
 
-
-class Teacher_Class(models.Model):
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
-    klasse = models.ForeignKey(Class, on_delete=models.CASCADE)
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-
-    def clean(self):
-        if self.subject not in self.teacher.subjects.all():
-            raise ValidationError(f"The subject {self.subject} is not taught by {self.teacher}")
-        if Teacher_Class.objects.filter(teacher=self.teacher, klasse=self.klasse, subject=self.subject).exists(): 
-            raise ValidationError(f"The teacher {self.teacher} already taugth {self.subject} in {self.klasse}")
-
 class Subject_Grade(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     grade = models.ForeignKey(Grade, on_delete=models.CASCADE)
-    wochenstunden = models.IntegerField()
+    wochenstunden = models.IntegerField(validators=[MinValueValidator(1)])
+
+    def clean(self):
+        if Subject_Grade.objects.filter(
+            subject=self.subject,
+            grade=self.grade
+        ).exclude(pk=self.pk).exists():
+            raise ValidationError(
+                f"Das Fach {self.subject} wird bereits in diesem Jahrgang unterrichtet."
+            )
 
 class Room(models.Model):
-    room_number = models.CharField(max_length=3)
+    room_number = models.CharField(max_length=3, unique=True)
     def __str__(self):
         return f"{self.room_number}"
 
@@ -90,7 +88,10 @@ class Lesson(models.Model):
     room_number = models.ForeignKey(Room, on_delete=models.CASCADE, null=True)
 
     class Meta:
-        unique_together = ('teacher', 'subject', 'klasse', 'weekday', 'lesson_number')
+        class Meta:
+            constraints = [
+                UniqueConstraint(fields=['teacher', 'subject', 'klasse', 'weekday', 'lesson_number'], name='unique_lesson')
+            ]
 
     def clean(self):
         if Lesson.objects.filter(
@@ -110,10 +111,24 @@ class Lesson(models.Model):
             raise ValidationError(
                 f"Der Lehrer {self.teacher} ist bereits in der {self.lesson_number} Stunde am {self.weekday} beschäftigt."
             )
+        
+        if Lesson.objects.filter(
+            room_number=self.room_number,
+            weekday=self.weekday,
+            lesson_number=self.lesson_number
+        ).exclude(pk=self.pk).exists():
+            raise ValidationError(
+                f"Der Raum {self.room_number} ist bereits in der {self.lesson_number} Stunde am {self.weekday} in Benutzung."
+            )
 
         if self.teacher and self.subject not in self.teacher.subjects.all():
             raise ValidationError(
                 f"Der Lehrer {self.teacher} unterrichtet das Fach {self.subject} nicht."
+            )
+        
+        if self.klasse.grade not in self.subject.grade.all():
+            raise ValidationError(
+                f"Das Fach {self.subject} wird in diesem Jahrgang nicht unterrichtet."
             )
 
     def __str__(self):
