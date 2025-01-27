@@ -7,32 +7,18 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import user_passes_test
+from stundenplan import get_plan
+from django.shortcuts import render
+from .get_plan import get_plan
 
-@login_required 
+@login_required
 def index_view(request, klassenname):
-    monA1 = "IF"
-    monA1Name = "Wf"
-    monA1Nr = "1.5"
-
-    subjects = Subject.objects.all()
-
-    #usernme
-    username = request.user.profile.user.username
+    #usernamw
+    user = request.user
 
     if request.user.profile.klasse.name == klassenname:
-        return render(request, 'index.html', {
-            #usrenmae
-            'username': username,
-
-            # Klassenname
-            'klassenname': klassenname,
-
-            # Erste Stunde
-            'subjects': subjects, 
-            'monA1': monA1, 
-            'monA1Name': monA1Name, 
-            'monA1Nr': monA1Nr
-        })
+        context = get_plan(user, klassenname)
+        return render(request, 'index.html', context)
     else:
         return render(request, '404.html')
 
