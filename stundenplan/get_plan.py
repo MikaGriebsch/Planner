@@ -3,22 +3,22 @@ from .models import *
 def custom_subject_filter(klasse, lesson_number, weekday):
     return Lesson.objects.filter(
         klasse = klasse,
-        lesson_number="1",
-        weekday="MO"
+        lesson_number = lesson_number,
+        weekday = weekday
     ).first().subject.abkuerzung
 
 def custom_teacher_filter(klasse, lesson_number, weekday):
     return Lesson.objects.filter(
         klasse = klasse,
-        lesson_number="1",
-        weekday="MO"
+        lesson_number = lesson_number,
+        weekday = weekday
     ).first().teacher.short_name
 
 def custom_room_filter(klasse, lesson_number, weekday):
     return Lesson.objects.filter(
         klasse = klasse,
-        lesson_number="1",
-        weekday="MO"
+        lesson_number = lesson_number,
+        weekday = weekday
     ).first().room_number
 
 def get_plan(user, klassenname):
