@@ -19,7 +19,7 @@ def index_view(request, klassenname):
     #usernme
     username = request.user.profile.user.username
 
-    if request.user.profile.grade_with_char.name == klassenname:
+    if request.user.profile.klasse.name == klassenname:
         return render(request, 'index.html', {
             #usrenmae
             'username': username,
@@ -53,8 +53,8 @@ def register(request):
 
 class CustomLoginView(LoginView):
     def get_success_url(self):
-        if hasattr(self.request.user, 'profile') and self.request.user.profile.grade_with_char:
-            klassenname = self.request.user.profile.grade_with_char.name
+        if hasattr(self.request.user, 'profile') and self.request.user.profile.klasse:
+            klassenname = self.request.user.profile.klasse.name
             return reverse('index_view', kwargs={'klassenname': klassenname})
         
         return '/default/'
