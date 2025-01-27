@@ -39,7 +39,7 @@ body {
     align-items: center;
     justify-content: center;
     background-color: rgba(177, 218, 231, 0.5);
-    width: 40%;
+    width: 40vw;
     min-height: 25%;
     border-radius: 10px;
     margin-top: 100px;
