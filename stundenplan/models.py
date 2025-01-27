@@ -94,17 +94,30 @@ class Lesson(models.Model):
 
     def clean(self):
         if Lesson.objects.filter(
-            teacher=self.teacher,
-            subject=self.subject,
             klasse=self.klasse,
             weekday=self.weekday,
             lesson_number=self.lesson_number
-        ).exists():
-            raise ValidationError("Diese Kombination existiert bereits.")
+        ).exclude(pk=self.pk).exists():
+            raise ValidationError(
+                f"Die Klasse {self.klasse} hat bereits ein Fach in der {self.lesson_number} Stunde am {self.weekday}."
+            )
+
+        if Lesson.objects.filter(
+            teacher=self.teacher,
+            weekday=self.weekday,
+            lesson_number=self.lesson_number
+        ).exclude(pk=self.pk).exists():
+            raise ValidationError(
+                f"Der Lehrer {self.teacher} ist bereits in der {self.lesson_number} Stunde am {self.weekday} beschäftigt."
+            )
+
+        if self.teacher and self.subject not in self.teacher.subjects.all():
+            raise ValidationError(
+                f"Der Lehrer {self.teacher} unterrichtet das Fach {self.subject} nicht."
+            )
 
     def __str__(self):
         return f"{self.weekday} - {self.lesson_number} - {self.klasse} ({self.subject})"
-    
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
