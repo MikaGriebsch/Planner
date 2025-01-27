@@ -64,10 +64,7 @@ class Lesson(models.Model):
         ('5/6', '5/6 Stunde'),
         ('7/8', '7/8 Stunde'),
     ]
-    lesson_number = models.CharField(
-        max_length=5,
-        choices=LESSON_NUMBER_CHOICES
-    )
+    
 
     WEEKDAY_CHOICES = [
         ('MO', 'Montag'),
@@ -76,12 +73,9 @@ class Lesson(models.Model):
         ('DO', 'Donnerstag'),
         ('FR', 'Freitag'),
     ]
-
-    weekday = models.CharField(
-        max_length=2,
-        choices=WEEKDAY_CHOICES,
-    )
-
+    
+    lesson_number = models.CharField(max_length=5, choices=LESSON_NUMBER_CHOICES)
+    weekday = models.CharField(max_length=2, choices=WEEKDAY_CHOICES)
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, null=True)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     klasse = models.ForeignKey(Class, on_delete=models.CASCADE, null=True)
@@ -128,6 +122,11 @@ class Lesson(models.Model):
         if self.klasse.grade not in self.subject.grade.all():
             raise ValidationError(
                 f"Das Fach {self.subject} wird in diesem Jahrgang nicht unterrichtet."
+            )
+        
+        if Lesson.objects.filter(klasse=self.klasse, subject=self.subject).first().teacher != self.teacher:
+            raise ValidationError(
+                f"Die Klasse {self.klasse} wird im Fach {self.subject} bereits von einem anderen Lehrer unterrichtet."
             )
 
     def __str__(self):
