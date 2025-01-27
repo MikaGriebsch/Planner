@@ -1,5 +1,18 @@
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Registrieren</button>
-</form>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'register.css' %}">
+    <title>Document</title>
+</head>
+<body>
+    <form method="post"></form>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <h1>hallo</h1>
+        <button type="submit" class="submit">Registrieren Hallo</button>
+    </form>
+</body>
+</html>
