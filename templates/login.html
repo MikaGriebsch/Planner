@@ -25,6 +25,12 @@
             <button type="submit" class="submit">Login</button>
 
         </form>
+        {% if form.errors %}
+            <div class="error-messages">
+                <p>Falscher Benutzername oder Passwort! Bitte noch einmal versuchen.</p>
+            </div>
+        {% endif %}
+
 
     </div>
     
