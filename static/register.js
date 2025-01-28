@@ -1,0 +1,1 @@
+alert('register.js loaded');
