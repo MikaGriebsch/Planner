@@ -1,3 +1,5 @@
+from django.utils.functional import empty
+
 from .models import *
 
 
@@ -135,9 +137,14 @@ def get_plan(user, klassenname):
     friA7_8Name = custom_teacher_filter(klasse, "7/8", "FR")
     friA7_8Nr = custom_room_filter(klasse, "7/8", "FR")
 
+    if user.first_name is not None and user.last_name is not None:
+        username = user.first_name + " " + user.last_name
+    else:
+        username = user.username
+
     # Rückgabe des Stundenplans
     return {
-        'username': user.username,
+        'username':  username,
         'klassenname': klassenname,
         # Montag
         'monA1': monA1, 'monA1Name': monA1Name, 'monA1Nr': monA1Nr,
