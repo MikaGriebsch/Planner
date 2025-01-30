@@ -29,8 +29,17 @@ def custom_room_filter(klasse, lesson_number, weekday):
     ).first()
     return lesson.room_number if lesson else ""
 
+
+def set_username(user):
+    if user.first_name and user.last_name:
+        username = user.first_name + " " + user.last_name
+    else:
+        username = user.username
+    return username
+
+
 def get_plan(user, klassenname):
-    klasse = Class.objects.get(name=klassenname) # muss bei Erweiterung auf mehrere Schulen angepasst werden
+    klasse = Class.objects.get(name=klassenname)
 
     # Montag
     monA1 = custom_subject_filter(klasse, "1", "MO")
@@ -137,10 +146,7 @@ def get_plan(user, klassenname):
     friA7_8Name = custom_teacher_filter(klasse, "7/8", "FR")
     friA7_8Nr = custom_room_filter(klasse, "7/8", "FR")
 
-    if user.first_name is not None and user.last_name is not None:
-        username = user.first_name + " " + user.last_name
-    else:
-        username = user.username
+    username = set_username(user)
 
     # Rückgabe des Stundenplans
     return {
