@@ -1,0 +1,22 @@
+{% extends 'admin/base_site.html' %}
+
+{% block content %}
+  <h1>Zuordnung von Nutzern zu Klassen</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="class_id">Klasse auswählen:</label>
+        <select name="class_id">
+            {% for school_class in classes %}
+                <option value="{{ school_class.id }}">{{ school_class.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" name="apply">Zuweisen</button>
+    </form>
+
+  <h2>Ausgewählte Nutzer:</h2>
+  <ul>
+    {% for profile in profiles %}
+      <li>{{ profile.user.username }} - {{ profile.first_name }} {{ profile.last_name }}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
