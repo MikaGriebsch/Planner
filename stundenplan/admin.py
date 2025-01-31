@@ -40,6 +40,6 @@ class RoomAdmin(admin.ModelAdmin):
 
 
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'date_of_birth', 'phone_number', 'address')
+    list_display = ('user', 'klasse')
 
 admin.site.register(UserProfile, UserProfileAdmin)
