@@ -59,7 +59,7 @@ body {
 
 .title {
   margin: 0;
-  font-size: 1.35rem;
+  font-size: 2rem;
   font-weight: 700;
   color: #212121;
 }
@@ -181,4 +181,8 @@ body {
   font-size: 0.75rem;
   color: #8B8E98;
   text-decoration: underline;
+}
+
+.error-message {
+  color: #e03838;
 }
