@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db.models import Model
 from django.db.models.constraints import UniqueConstraint
 
 class Grade(models.Model):
@@ -135,6 +136,14 @@ class Lesson(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     klasse = models.ForeignKey(Class, on_delete=models.SET_NULL, null=True, blank=True)
+
+    @property
+    def first_name(self):
+        return self.user.first_name
+
+    @property
+    def last_name(self):
+        return self.user.last_name
 
     def __str__(self):
         return f"Profile von {self.user.username}"
