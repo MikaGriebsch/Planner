@@ -6,7 +6,7 @@ from django.db.models import Model
 from django.db.models.constraints import UniqueConstraint
 
 class Grade(models.Model):
-    name = models.IntegerField(unique=True, validators=[MinValueValidator(1), MaxValueValidator(13)])
+    name = models.IntegerField(unique=True, validators=[MinValueValidator(1), MaxValueValidator(12)])
     def __str__(self):
         return f"{self.name}"
     
@@ -31,12 +31,13 @@ class Teacher(models.Model):
     pass
 
 class Class(models.Model):
-    name = models.CharField(max_length=10, unique=True)
-    schueleranzahl = models.IntegerField(validators=[MinValueValidator(1),MaxValueValidator(40)])
+    name = models.CharField(max_length=10, unique=False)
+    schueleranzahl = models.IntegerField(validators=[MinValueValidator(1),MaxValueValidator(30)])
+    schueler_in_class = models.IntegerField(validators=[MinValueValidator(0),MaxValueValidator(30)], default=0)
     grade = models.ForeignKey(Grade, on_delete=models.CASCADE, default=-1) #wenn ID==1 ist etwas falsch
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.grade}{self.name}"
 
 class Subject_Grade(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
