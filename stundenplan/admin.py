@@ -11,14 +11,16 @@ class TeacherAdmin(admin.ModelAdmin):
     search_fields = ("first_name", "last_name", "short_name")
 
 @admin.register(Grade)
-class GradeAdmin(admin.ModelAdmin):  # Renamed to GradeAdmin
+class GradeAdmin(admin.ModelAdmin):
     list_display = ("name",)
     search_fields = ("name",)
+    ordering = ("name",)
 
 @admin.register(Class)
 class ClassAdmin(admin.ModelAdmin):
     list_display = ( "grade", "name", "schueleranzahl", "schueler_in_class")
     search_fields = ( "grade", "name", "schueleranzahl", "schueler_in_class")
+    ordering = ("grade", "name")
 
 @admin.register(Subject)
 class SubjectAdmin(admin.ModelAdmin):
@@ -26,7 +28,7 @@ class SubjectAdmin(admin.ModelAdmin):
     search_fields = ("abkuerzung", "name")
 
 @admin.register(Subject_Grade)
-class SubjectGradeAdmin(admin.ModelAdmin):  # Renamed to SubjectGradeAdmin
+class SubjectGradeAdmin(admin.ModelAdmin):
     list_display = ("subject", "grade", "wochenstunden")
     search_fields = ("subject", "grade", "wochenstunden")
 
