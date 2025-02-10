@@ -14,13 +14,13 @@ class TeacherAdmin(admin.ModelAdmin):
 class GradeAdmin(admin.ModelAdmin):
     list_display = ("name",)
     search_fields = ("name",)
-    ordering = ("name",)
+    list_filter = ("name",)
 
 @admin.register(Class)
 class ClassAdmin(admin.ModelAdmin):
     list_display = ( "grade", "name", "schueleranzahl", "schueler_in_class")
     search_fields = ( "grade", "name", "schueleranzahl", "schueler_in_class")
-    ordering = ("grade", "name")
+    list_filter = ("grade", "name",)
 
 @admin.register(Subject)
 class SubjectAdmin(admin.ModelAdmin):
@@ -31,11 +31,13 @@ class SubjectAdmin(admin.ModelAdmin):
 class SubjectGradeAdmin(admin.ModelAdmin):
     list_display = ("subject", "grade", "wochenstunden")
     search_fields = ("subject", "grade", "wochenstunden")
+    list_filter = ("subject", "grade",)
 
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
     list_display = ("id", "lesson_number", "weekday", "teacher", "klasse", "subject", "room_number")
     search_fields = ("lesson_number", "weekday")
+    list_filter = ("weekday", "teacher", "klasse", "subject", "room_number")
 
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
@@ -44,6 +46,7 @@ class RoomAdmin(admin.ModelAdmin):
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'first_name', 'last_name', 'klasse')
+    list_filter = ("klasse__grade", "klasse__name",)
     actions = ['next_year', 'assign_user_to_class']
 
     @admin.action(description="Ein Jahr weiter springen")
