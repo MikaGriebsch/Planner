@@ -7,6 +7,11 @@ from django.db.models.constraints import UniqueConstraint
 
 class Grade(models.Model):
     name = models.IntegerField(unique=True, validators=[MinValueValidator(1), MaxValueValidator(12)])
+
+    class Meta:
+        verbose_name = 'Klassenstufe'
+        verbose_name_plural = 'Klassenstufen'
+
     def __str__(self):
         return f"{self.name}"
     
@@ -15,6 +20,11 @@ class Subject(models.Model):
     abkuerzung = models.CharField(max_length=10, unique=True)
     name = models.CharField(max_length=100, unique=True)
     grade = models.ManyToManyField(Grade, through='Subject_Grade')
+
+    class Meta:
+        verbose_name = 'Fach'
+        verbose_name_plural = 'Fächer'
+
     def __str__(self):
         return f"{self.name} ({self.abkuerzung})"
     
@@ -25,6 +35,10 @@ class Teacher(models.Model):
     last_name = models.CharField(max_length=30)
     short_name = models.CharField(max_length=3)
     subjects = models.ManyToManyField(Subject)
+
+    class Meta:
+        verbose_name = 'Lehrer'
+        verbose_name_plural = 'Lehrer'
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.short_name})"
@@ -42,7 +56,11 @@ class Class(models.Model):
     schueleranzahl = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(30)], default=30)
     schueler_in_class = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(30)], default=0)
     grade = models.ForeignKey(Grade, on_delete=models.CASCADE, default=-1)  # wenn ID==1 ist etwas falsch
-    bezeichnung = models.CharField(max_length=20, blank=True)  # max_length angepasst
+    bezeichnung = models.CharField(max_length=20, blank=True)
+
+    class Meta:
+        verbose_name = 'Klasse'
+        verbose_name_plural = 'Klassen'
 
     def save(self, *args, **kwargs):
         if not self.bezeichnung:
@@ -57,6 +75,10 @@ class Subject_Grade(models.Model):
     grade = models.ForeignKey(Grade, on_delete=models.CASCADE)
     wochenstunden = models.IntegerField(validators=[MinValueValidator(1)])
 
+    class Meta:
+        verbose_name = 'Klassenstufe-Fach-Abhänigkeit'
+        verbose_name_plural = 'Klassenstufe-Fach-Abhänigkeiten'
+
     def clean(self):
         if Subject_Grade.objects.filter(
             subject=self.subject,
@@ -68,6 +90,11 @@ class Subject_Grade(models.Model):
 
 class Room(models.Model):
     room_number = models.CharField(max_length=3, unique=True)
+
+    class Meta:
+        verbose_name = 'Raum'
+        verbose_name_plural = 'Räume'
+
     def __str__(self):
         return f"{self.room_number}"
 
@@ -152,6 +179,10 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     klasse = models.ForeignKey(Class, on_delete=models.SET_NULL, null=True, blank=True)
 
+    class Meta:
+        verbose_name = 'Schüler Profile'
+        verbose_name_plural = 'Schüler Profile'
+
     @property
     def first_name(self):
         return self.user.first_name
@@ -167,6 +198,10 @@ class UserProfile(models.Model):
 class StundentDataImport(models.Model):
     name = models.CharField(max_length=50, default="Dateiname")
     file = models.FileField(upload_to="accounts/management/commands/tmp/")
+
+    class Meta:
+        verbose_name = 'Schülerliste Importieren '
+        verbose_name_plural = 'Schülerlisten Importieren'
 
     def __str__(self):
         return self.name
