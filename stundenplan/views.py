@@ -17,3 +17,4 @@ def index_view(request, bezeichnung):
 
 def default_view(request):
     return render(request, 'default.html')
+

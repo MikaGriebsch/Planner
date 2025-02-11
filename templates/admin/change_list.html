@@ -1,0 +1,11 @@
+{% extends "admin/change_list.html" %}
+
+{% block content %}
+    <!-- Benutzerdefinierter Text -->
+    <div style="margin-bottom: 70px; padding: 10px; background-color: #f9f9f9; border: 1px solid #ddd;">
+        {{ custom_text }}
+    </div>
+
+
+    {{ block.super }}
+{% endblock %}

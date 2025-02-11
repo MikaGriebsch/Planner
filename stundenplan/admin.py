@@ -1,9 +1,13 @@
 from pydoc import describe
-
 from django.contrib import admin
-from django.contrib.admin.templatetags.admin_list import admin_actions
+from django.contrib import messages
+from django.utils.html import format_html
+from django.templatetags.static import static
+from django.contrib import admin
+from django.core.management import call_command
+from django.contrib import messages
+from .models import Teacher, Grade, Class, Subject, Subject_Grade, Lesson, UserProfile, Room, StundentDataImport
 
-from .models import Teacher, Grade, Class, Subject, Subject_Grade, Lesson, UserProfile, Room
 
 @admin.register(Teacher)
 class TeacherAdmin(admin.ModelAdmin):
@@ -92,3 +96,37 @@ class UserProfileAdmin(admin.ModelAdmin):
                 self.message_user(request, f"Keine Klasse der 7. Stufe hat mehr Platz für {profile.user.username}.",
                                   level='error')
 
+
+from django.utils.html import format_html
+from django.templatetags.static import static  # Import für statische Dateien
+
+@admin.register(StundentDataImport)
+class StudentDataImportAdmin(admin.ModelAdmin):
+    list_display = ["name", "file"]
+    actions = ['assign_user']
+
+    def changelist_view(self, request, extra_context=None):
+        # Nur für das StundentDataImport-Model den extra_context hinzufügen
+        if self.model == StundentDataImport:
+            extra_context = extra_context or {}
+            extra_context['custom_text'] = format_html(
+                """
+                <div style="margin-bottom: 20px; padding: 10px; background-color: #f9f9f9; border: 1px solid #ddd;">
+                    <p>Hier kanns du .csv Dateien hochladen. Achte dabei dartuf, diese Form einzualten. Die erste Zeile deiner Datei wirdn nicht mitgelesen!</p>
+                    <img src="{}" alt="Beispielbild" style="max-width: 100%; height: auto;">
+                </div>
+                """,
+                static("Tabellenbeschreiung.png")  # Korrekter Pfad zum Bild
+            )
+
+        # Rückgabe der übergeordneten Methode mit dem extra_context
+        return super().changelist_view(request, extra_context=extra_context)
+
+    @admin.action(description="Schüler aus Namensliste erstellen")
+    def assign_user(self, request, queryset):
+        for data_import in queryset:
+            try:
+                call_command("create_users", data_import.file.path)
+                messages.success(request, f"Das Skript wurde erfolgreich mit der Datei {data_import.file.name} ausgeführt.")
+            except Exception as e:
+                messages.error(request, f"Fehler beim Ausführen des Skripts mit der Datei {data_import.file.name}: {e}")

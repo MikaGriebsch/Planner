@@ -39,7 +39,7 @@ class Class(models.Model):
     ]
 
     name = models.CharField(max_length=1, choices=NAME_CHOICES)
-    schueleranzahl = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(30)])
+    schueleranzahl = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(30)], default=30)
     schueler_in_class = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(30)], default=0)
     grade = models.ForeignKey(Grade, on_delete=models.CASCADE, default=-1)  # wenn ID==1 ist etwas falsch
     bezeichnung = models.CharField(max_length=20, blank=True)  # max_length angepasst
@@ -161,3 +161,11 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"Profile von {self.user.username}"
+
+
+class StundentDataImport(models.Model):
+    name = models.CharField(max_length=50, default="Dateiname")
+    file = models.FileField(upload_to="accounts/management/commands/tmp/")
+
+    def __str__(self):
+        return self.name
