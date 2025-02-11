@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang='de'>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--{% load static %}
+    <script> src="{% static 'input.js' %}"</script>-->
+    <script>
+        function showClassForm() {
+            document.getElementById("class-form-container").style.display = "block";
+        }
+    </script>
+    <script src="https://kit.fontawesome.com/ba54478102.js" crossorigin="anonymous"></script>
+    <title>Dateneingabe</title>
+</head>
+<body>
+    <h2>Klassenstufe</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ grade_form.as_p }}
+        <button type="button" onclick="showClassForm()" class="fa-solid fa-plus"></button>
+        
+        <div id="class-form-container" style="display:none;">
+            <h3>Klasse</h3>
+            {{ class_form.as_p }}
+        </div>
+        
+        <button type="submit">Speichern</button>
+    </form>
+</body>
+</html>

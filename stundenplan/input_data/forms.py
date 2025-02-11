@@ -1,14 +1,14 @@
 from django import forms
-from models import *
+from stundenplan.models import *
 
 class BaseForm(forms.Form):
    #wrappper für alle forms
    platzhalter = 0
 
-class ClassForm(forms.Modelform):
+class ClassForm(forms.ModelForm):
     class Meta:
-        model = Class  # Replace 'YourModelClass' with the actual model class name
-        fields = ['name', 'schuelerzahl']
+        model = Class 
+        fields = ['name', 'schueleranzahl']
 
 class GradeForm(forms.ModelForm):
     class Meta:
