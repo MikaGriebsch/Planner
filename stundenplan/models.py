@@ -31,7 +31,14 @@ class Teacher(models.Model):
     pass
 
 class Class(models.Model):
-    name = models.CharField(max_length=10, unique=False)
+    NAME_CHOICES = [
+        ('a', 'a'),
+        ('b', 'b'),
+        ('c', 'c'),
+        ('l', 'l')
+    ]
+
+    name = models.CharField(max_length=1, choices=NAME_CHOICES)
     schueleranzahl = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(30)])
     schueler_in_class = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(30)], default=0)
     grade = models.ForeignKey(Grade, on_delete=models.CASCADE, default=-1)  # wenn ID==1 ist etwas falsch
