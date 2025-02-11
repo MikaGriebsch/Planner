@@ -17,7 +17,7 @@ def register(request):
 class CustomLoginView(LoginView):
     def get_success_url(self):
         if hasattr(self.request.user, 'profile') and self.request.user.profile.klasse:
-            klassenname = self.request.user.profile.klasse.name
-            return reverse('index_view', kwargs={'klassenname': klassenname})
+            bezeichnung = self.request.user.profile.klasse.bezeichnung
+            return reverse('index_view', kwargs={'bezeichnung': bezeichnung})
         
         return '/schedule/default/'
