@@ -139,7 +139,8 @@ class Lesson(models.Model):
                 f"Das Fach {self.subject} wird in diesem Jahrgang nicht unterrichtet."
             )
         
-        if Lesson.objects.filter(klasse=self.klasse, subject=self.subject).first().teacher != self.teacher:
+        existing_lesson = Lesson.objects.filter(klasse=self.klasse, subject=self.subject).first()
+        if existing_lesson and existing_lesson.teacher != self.teacher:
             raise ValidationError(
                 f"Die Klasse {self.klasse} wird im Fach {self.subject} bereits von einem anderen Lehrer unterrichtet."
             )
