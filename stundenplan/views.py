@@ -5,12 +5,12 @@ from django.shortcuts import render
 from .get_plan import get_plan
 
 @login_required
-def index_view(request, klassenname):
+def index_view(request, bezeichnung):
     #usernamw
     user = request.user
 
-    if request.user.is_superuser or request.user.profile.klasse.name == klassenname:
-        context = get_plan(user, klassenname)
+    if request.user.is_superuser or request.user.profile.klasse.bezeichnung == bezeichnung:
+        context = get_plan(user, bezeichnung)
         return render(request, 'index.html', context)
     else:
         return render(request, '404.html')

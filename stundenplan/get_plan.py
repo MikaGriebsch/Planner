@@ -38,8 +38,8 @@ def set_username(user):
     return username
 
 
-def get_plan(user, klassenname):
-    klasse = Class.objects.get(name=klassenname)
+def get_plan(user, bezeichnung):
+    klasse = Class.objects.get(bezeichnung=bezeichnung)
 
     # Montag
     monA1 = custom_subject_filter(klasse, "1", "MO")
@@ -151,7 +151,7 @@ def get_plan(user, klassenname):
     # Rückgabe des Stundenplans
     return {
         'username':  username,
-        'klassenname': klassenname,
+        'klassenname': bezeichnung,
         # Montag
         'monA1': monA1, 'monA1Name': monA1Name, 'monA1Nr': monA1Nr,
         'monA2': monA2, 'monA2Name': monA2Name, 'monA2Nr': monA2Nr,

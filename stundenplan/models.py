@@ -32,9 +32,15 @@ class Teacher(models.Model):
 
 class Class(models.Model):
     name = models.CharField(max_length=10, unique=False)
-    schueleranzahl = models.IntegerField(validators=[MinValueValidator(1),MaxValueValidator(30)])
-    schueler_in_class = models.IntegerField(validators=[MinValueValidator(0),MaxValueValidator(30)], default=0)
-    grade = models.ForeignKey(Grade, on_delete=models.CASCADE, default=-1) #wenn ID==1 ist etwas falsch
+    schueleranzahl = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(30)])
+    schueler_in_class = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(30)], default=0)
+    grade = models.ForeignKey(Grade, on_delete=models.CASCADE, default=-1)  # wenn ID==1 ist etwas falsch
+    bezeichnung = models.CharField(max_length=20, blank=True)  # max_length angepasst
+
+    def save(self, *args, **kwargs):
+        if not self.bezeichnung:
+            self.bezeichnung = f"{self.grade.name}{self.name}"
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.grade}{self.name}"
