@@ -1,0 +1,17 @@
+.fach-row {
+    display: flex;
+    flex-direction: row;
+    background-color: #8B8E98;
+    width: 500px;
+}
+
+.mark {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: lightgrey;
+    border-radius: 10px;
+    margin: 10px;
+    padding: 10px;
+}

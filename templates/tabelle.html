@@ -1,0 +1,60 @@
+{% load noten_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Notenübersicht</title>
+</head>
+<body>
+    <h1>Notenübersicht</h1>
+    <form method="post" action="{% url 'save_marks' %}">
+        {% csrf_token %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Fach</th>
+                    <th>Note 1</th>
+                    <th>Note 2</th>
+                    <th>Note 3</th>
+                    <th>Note 4</th>
+                    <th>Note 5</th>
+                    <th>Note 6</th>
+                    <th>Note 7</th>
+                    <th>Note 8</th>
+                    <th>Note 9</th>
+                    <th>Note 10</th>
+                    <th>Klausur</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for subject in subjects_in_class %}
+                <tr>
+                    <td>{{ subject.name }}</td>
+                    {% with mark=marks|get_mark_for_subject:subject %}
+                    <td><input type="number" name="note_1_{{ mark.id }}" value="{{ mark.note_1|default_if_none:'' }}" min="0" max="15"></td>
+                    <td><input type="number" name="note_2_{{ mark.id }}" value="{{ mark.note_2|default_if_none:'' }}" min="0" max="15"></td>
+                    <td><input type="number" name="note_3_{{ mark.id }}" value="{{ mark.note_3|default_if_none:'' }}" min="0" max="15"></td>
+                    <td><input type="number" name="note_4_{{ mark.id }}" value="{{ mark.note_4|default_if_none:'' }}" min="0" max="15"></td>
+                    <td><input type="number" name="note_5_{{ mark.id }}" value="{{ mark.note_5|default_if_none:'' }}" min="0" max="15"></td>
+                    <td><input type="number" name="note_6_{{ mark.id }}" value="{{ mark.note_6|default_if_none:'' }}" min="0" max="15"></td>
+                    <td><input type="number" name="note_7_{{ mark.id }}" value="{{ mark.note_7|default_if_none:'' }}" min="0" max="15"></td>
+                    <td><input type="number" name="note_8_{{ mark.id }}" value="{{ mark.note_8|default_if_none:'' }}" min="0" max="15"></td>
+                    <td><input type="number" name="note_9_{{ mark.id }}" value="{{ mark.note_9|default_if_none:'' }}" min="0" max="15"></td>
+                    <td><input type="number" name="note_10_{{ mark.id }}" value="{{ mark.note_10|default_if_none:'' }}" min="0" max="15"></td>
+                    <td><input type="number" name="klausur_{{ mark.id }}" value="{{ mark.klausur|default_if_none:'' }}" min="0" max="15"></td>
+                    {% endwith %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit">Noten speichern</button>
+    </form>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</body>
+</html>

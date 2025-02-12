@@ -81,14 +81,12 @@ class UserProfileAdmin(admin.ModelAdmin):
 
             for klasse in seventh_grade_classes:
 
-                print(klasse.schueler_in_class)
                 if klasse.schueler_in_class < klasse.schueleranzahl:
 
                     profile.klasse = klasse
                     profile.save()
 
                     klasse.schueler_in_class += 1
-                    print(klasse.schueler_in_class)
                     klasse.save()
 
                     self.message_user(request, f"{profile.user.username} wurde der Klasse {klasse.name} zugeordnet.",
