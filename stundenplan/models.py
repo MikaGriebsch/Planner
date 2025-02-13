@@ -178,6 +178,7 @@ class Lesson(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     klasse = models.ForeignKey(Class, on_delete=models.SET_NULL, null=True, blank=True)
+    firstLogin = models.BooleanField(default=True)
 
     class Meta:
         verbose_name = 'Schüler Profile'
@@ -204,4 +205,4 @@ class StundentDataImport(models.Model):
         verbose_name_plural = 'Schülerlisten Importieren'
 
     def __str__(self):
-        return self.name
+        return self.name#
