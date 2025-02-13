@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_POST
 from .models import Mark, Semester_Marks
-from .forms import MarkForm, SemesterMarksForm
 from django.core.exceptions import ValidationError
 from stundenplan.models import Subject, Class
 from django.contrib import messages
