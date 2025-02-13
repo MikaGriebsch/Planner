@@ -1,4 +1,5 @@
 from django import template
+from ..models import Mark, Semester_Marks
 
 register = template.Library()
 

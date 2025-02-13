@@ -42,3 +42,18 @@ class Mark(models.Model):
                 return round(sum(valid_notes) / len(valid_notes), 2)
             
         return None
+    
+class Semester_Marks(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    semester_1 = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(15)])
+    semester_2 = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(15)])
+    semester_3 = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(15)])
+    semester_4 = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(15)])
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'subject'], name='unique_user_subject_semester')
+        ]
+        verbose_name = 'Halbjahresnote'
+        verbose_name_plural = 'Halbjahresnoten'
