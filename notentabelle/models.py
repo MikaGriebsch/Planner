@@ -46,10 +46,10 @@ class Mark(models.Model):
 class Semester_Marks(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    semester_1 = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(15)])
-    semester_2 = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(15)])
-    semester_3 = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(15)])
-    semester_4 = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(15)])
+    semester_1 = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(15)], null=True, blank=True)
+    semester_2 = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(15)], null=True, blank=True)
+    semester_3 = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(15)], null=True, blank=True)
+    semester_4 = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(15)], null=True, blank=True)
 
     class Meta:
         constraints = [
