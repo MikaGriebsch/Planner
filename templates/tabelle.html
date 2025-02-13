@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Notenübersicht</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'tabelle.css' %}">
 </head>
 <body>
     <h1>Notenübersicht</h1>
@@ -11,7 +13,7 @@
         {% csrf_token %}
         <table border="1">
             <thead>
-                <tr>
+                <tr class="text-fields">
                     <th>Fach</th>
                     <th>Note 1</th>
                     <th>Note 2</th>
@@ -29,7 +31,7 @@
             </thead>
             <tbody>
                 {% for subject in subjects_in_class %}
-                <tr>
+                <tr class="num-row">
                     <td>{{ subject.name }}</td>
                     {% with mark=marks|get_mark_for_subject:subject %}
                     <td><input type="number" name="note_1_{{ mark.id }}" value="{{ mark.note_1|default_if_none:'' }}" min="0" max="15"></td>

@@ -1,17 +1,64 @@
-.fach-row {
-    display: flex;
-    flex-direction: row;
-    background-color: #8B8E98;
-    width: 500px;
+:root {
+    --background-color: #ffffff;
+    --second-background-color: #E5E1DA;
+    --darkrow: #23456718;
+    --dark-accent: #526D82;
+    --ligth-accent: #b1dae7;
+    --dark-font: #27374D;
+    --ligth-font: white;
 }
 
-.mark {
+body {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background-color: lightgrey;
-    border-radius: 10px;
-    margin: 10px;
-    padding: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: var(--background-color);
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+table {
+    border: none;
+}
+tr {
+    border:none;
+    background-color: var(--darkrow);
+}
+tbody {
+    border: none;
+}
+th {
+    background-color: #234567;
+    color: var(--ligth-font);
+    border: none;
+    height: 50px;
+}
+td {
+    border: none;
+    input {
+        margin: 5px;
+        width: 25px;
+        height: 25px;
+        border-radius: 5px;
+        background-color: var(--background-color);
+        text-align: center;
+
+    }
+}
+.num-row{
+    justify-content: center;
+    text-align: center;
+}
+.text-fields {
+    th {
+        padding: 5px;
+    }
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
