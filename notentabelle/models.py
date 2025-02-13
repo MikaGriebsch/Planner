@@ -37,8 +37,8 @@ class Mark(models.Model):
         valid_notes = [note for note in notes if note is not None]
         if valid_notes:
             if self.klausur is not None:
-                return sum(valid_notes) / len(valid_notes) * 0.75 + self.klausur * 0.25
+                return round(sum(valid_notes) / len(valid_notes) * 0.75 + self.klausur * 0.25, 2)
             else:
-                return sum(valid_notes) / len(valid_notes)
+                return round(sum(valid_notes) / len(valid_notes), 2)
             
         return None

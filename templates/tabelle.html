@@ -24,6 +24,7 @@
                     <th>Note 9</th>
                     <th>Note 10</th>
                     <th>Klausur</th>
+                    <th>Durchschnitt</th>
                 </tr>
             </thead>
             <tbody>
@@ -42,6 +43,7 @@
                     <td><input type="number" name="note_9_{{ mark.id }}" value="{{ mark.note_9|default_if_none:'' }}" min="0" max="15"></td>
                     <td><input type="number" name="note_10_{{ mark.id }}" value="{{ mark.note_10|default_if_none:'' }}" min="0" max="15"></td>
                     <td><input type="number" name="klausur_{{ mark.id }}" value="{{ mark.klausur|default_if_none:'' }}" min="0" max="15"></td>
+                    <td>{{ mark.average|default_if_none:"-" }}</td>
                     {% endwith %}
                 </tr>
                 {% endfor %}
