@@ -37,12 +37,6 @@ body {
         padding-left: 30px;
     }
 
-    .logout-left {
-        padding-right: 30px;
-        padding-left: 30px;
-        height: 30px;
-        fill: #234567;
-    }
     .logout-container {
         background-color: #234567;
         display: flex;
@@ -103,10 +97,6 @@ th, td {
     border: 1px solid var(--darkrow);
 }
 
-/* th:hover, td:hover {
-    background-color: var(--darkrow);
-} */
-
 th[colspan="2"], td[colspan="2"] {
     width: 10%;
 }
@@ -129,4 +119,11 @@ th[rowspan="2"] {
 .clock {
     height: 30px;
     width: auto;
+}
+
+.notentabell-view {
+    color: var(--ligth-font);
+    text-decoration: underline;
+    padding-left: 40px;
+    cursor: pointer;
 }

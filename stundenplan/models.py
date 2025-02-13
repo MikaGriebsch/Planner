@@ -127,6 +127,8 @@ class Lesson(models.Model):
         constraints = [
             UniqueConstraint(fields=['teacher', 'subject', 'klasse', 'weekday', 'lesson_number'], name='unique_lesson')
         ]
+        verbose_name = 'Stunde'
+        verbose_name_plural = 'Stunden'
 
     def clean(self):
         if Lesson.objects.filter(
