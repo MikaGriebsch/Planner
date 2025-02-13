@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% load static %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> {% load static %}
 
     <link rel="stylesheet" type="text/css" href="{% static 'register.css' %}">
-    <title>Login</title>
+    <title>Erster Login</title>
 </head>
+
 <body>
     <form method="post" class="form_container">
         {% csrf_token %}
@@ -38,9 +39,9 @@
             <input placeholder="Passwort" title="Input title" name="password" type="password" class="input_field {% if form.errors %}error{% endif %}" id="password">
         </div>
         {% if form.errors %}
-            <div class="error-message">
-                <p class="error-message">Falsches Passwort oder Benutzername</p>
-            </div>
+        <div class="error-message">
+            <p class="error-message">Falsches Passwort oder Benutzername</p>
+        </div>
         {% endif %}
         <button title="Sign In" type="submit" class="sign-in_btn">
             <span>Bestätige neues Passwort</span>
@@ -55,4 +56,5 @@
         </button> -->
     </form>
 </body>
+
 </html>
