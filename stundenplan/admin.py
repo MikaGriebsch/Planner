@@ -1,13 +1,10 @@
-from pydoc import describe
-from django.utils.html import format_html
-from django.templatetags.static import static
-from django.contrib import admin
+import os
 from django.contrib import messages
+from django.conf import settings
 from django.utils.html import format_html
 from django.templatetags.static import static
 from django.contrib import admin
 from django.core.management import call_command
-from django.contrib import messages
 from .models import Teacher, Grade, Class, Subject, Subject_Grade, Lesson, UserProfile, Room, StundentDataImport
 
 
@@ -96,11 +93,33 @@ class UserProfileAdmin(admin.ModelAdmin):
                 self.message_user(request, f"Keine Klasse der 7. Stufe hat mehr Platz für {profile.user.username}.",
                                   level='error')
 
+def delete_selected_with_files(modeladmin, request, queryset):
+    for selected_object in queryset:
+        if selected_object.file:
+            file_path = selected_object.file.path
+
+            allowed_dirs = [
+                os.path.join(settings.BASE_DIR, "accounts/management/commands/tmp/"),
+            ]
+
+            if any(file_path.startswith(allowed) for allowed in allowed_dirs):
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+                    messages.success(request, f'Datei "{selected_object.file.name}" wurde gelöscht.')
+            else:
+                messages.warning(request,
+                    f'Datei "{selected_object.file.name}" befindet sich in einem nicht erlaubten Ordner und wurde nicht gelöscht.')
+
+    modeladmin.delete_queryset(request, queryset)
+
+
+delete_selected_with_files.short_description = "Ausgewählte Objekte und Dateien löschen"
+
 
 @admin.register(StundentDataImport)
 class StudentDataImportAdmin(admin.ModelAdmin):
     list_display = ["name"]
-    actions = ['assign_user']
+    actions = ['assign_user', delete_selected_with_files]
 
     def changelist_view(self, request, extra_context=None):
         if self.model == StundentDataImport:
