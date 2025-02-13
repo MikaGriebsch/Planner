@@ -204,4 +204,4 @@ class StundentDataImport(models.Model):
         verbose_name_plural = 'Schülerlisten Importieren'
 
     def __str__(self):
-        return self.name
+        return self.name#

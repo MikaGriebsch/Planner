@@ -27,3 +27,18 @@ class Mark(models.Model):
 
     def __str__(self):
         return f"{self.user.username}: {self.subject.name}"
+    
+    def average(self):
+        notes = [
+            self.note_1, self.note_2, self.note_3, self.note_4, self.note_5,
+            self.note_6, self.note_7, self.note_8, self.note_9, self.note_10
+        ]
+
+        valid_notes = [note for note in notes if note is not None]
+        if valid_notes:
+            if self.klausur is not None:
+                return round(sum(valid_notes) / len(valid_notes) * 0.75 + self.klausur * 0.25, 2)
+            else:
+                return round(sum(valid_notes) / len(valid_notes), 2)
+            
+        return None
