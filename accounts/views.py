@@ -30,6 +30,7 @@ def first_login(request):
             if hasattr(user, 'profile'):
                 user.profile.first_login = False
                 user.profile.save()
+                print(user.profile.first_login)
             update_session_auth_hash(request, user)
             messages.success(request, "Dein Passwort wurde erfolgreich geändert!")
             bezeichnung = user.profile.klasse.bezeichnung
@@ -44,12 +45,12 @@ def first_login(request):
 
 class CustomLoginView(LoginView):
     def get_success_url(self):
-        first_login = self.request.session.pop('first_login', False)
+        user = self.request.user
 
-        if first_login:
+        if hasattr(user, 'profile') and user.profile.first_login:
             return '/first_login/'
         
-        if hasattr(self.request.user, 'profile') and self.request.user.profile.klasse:
+        if hasattr(user, 'profile') and user.profile.klasse:
             bezeichnung = self.request.user.profile.klasse.bezeichnung
             return reverse('index_view', kwargs={'bezeichnung': bezeichnung})
         
