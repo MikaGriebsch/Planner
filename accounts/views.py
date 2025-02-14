@@ -32,7 +32,9 @@ def first_login(request):
                 user.profile.save()
             update_session_auth_hash(request, user)
             messages.success(request, "Dein Passwort wurde erfolgreich geändert!")
-            return redirect('/schedule/default/')
+            bezeichnung = user.profile.klasse.bezeichnung
+            return redirect('index_view', bezeichnung=bezeichnung)
+
         else:
             messages.error(request, "Passwörter stimmen nicht überein.")
 
