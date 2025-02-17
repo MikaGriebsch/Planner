@@ -2,7 +2,7 @@
     --background-color: #ffffff;
     --second-background-color: #E5E1DA;
     --darkrow: #23456718;
-    --dark-accent: #526D82;
+    --dark-accent: rgb(35,68,103);
     --ligth-accent: #b1dae7;
     --dark-font: #27374D;
     --ligth-font: white;
@@ -42,6 +42,7 @@ body {
 .logout-container {
     display: flex;
     align-items: center;
+    flex-direction: column;
 }
 
 .logout {
@@ -75,6 +76,7 @@ table {
     max-width: 1200px;
     margin: 0 auto;
     border-collapse: collapse;
+    border: var(--dark-accent) solid 5px;
 }
 
 th, td {
@@ -84,13 +86,14 @@ th, td {
     vertical-align: middle;
     font-size: 10pt;
     padding: 5px;
-    border: 1px solid var(--darkrow);
+    border: 1px solid gray;
     word-wrap: break-word;
     overflow-wrap: break-word;
 }
 
 th {
-    background-color: var(--second-background-color);
+    background-color: var(--dark-accent);
+    color: var(--ligth-font);
     font-size: 15px !important;
     height: 30px !important;
 }
@@ -113,8 +116,10 @@ tbody tr {
 }
 
 .clock {
-    height: 20px;
+    height: 30px;
     width: auto;
+    color: var(--ligth-font);
+    fill: var(--ligth-font);
 }
 
 .notentabell-view {
