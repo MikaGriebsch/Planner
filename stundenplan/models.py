@@ -98,6 +98,19 @@ class Room(models.Model):
     def __str__(self):
         return f"{self.room_number}"
 
+class Week(models.Model):
+    WEEK_CHOICES = [
+        ('A', 'A-Woche'),
+        ('B', 'B-Woche'),
+    ]
+    week_choice = models.CharField(choices=WEEK_CHOICES, max_length=7, default='A')
+    class Meta:
+        verbose_name = 'Wochenoption'
+        verbose_name_plural = 'Wochenoptionen'
+
+    def __str__(self):
+        return f"{self.week_choice}"
+
 class Lesson(models.Model):
     LESSON_NUMBER_CHOICES = [
         ('1', '1 Stunde'),
@@ -122,6 +135,7 @@ class Lesson(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     klasse = models.ForeignKey(Class, on_delete=models.CASCADE, null=True)
     room_number = models.ForeignKey(Room, on_delete=models.CASCADE, null=True)
+    week_choice = models.ForeignKey(Week, on_delete=models.CASCADE, null=True)
 
     class Meta:
         constraints = [
@@ -134,28 +148,31 @@ class Lesson(models.Model):
         if Lesson.objects.filter(
             klasse=self.klasse,
             weekday=self.weekday,
-            lesson_number=self.lesson_number
+            lesson_number=self.lesson_number,
+            week_choice=self.week_choice,
         ).exclude(pk=self.pk).exists():
             raise ValidationError(
-                f"Die Klasse {self.klasse} hat bereits ein Fach in der {self.lesson_number} Stunde am {self.weekday}."
+                f"Die Klasse {self.klasse} hat bereits ein Fach in der {self.lesson_number} Stunde ({self.week_choice}-Woche) am {self.weekday}."
             )
 
         if Lesson.objects.filter(
             teacher=self.teacher,
             weekday=self.weekday,
-            lesson_number=self.lesson_number
+            lesson_number=self.lesson_number,
+            week_choice=self.week_choice,
         ).exclude(pk=self.pk).exists():
             raise ValidationError(
-                f"Der Lehrer {self.teacher} ist bereits in der {self.lesson_number} Stunde am {self.weekday} beschäftigt."
+                f"Der Lehrer {self.teacher} ist bereits in der {self.lesson_number} Stunde ({self.week_choice}-Woche) am {self.weekday} beschäftigt."
             )
         
         if Lesson.objects.filter(
             room_number=self.room_number,
             weekday=self.weekday,
-            lesson_number=self.lesson_number
+            lesson_number=self.lesson_number,
+            week_choice=self.week_choice,
         ).exclude(pk=self.pk).exists():
             raise ValidationError(
-                f"Der Raum {self.room_number} ist bereits in der {self.lesson_number} Stunde am {self.weekday} in Benutzung."
+                f"Der Raum {self.room_number} ist bereits in der {self.lesson_number} Stunde ({self.week_choice}-Woche) am {self.weekday} in Benutzung."
             )
 
         if self.teacher and self.subject not in self.teacher.subjects.all():

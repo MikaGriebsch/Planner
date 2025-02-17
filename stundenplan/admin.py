@@ -5,7 +5,7 @@ from django.utils.html import format_html
 from django.templatetags.static import static
 from django.contrib import admin
 from django.core.management import call_command
-from .models import Teacher, Grade, Class, Subject, Subject_Grade, Lesson, UserProfile, Room, StundentDataImport
+from .models import Teacher, Grade, Class, Subject, Subject_Grade, Lesson, UserProfile, Room, StundentDataImport, Week
 
 
 @admin.register(Teacher)
@@ -38,13 +38,18 @@ class SubjectGradeAdmin(admin.ModelAdmin):
 
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
-    list_display = ("id", "lesson_number", "weekday", "teacher", "klasse", "subject", "room_number")
+    list_display = ("id", "lesson_number", "weekday", "teacher", "klasse", "subject", "room_number", 'week_choice')
     search_fields = ("lesson_number", "weekday")
-    list_filter = ("weekday", "teacher", "klasse", "subject", "room_number")
+    list_filter = ("weekday", "teacher", "klasse", "subject", "room_number", 'week_choice')
 
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
     list_display = ("room_number",)
+
+@admin.register(Week)
+class WeekAdmin(admin.ModelAdmin):
+    list_display = ('week_choice',)
+    search_fields = ('week_choice',)
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):

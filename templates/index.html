@@ -12,7 +12,7 @@
     
     <div class="header">
         <a class="notentabell-view" href="{% url 'index_view' %}">Notentabelle</a>
-        <h1 class="header-heading">Stundenplan von Klasse {{klassenname}}</h1>
+        <h1 class="header-heading">Stundenplan der Klasse {{klassenname}}</h1>
         <div class="logout-container" >
             <a href="{% url 'logout' %}"></a>
             <form method="post" action="{% url 'logout' %}">
@@ -51,7 +51,7 @@
             </thead>
             <tbody>
                 <tr class="darkrow 1.Stunde">
-                    <td data-label="Zeit">08:00 - 08:45</td>
+                    <td class="breack_word" data-label="Zeit">08:00 &nbsp- 08:45</td>
                     <td data-label="Montag A" colspan="1">{{monA1}}&nbsp;{{monA1Name}}<br>{{monA1Nr}}</td>
                     <td data-label="Montag B" colspan="1">{{monB1}}&nbsp;{{monB1Name}}<br>{{monB1Nr}}</td>
                     <td data-label="Dienstag A" colspan="1">{{tueA1}}&nbsp;{{tueA1Name}}<br>{{tueA1Nr}}</td>
