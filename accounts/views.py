@@ -6,11 +6,13 @@ from .forms import CustomUserCreationForm
 from django.contrib.auth.signals import user_logged_in
 from django.contrib.auth import get_user_model
 from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.decorators import login_required
+
 
 
 
 # Create your views here.
-# @login_required
+@login_required
 def first_login(request):
     if request.method == "POST":
         new_password1 = request.POST.get("new_password1")
