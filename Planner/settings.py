@@ -35,6 +35,10 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+
+    #custom django admin
+    'jazzmin',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -139,3 +143,74 @@ LOGIN_REDIRECT_URL = '/'
 
 #Logout
 LOGOUT_REDIRECT_URL = '/'
+
+#custom django admin
+JAZZMIN_SETTINGS = {
+    'site_title': 'Time-Table-Planner',
+    "site_header": "Time-Table-Planner",
+    "site_brand": "Time-Table-Planner",
+    "site_logo": "Logo1.png",
+    "login_logo": "Logo1.png",
+    "login_logo_dark": None,
+    "welcome_sign": "Time-Table-Planner Admin",
+    "copyright": "Time-Table-Planner-Team",
+    #"search_model": ["auth.User", "auth.Group"],
+    "topmenu_links": [
+
+            {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+
+            #example how to set up more links to moddels or apps
+            {"model": "auth.User"},
+        ],
+
+    "usermenu_links": [
+        #here we can link to some moddels or apps by clicking at the user menu (right top)
+        {"model": "auth.user"}
+    ],
+
+    "hide_apps": [],
+
+    "hide_models": [],
+
+    # Relative paths to custom CSS/JS scripts (must be present in static files)
+    "custom_css": None,
+    "custom_js": None,
+    # Whether to link font from fonts.googleapis.com (use custom_css to supply font otherwise)
+    "use_google_fonts_cdn": True,
+
+    #Powerful tool
+    "show_ui_builder": True,
+
+    }
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": "navbar-primary",
+    "accent": "accent-lightblue",
+    "navbar": "navbar-light",
+    "no_navbar_border": False,
+    "navbar_fixed": True,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-dark-primary",
+    "sidebar_nav_small_text": True,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": False,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": True,
+    "theme": "simplex",
+    "dark_mode_theme": None,
+    "button_classes": {
+        "primary": "btn-outline-primary",
+        "secondary": "btn-outline-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    },
+    "actions_sticky_top": False
+}
