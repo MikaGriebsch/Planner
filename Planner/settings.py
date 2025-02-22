@@ -14,11 +14,6 @@ from pathlib import Path
 import os
 import dj_database_url
 
-
-DATABASES = {
-    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
-}
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -28,16 +23,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-hy#xbz!153ga&$h%1mi1x@2%i1h36w%qod5p@14@fm5x1be-uj'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-hy#xbz!153ga&$h%1mi1x@2%i1h36w%qod5p@14@fm5x1be-uj")
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
+    os.getenv("RENDER_EXTERNAL_HOSTNAME", "localhost"),
     'localhost',
     '0.0.0.0',
     '127.0.0.1'
 ]
 
+CSRF_TRUSTED_ORIGINS = [f"https://{os.getenv('RENDER_EXTERNAL_HOSTNAME', '')}"]
+
+# Datenbankeinstellungen für Render
+DATABASES = {
+    'default': dj_database_url.config(default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}")
+}
 
 # Application definition
 
@@ -69,6 +70,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'Planner.urls'
+WSGI_APPLICATION = 'Planner.wsgi.application'
 
 TEMPLATES = [
     {
@@ -85,10 +87,6 @@ TEMPLATES = [
         },
     },
 ]
-
-
-WSGI_APPLICATION = 'Planner.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
@@ -124,11 +122,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
 LANGUAGE_CODE = 'de'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
 
@@ -136,17 +131,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#Login 
-LOGIN_URL = '/login/' 
+#Login
+LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 
 #Logout

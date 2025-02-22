@@ -1,0 +1,130 @@
+:root {
+    --background-color: #ffffff;
+    --second-background-color: #E5E1DA;
+    --darkrow: #23456718;
+    --dark-accent: rgb(35,68,103);
+    --ligth-accent: #b1dae7;
+    --dark-font: #27374D;
+    --ligth-font: white;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: var(--background-color);
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    position: fixed;
+    background-color: #234567;
+    width: 100%;
+    left: 0;
+    top: 0;
+    color: var(--ligth-font);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100px;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.header-heading {
+    padding-left: 30px;
+    font-size: 1.5rem;
+}
+
+.logout-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.logout {
+    height: 30px;
+    width: 30px;
+    fill: var(--ligth-font);
+}
+
+.logout-button {
+    background-color: transparent;
+    color: var(--ligth-font);
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.content {
+    margin-top: 100px;
+    width: 100%;
+    overflow-x: auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+table {
+    table-layout: fixed;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-collapse: collapse;
+    border: var(--dark-accent) solid 5px;
+}
+
+th, td {
+    width: 10%;
+    height: 50px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 10pt;
+    padding: 5px;
+    border: 1px solid gray;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+th {
+    background-color: var(--dark-accent);
+    color: var(--ligth-font);
+    font-size: 15px !important;
+    height: 30px !important;
+}
+
+th:last-child, td:last-child {
+    width: 10% !important;
+}
+
+tbody tr {
+    height: 50px;
+}
+
+.break-word {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.darkrow {
+    background-color: var(--darkrow);
+}
+
+.clock {
+    height: 30px;
+    width: auto;
+    color: var(--ligth-font);
+    fill: var(--ligth-font);
+}
+
+.notentabell-view {
+    color: var(--ligth-font);
+    text-decoration: underline;
+    cursor: pointer;
+}
+

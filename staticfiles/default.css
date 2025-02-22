@@ -1,0 +1,38 @@
+
+:root {
+    --background-color: #F1F0E8; 
+    --second-background-color: #E5E1DA;
+    --darkrow: #23456718;
+    --dark-accent: #526D82;
+    --ligth-accent: #b1dae7;
+    --dark-font: #27374D;
+    --ligth-font: white;
+}
+
+body {
+    display: flex;
+    /* justify-content: center;
+    align-items: center;
+    flex-direction: column; */
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: var(--background-color);
+    height: 100vh; 
+    margin: 0; 
+    padding: 0;
+}
+
+.arrow {
+    position: relative;
+    height: 0px;
+    left: 47vh;
+    height: 75px;
+    width: auto;
+}
+
+.font-container {
+    display: flex;
+    padding-left: 27vw;
+    padding-top: 7px;
+    font-weight: 600;
+    font-size: 25px;
+}
