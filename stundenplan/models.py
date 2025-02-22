@@ -89,7 +89,7 @@ class Subject_Grade(models.Model):
             )
 
 class Room(models.Model):
-    room_number = models.CharField(max_length=3, unique=True)
+    room_number = models.CharField(max_length=30, unique=True)
 
     class Meta:
         verbose_name = 'Raum'
