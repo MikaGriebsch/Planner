@@ -5,3 +5,6 @@
 `pip install -U django-jazzmin`
 `pip install psycopg2`
 `pip install dj-database-url`
+
+https://planner-v18v.onrender.com
+
