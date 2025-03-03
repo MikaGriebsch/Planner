@@ -8,17 +8,18 @@ from .input_data.forms import ClassForm, GradeForm
 
 
 @login_required
-def index_view(request, klassenname):
-    #usernamw
+def index_view(request, bezeichnung):
+    
     user = request.user
 
-    if request.user.is_superuser or request.user.profile.klasse.name == klassenname:
-        context = get_plan(user, klassenname)
+    if request.user.is_superuser or request.user.profile.klasse.bezeichnung == bezeichnung:
+        context = get_plan(user, bezeichnung)
         return render(request, 'index.html', context)
 
 def default_view(request):
     return render(request, 'default.html')
 
+<<<<<<< HEAD
 #@login_required
 def input_view(request):
     class_form = ClassForm()

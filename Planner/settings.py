@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,20 +23,30 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-hy#xbz!153ga&$h%1mi1x@2%i1h36w%qod5p@14@fm5x1be-uj'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-hy#xbz!153ga&$h%1mi1x@2%i1h36w%qod5p@14@fm5x1be-uj")
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
+    os.getenv("RENDER_EXTERNAL_HOSTNAME", "localhost"),
     'localhost',
     '0.0.0.0',
     '127.0.0.1'
 ]
 
+CSRF_TRUSTED_ORIGINS = [f"https://{os.getenv('RENDER_EXTERNAL_HOSTNAME', '')}"]
+
+# Datenbankeinstellungen für Render
+DATABASES = {
+    'default': dj_database_url.config(default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}")
+}
 
 # Application definition
 
 INSTALLED_APPS = [
+
+    #custom django admin
+    'jazzmin',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,10 +55,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'stundenplan',
     'accounts',
+    'notentabelle',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -56,6 +70,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'Planner.urls'
+WSGI_APPLICATION = 'Planner.wsgi.application'
 
 TEMPLATES = [
     {
@@ -73,19 +88,15 @@ TEMPLATES = [
     },
 ]
 
-
-WSGI_APPLICATION = 'Planner.wsgi.application'
-
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': BASE_DIR / 'db.sqlite3',
+#    }
+#}
 
 
 # Password validation
@@ -111,11 +122,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
 LANGUAGE_CODE = 'de'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
 
@@ -123,18 +131,101 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#Login 
-LOGIN_URL = '/login/' 
+#Login
+LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 
 #Logout
 LOGOUT_REDIRECT_URL = '/'
+
+#custom django admin
+JAZZMIN_SETTINGS = {
+    'site_title': 'Time-Table-Planner',
+    "site_header": "Time-Table-Planner",
+    "site_brand": "Time-Table-Planner",
+    "site_logo": "Logo1.png",
+    "login_logo": "Logo1.png",
+    "login_logo_dark": None,
+    "welcome_sign": "Time-Table-Planner Admin",
+    "copyright": "Time-Table-Planner-Team",
+    #"search_model": ["auth.User", "auth.Group"],
+    "topmenu_links": [
+
+            {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+
+            #example how to set up more links to moddels or apps
+            {"model": "auth.User"},
+        ],
+
+    "usermenu_links": [
+        #here we can link to some moddels or apps by clicking at the user menu (right top)
+        {"model": "auth.user"}
+    ],
+
+    # Custom icons for side menu apps/models See https://fontawesome.com/icons?d=gallery&m=free&v=5.0.0,5.0.1,5.0.10,5.0.11,5.0.12,5.0.13,5.0.2,5.0.3,5.0.4,5.0.5,5.0.6,5.0.7,5.0.8,5.0.9,5.1.0,5.1.1,5.2.0,5.3.0,5.3.1,5.4.0,5.4.1,5.4.2,5.13.0,5.12.0,5.11.2,5.11.1,5.10.0,5.9.0,5.8.2,5.8.1,5.7.2,5.7.1,5.7.0,5.6.3,5.5.0,5.4.2
+    # for the full list of 5.13.0 free icon classes
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        "stundenplan.Room": "fa-solid fa-door-closed",
+        "notentabelle.Mark": "fa-solid fa-list-ol",
+        #hier noch mehr einfügen
+    },
+
+    "hide_apps": [],
+
+    "hide_models": [],
+
+    # Relative paths to custom CSS/JS scripts (must be present in static files)
+    "custom_css": None,
+    "custom_js": None,
+    # Whether to link font from fonts.googleapis.com (use custom_css to supply font otherwise)
+    "use_google_fonts_cdn": True,
+
+    #Powerful tool
+    "show_ui_builder": True,
+
+    }
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": "navbar-primary",
+    "accent": "accent-lightblue",
+    "navbar": "navbar-gray-dark navbar-dark",
+    "no_navbar_border": False,
+    "navbar_fixed": True,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-dark-primary",
+    "sidebar_nav_small_text": True,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": False,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": True,
+    "theme": "simplex",
+    "dark_mode_theme": None,
+    "button_classes": {
+        "primary": "btn-outline-primary",
+        "secondary": "btn-outline-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    },
+    "actions_sticky_top": False
+}

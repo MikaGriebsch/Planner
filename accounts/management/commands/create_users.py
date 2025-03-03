@@ -15,28 +15,31 @@ class Command(BaseCommand):
     help = "Erstellt mehrere Benutzer aus einer CSV-Datei mit Namen und speichert die Zugangsdaten."
 
     def add_arguments(self, parser):
-        parser.add_argument('count', type=int, help="Anzahl der zu erstellenden Nutzer")
+        parser.add_argument('file_path', type=str, help="Pfad zur CSV-Datei mit den Nutzerdaten")
 
     def handle(self, *args, **options):
-        num_users = options['count']
+        file_path = options['file_path']
         last_user = User.objects.order_by('-username').first()
         last_number = int(last_user.username) if last_user and last_user.username.isdigit() else 0
 
-        input_dir = os.path.join(os.path.dirname(__file__), "tmp")
-        os.makedirs(input_dir, exist_ok=True)
-        csv_file = os.path.join(input_dir, "user_data.csv")
-
-
-        output_file = os.path.join(input_dir, "user_credentials.csv")
+        output_file = os.path.join(os.path.dirname(file_path), "user_credentials.csv")
         write_header = not os.path.exists(output_file)
 
-        with open(csv_file, "r", encoding="utf-8") as file:
-            reader = csv.reader(file)
-            next(reader)
-            names = list(reader)
+        encodings = ['utf-8', 'ISO-8859-1', 'Windows-1252']
+        names = []
 
-        if len(names) < num_users:
-            self.stdout.write(self.style.ERROR("Nicht genügend Namen in der CSV-Datei!"))
+        for encoding in encodings:
+            try:
+                with open(file_path, "r", encoding=encoding) as file:
+                    reader = csv.reader(file)
+                    next(reader)
+                    names = [row for row in reader if row]
+                    break
+            except UnicodeDecodeError:
+                continue
+
+        if not names:
+            self.stdout.write(self.style.ERROR("Die Datei konnte mit keinem der unterstützten Zeichensätze gelesen werden."))
             return
 
         with open(output_file, "a", encoding="utf-8", newline="") as file:
@@ -44,8 +47,7 @@ class Command(BaseCommand):
             if write_header:
                 writer.writerow(["Benutzername", "Vorname", "Nachname", "Passwort"])
 
-            for i in range(num_users):
-                first_name, last_name = names[i]
+            for i, (first_name, last_name) in enumerate(names):
                 username = f"{last_number + i + 1:04d}"
 
                 while User.objects.filter(username=username).exists():
