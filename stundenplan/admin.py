@@ -24,6 +24,19 @@ class ClassAdmin(admin.ModelAdmin):
     list_display = ( "grade", "name", "schueleranzahl", "schueler_in_class")
     search_fields = ( "grade", "name", "schueleranzahl", "schueler_in_class")
     list_filter = ("grade", "name",)
+    actions = ['next_year',]
+
+    @admin.action(description="Ein Jahr weiter springen")
+    def next_year(self, request, queryset):
+        for klasse in queryset:
+            current_grade = klasse.grade
+            if current_grade.name < 12:
+                new_grade_name = current_grade.name + 1
+                new_grade, created = Grade.objects.get_or_create(name=new_grade_name)
+                klasse.grade = new_grade
+                klasse.save()
+            else:
+                self.message_user(request,f"{klasse} ist bereits in der höchsten Klasse angelangt und kann nicht in eine höhere Klasse versetzt werden!", level='error')
 
 @admin.register(Subject)
 class SubjectAdmin(admin.ModelAdmin):
@@ -55,20 +68,8 @@ class WeekAdmin(admin.ModelAdmin):
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'first_name', 'last_name', 'klasse')
     list_filter = ("klasse__grade", "klasse__name",)
-    actions = ['next_year', 'assign_user_to_class']
+    actions = ['assign_user_to_class']
 
-    @admin.action(description="Ein Jahr weiter springen")
-    def next_year(self, request, queryset):
-        for profile in queryset:
-            current_grade = profile.klasse.grade
-            if current_grade.name < 12:
-                new_grade_name = current_grade.name + 1
-                new_grade, created = Grade.objects.get_or_create(name=new_grade_name)
-                profile.klasse.grade = new_grade
-                profile.klasse.save()
-                profile.save()
-            else:
-                self.message_user(request,f"{profile.user.username} ist bereits in der höchsten Klasse angelangt und kann nicht in eine höhere Klasse versetzt werden!", level='error')
 
     @admin.action(description="Nutzer einer 7. Klasse zuordnen")
     def assign_user_to_class(self, request, queryset):
