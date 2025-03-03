@@ -14,7 +14,6 @@ class Grade(models.Model):
 
     def __str__(self):
         return f"{self.name}"
-    
 
 class Subject(models.Model):
     abkuerzung = models.CharField(max_length=10, unique=True)
@@ -76,8 +75,8 @@ class Subject_Grade(models.Model):
     wochenstunden = models.IntegerField(validators=[MinValueValidator(1)])
 
     class Meta:
-        verbose_name = 'Klassenstufe-Fach-Abhänigkeit'
-        verbose_name_plural = 'Klassenstufe-Fach-Abhänigkeiten'
+        verbose_name = 'Klassenstufe-Fach'
+        verbose_name_plural = 'Klassenstufe-Fach'
 
     def clean(self):
         if Subject_Grade.objects.filter(

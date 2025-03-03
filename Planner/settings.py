@@ -179,6 +179,15 @@ JAZZMIN_SETTINGS = {
         "auth.Group": "fas fa-users",
         "stundenplan.Room": "fa-solid fa-door-closed",
         "notentabelle.Mark": "fa-solid fa-list-ol",
+        "stundenplan.Grade": "fa-solid fa-graduation-cap",
+        "stundenplan.Subject": "fa-solid fa-newspaper",
+        "stundenplan.Teacher": "fa-solid fa-person",
+        "stundenplan.Subject_Grade": "fa-solid fa-location-crosshairs",
+        "stundenplan.Week": "fa-solid fa-calendar-week",
+        "stundenplan.Lesson": "fa-solid fa-person-chalkboard",
+        "stundenplan.UserProfile": "fa-solid fa-users",
+        "stundenplan.StundentDataImport": "fa-solid fa-list-ul",
+        "stundenplan.Class": "fa-solid fa-list-ol",
         #hier noch mehr einfügen
     },
 
