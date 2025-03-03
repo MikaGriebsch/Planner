@@ -19,7 +19,6 @@ def index_view(request, bezeichnung):
 def default_view(request):
     return render(request, 'default.html')
 
-<<<<<<< HEAD
 #@login_required
 def input_view(request):
     class_form = ClassForm()
