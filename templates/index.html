@@ -12,6 +12,7 @@
     
     <div class="header">
         <a class="notentabell-view" href="{% url 'index_view' %}">Notentabelle</a>
+        <a href="{% url 'change_password' %}">Passwort ändern</a>
         <h1 class="header-heading">Stundenplan der Klasse {{klassenname}}</h1>
         <div class="logout-container" >
             {% if user.is_superuser %}

@@ -17,12 +17,14 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
-
+from stundenplan import views
+from django.urls import path, re_path
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('schedule/', include('stundenplan.urls')),
     path('', include('accounts.urls')),
 
     path('noten/', include('notentabelle.urls')),
+    path('changePassword/', views.change_password, name='change_password'),
 ]
 
