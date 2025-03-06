@@ -74,54 +74,91 @@
         <table class="table table-striped table-bordered table-hover doFixed">
             <thead>
                 <tr class="darkrow">
-                    <th><svg class="clock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20C16.4 20 20 16.4 20 12S16.4 4 12 4 4 7.6 4 12 7.6 20 12 20M12 2C17.5 2 22 6.5 22 12S17.5 22 12 22C6.5 22 2 17.5 2 12C2 6.5 6.5 2 12 2M15.3 16.2L14 17L11 11.8V7H12.5V11.4L15.3 16.2Z" /></svg></th>
+                    <th rowspan="2"><svg class="clock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20C16.4 20 20 16.4 20 12S16.4 4 12 4 4 7.6 4 12 7.6 20 12 20M12 2C17.5 2 22 6.5 22 12S17.5 22 12 22C6.5 22 2 17.5 2 12C2 6.5 6.5 2 12 2M15.3 16.2L14 17L11 11.8V7H12.5V11.4L15.3 16.2Z" /></svg></th>
                     <th colspan="2">Montag</th>
                     <th colspan="2">Dienstag</th>
                     <th colspan="2">Mittwoch</th>
                     <th colspan="2">Donnerstag</th>
                     <th colspan="2">Freitag</th>
                 </tr>
+                <tr class="darkrow">
+                    <th>A</th>
+                    <th>B</th>
+                    <th>A</th>
+                    <th>B</th>
+                    <th>A</th>
+                    <th>B</th>
+                    <th>A</th>
+                    <th>B</th>
+                    <th>A</th>
+                    <th>B</th>
+                </tr>
             </thead>
             <tbody>
-                <tr class="darkrow 1. Studne">
-                    <td>08:00 - 08:45</td>
-                    <td colspan="2">{{monA1}} {{monA1Name}}<br>{{monA1Nr}}</td>
-                    <td colspan="2">{{tueA1}} {{tueA1Name}}<br>{{tueA1Nr}}</td>
-                    <td colspan="2">{{wedA1}} {{wedA1Name}}<br>{{wedA1Nr}}</td>
-                    <td colspan="2">{{thuA1}} {{thuA1Name}}<br>{{thuA1Nr}}</td>
-                    <td colspan="2">{{friA1}} {{friA1Name}}<br>{{friA1Nr}}</td>
+                <tr class="darkrow 1.Stunde">
+                    <td class="breack_word" data-label="Zeit">08:00 &nbsp- 08:45</td>
+                    <td data-label="Montag A" colspan="1">{{monA1}}&nbsp;{{monA1Name}}<br>{{monA1Nr}}</td>
+                    <td data-label="Montag B" colspan="1">{{monB1}}&nbsp;{{monB1Name}}<br>{{monB1Nr}}</td>
+                    <td data-label="Dienstag A" colspan="1">{{tueA1}}&nbsp;{{tueA1Name}}<br>{{tueA1Nr}}</td>
+                    <td data-label="Dienstag B" colspan="1">{{tueB1}}&nbsp;{{tueB1Name}}<br>{{tueB1Nr}}</td>
+                    <td data-label="Mittwoch A" colspan="1">{{wedA1}}&nbsp;{{wedA1Name}}<br>{{wedA1Nr}}</td>
+                    <td data-label="Mittwoch B" colspan="1">{{wedB1}}&nbsp;{{wedB1Name}}<br>{{wedB1Nr}}</td>
+                    <td data-label="Donnerstag A" colspan="1">{{thuA1}}&nbsp;{{thuA1Name}}<br>{{thuA1Nr}}</td>
+                    <td data-label="Donnerstag B" colspan="1">{{thuB1}}&nbsp;{{thuB1Name}}<br>{{thuB1Nr}}</td>
+                    <td data-label="Freitag A" colspan="1">{{friA1}}&nbsp;{{friA1Name}}<br>{{friA1Nr}}</td>
+                    <td data-label="Freitag B" colspan="1">{{friB1}}&nbsp;{{friB1Name}}<br>{{friB1Nr}}</td>
                 </tr>
-                <tr class="2. Studne">
-                    <td>08:55 - 09:40</td>
-                    <td colspan="2">{{monA2}} {{monA2Name}}<br>{{monA2Nr}}</td>
-                    <td colspan="2">{{tueA2}} {{tueA2Name}}<br>{{tueA2Nr}}</td>
-                    <td colspan="2">{{wedA2}} {{wedA2Name}}<br>{{wedA2Nr}}</td>
-                    <td colspan="2">{{thuA2}} {{thuA2Name}}<br>{{thuA2Nr}}</td>
-                    <td colspan="2">{{friA2}} {{friA2Name}}<br>{{friA2Nr}}</td>
+                <tr class="2.Stunde">
+                    <td data-label="Zeit">08:55 - 09:40</td>
+                    <td data-label="Montag A" colspan="1">{{monA2}}&nbsp;{{monA2Name}}<br>{{monA2Nr}}</td>
+                    <td data-label="Montag B" colspan="1">{{monB2}}&nbsp;{{monB2Name}}<br>{{monB2Nr}}</td>
+                    <td data-label="Dienstag A" colspan="1">{{tueA2}}&nbsp;{{tueA2Name}}<br>{{tueA2Nr}}</td>
+                    <td data-label="Dienstag B" colspan="1">{{tueB2}}&nbsp;{{tueB2Name}}<br>{{tueB2Nr}}</td>
+                    <td data-label="Mittwoch A" colspan="1">{{wedA2}}&nbsp;{{wedA2Name}}<br>{{wedA2Nr}}</td>
+                    <td data-label="Mittwoch B" colspan="1">{{wedB2}}&nbsp;{{wedB2Name}}<br>{{wedB2Nr}}</td>
+                    <td data-label="Donnerstag A" colspan="1">{{thuA2}}&nbsp;{{thuA2Name}}<br>{{thuA2Nr}}</td>
+                    <td data-label="Donnerstag B" colspan="1">{{thuB2}}&nbsp;{{thuB2Name}}<br>{{thuB2Nr}}</td>
+                    <td data-label="Freitag A" colspan="1">{{friA2}}&nbsp;{{friA2Name}}<br>{{friA2Nr}}</td>
+                    <td data-label="Freitag B" colspan="1">{{friB2}}&nbsp;{{friB2Name}}<br>{{friB2Nr}}</td>
                 </tr>
-                <tr class="darkrow 3./4. Studne">
-                    <td>10:00 - 11:30</td>
-                    <td colspan="2">{{monA3_4}} {{monA3_4Name}}<br>{{monA3_4Nr}}</td>
-                    <td colspan="2">{{tueA3_4}} {{tueA3_4Name}}<br>{{tueA3_4Nr}}</td>
-                    <td colspan="2">{{wedA3_4}} {{wedA3_4Name}}<br>{{wedA3_4Nr}}</td>
-                    <td colspan="2">{{thuA3_4}} {{thuA3_4Name}}<br>{{thuA3_4Nr}}</td>
-                    <td colspan="2">{{friA3_4}} {{friA3_4Name}}<br>{{friA3_4Nr}}</td>
+                <tr class="darkrow 3./4. Stunde">
+                    <td data-label="Zeit">10:00 - 11:30</td>
+                    <td data-label="Montag A" colspan="1">{{monA3_4}}&nbsp;{{monA3_4Name}}<br>{{monA3_4Nr}}</td>
+                    <td data-label="Montag B" colspan="1">{{monB3_4}}&nbsp;{{monB3_4Name}}<br>{{monB3_4Nr}}</td>
+                    <td data-label="Dienstag A" colspan="1">{{tueA3_4}}&nbsp;{{tueA3_4Name}}<br>{{tueA3_4Nr}}</td>
+                    <td data-label="Dienstag B" colspan="1">{{tueB3_4}}&nbsp;{{tueB3_4Name}}<br>{{tueB3_4Nr}}</td>
+                    <td data-label="Mittwoch A" colspan="1">{{wedA3_4}}&nbsp;{{wedA3_4Name}}<br>{{wedA3_4Nr}}</td>
+                    <td data-label="Mittwoch B" colspan="1">{{wedB3_4}}&nbsp;{{wedB3_4Name}}<br>{{wedB3_4Nr}}</td>
+                    <td data-label="Donnerstag A" colspan="1">{{thuA3_4}}&nbsp;{{thuA3_4Name}}<br>{{thuA3_4Nr}}</td>
+                    <td data-label="Donnerstag B" colspan="1">{{thuB3_4}}&nbsp;{{thuB3_4Name}}<br>{{thuB3_4Nr}}</td>
+                    <td data-label="Freitag A" colspan="1">{{friA3_4}}&nbsp;{{friA3_4Name}}<br>{{friA3_4Nr}}</td>
+                    <td data-label="Freitag B" colspan="1">{{friB3_4}}&nbsp;{{friB3_4Name}}<br>{{friB3_4Nr}}</td>
                 </tr>
                 <tr class="5./6. Stunde">
                     <td data-label="Zeit">11:40 - 13:10</td>
-                    <td data-label="Montag A" colspan="2">{{monA5_6}}&nbsp;{{monA5_6Name}}<br>{{monA5_6Nr}}</td>
-                    <td data-label="Dienstag A" colspan="2">{{tueA5_6}}&nbsp;{{tueA5_6Name}}<br>{{tueA5_6Nr}}</td>
-                    <td data-label="Mittwoch A" colspan="2">{{wedA5_6}}&nbsp;{{wedA5_6Name}}<br>{{wedA5_6Nr}}</td>
-                    <td data-label="Donnerstag A" colspan="2">{{thuA5_6}}&nbsp;{{thuA5_6Name}}<br>{{thuA5_6Nr}}</td>
-                    <td data-label="Freitag A" colspan="2">{{friA5_6}}&nbsp;{{friA5_6Name}}<br>{{friA5_6Nr}}</td>
+                    <td data-label="Montag A" colspan="1">{{monA5_6}}&nbsp;{{monA5_6Name}}<br>{{monA5_6Nr}}</td>
+                    <td data-label="Montag B" colspan="1">{{monB5_6}}&nbsp;{{monB5_6Name}}<br>{{monB5_6Nr}}</td>
+                    <td data-label="Dienstag A" colspan="1">{{tueA5_6}}&nbsp;{{tueA5_6Name}}<br>{{tueA5_6Nr}}</td>
+                    <td data-label="Dienstag B" colspan="1">{{tueB5_6}}&nbsp;{{tueB5_6Name}}<br>{{tueB5_6Nr}}</td>
+                    <td data-label="Mittwoch A" colspan="1">{{wedA5_6}}&nbsp;{{wedA5_6Name}}<br>{{wedA5_6Nr}}</td>
+                    <td data-label="Mittwoch B" colspan="1">{{wedB5_6}}&nbsp;{{wedB5_6Name}}<br>{{wedB5_6Nr}}</td>
+                    <td data-label="Donnerstag A" colspan="1">{{thuA5_6}}&nbsp;{{thuA5_6Name}}<br>{{thuA5_6Nr}}</td>
+                    <td data-label="Donnerstag B" colspan="1">{{thuB5_6}}&nbsp;{{thuB5_6Name}}<br>{{thuB5_6Nr}}</td>
+                    <td data-label="Freitag A" colspan="1">{{friA5_6}}&nbsp;{{friA5_6Name}}<br>{{friA5_6Nr}}</td>
+                    <td data-label="Freitag B" colspan="1">{{friB5_6}}&nbsp;{{friB5_6Name}}<br>{{friB5_6Nr}}</td>
                 </tr>
                 <tr class="darkrow 7./8. Stunde">
                     <td data-label="Zeit">13:50 - 15:20</td>
-                    <td data-label="Montag A" colspan="2">{{monA7_8}}&nbsp;{{monA7_8Name}}<br>{{monA7_8Nr}}</td>
-                    <td data-label="Dienstag A" colspan="2">{{tueA7_8}}&nbsp;{{tueA7_8Name}}<br>{{tueA7_8Nr}}</td>
-                    <td data-label="Mittwoch A" colspan="2">{{wedA7_8}}&nbsp;{{wedA7_8Name}}<br>{{wedA7_8Nr}}</td>
-                    <td data-label="Donnerstag A" colspan="2">{{thuA7_8}}&nbsp;{{thuA7_8Name}}<br>{{thuA7_8Nr}}</td>
-                    <td data-label="Freitag A" colspan="2">{{friA7_8}}&nbsp;{{friA7_8Name}}<br>{{friA7_8Nr}}</td>
+                    <td data-label="Montag A" colspan="1">{{monA7_8}}&nbsp;{{monA7_8Name}}<br>{{monA7_8Nr}}</td>
+                    <td data-label="Montag B" colspan="1">{{monB7_8}}&nbsp;{{monB7_8Name}}<br>{{monB7_8Nr}}</td>
+                    <td data-label="Dienstag A" colspan="1">{{tueA7_8}}&nbsp;{{tueA7_8Name}}<br>{{tueA7_8Nr}}</td>
+                    <td data-label="Dienstag B" colspan="1">{{tueB7_8}}&nbsp;{{tueB7_8Name}}<br>{{tueB7_8Nr}}</td>
+                    <td data-label="Mittwoch A" colspan="1">{{wedA7_8}}&nbsp;{{wedA7_8Name}}<br>{{wedA7_8Nr}}</td>
+                    <td data-label="Mittwoch B" colspan="1">{{wedB7_8}}&nbsp;{{wedB7_8Name}}<br>{{wedB7_8Nr}}</td>
+                    <td data-label="Donnerstag A" colspan="1">{{thuA7_8}}&nbsp;{{thuA7_8Name}}<br>{{thuA7_8Nr}}</td>
+                    <td data-label="Donnerstag B" colspan="1">{{thuB7_8}}&nbsp;{{thuB7_8Name}}<br>{{thuB7_8Nr}}</td>
+                    <td data-label="Freitag A" colspan="1">{{friA7_8}}&nbsp;{{friA7_8Name}}<br>{{friA7_8Nr}}</td>
+                    <td data-label="Freitag B" colspan="1">{{friB7_8}}&nbsp;{{friB7_8Name}}<br>{{friB7_8Nr}}</td>
                 </tr>
             </tbody>
         </table>
