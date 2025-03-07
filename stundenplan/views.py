@@ -19,17 +19,3 @@ def index_view(request, bezeichnung):
 
 def default_view(request):
     return render(request, 'default.html')
-
-@login_required
-def change_password(request):
-    if request.method == 'POST':
-        form = PasswordChangeForm(request.user, request.POST)
-        if form.is_valid():
-            user = form.save()
-            update_session_auth_hash(request, user)
-            return redirect('/')
-    else:
-        form = PasswordChangeForm(request.user)
-    return render(request, 'change_password.html', {
-        'form': form
-    })

@@ -9,4 +9,5 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
     path('first_login/', views.first_login, name='first_login'),
     path('', RedirectView.as_view(url='login/')),
+    path('changePassword/', views.change_password, name='change_password'),
 ]

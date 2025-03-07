@@ -23,8 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('schedule/', include('stundenplan.urls')),
     path('', include('accounts.urls')),
-
     path('noten/', include('notentabelle.urls')),
-    path('changePassword/', views.change_password, name='change_password'),
 ]
 
