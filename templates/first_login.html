@@ -47,11 +47,14 @@
             <input placeholder="Neues Passwort bestätigen" id="id_new_password2" name="new_password2" type="password" class="input_field {% if form.errors %}error{% endif %}" required>
         </div>
 
-        {% if form.errors %}
-            <div class="error-message">
-                <p class="error-message">Fehler: Bitte überprüfe deine Eingaben.</p>
-            </div>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="error-message">
+                    <p class="error-message">{{ message }}</p>
+                </div>
+            {% endfor %}
         {% endif %}
+
 
         <button title="Passwort ändern" type="submit" class="sign-in_btn">
             <span>Passwort ändern</span>

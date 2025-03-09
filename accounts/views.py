@@ -20,12 +20,34 @@ def first_login(request):
         new_password2 = request.POST.get("new_password2")
 
 
+        haeufigste_passwoerter = [
+            "123456", "password", "123456789", "12345", "12345678",
+            "qwerty", "123123", "111111", "abc123", "1234",
+            "password1", "1234567", "1234567890", "123321", "000000",
+            "iloveyou", "654321", "666666", "987654321", "123",
+            "qwerty123", "1q2w3e4r", "sunshine", "admin", "welcome",
+            "passw0rd", "letmein", "football", "monkey", "shadow",
+            "696969", "superman", "hello", "trustno1", "killer",
+            "zaq1zaq1", "dragon", "master", "qazwsx", "mustang",
+            "jordan", "liverpool", "starwars", "cheese", "banana",
+            "charlie", "michael", "ashley", "bailey", "football1"
+        ]
+
         #print(request.POST)
         #print("Eingegebenes Passwort 1:", new_password1)
         #print("Eingegebenes Passwort 2:", new_password2)
         #print("Angemeldeter Benutzer:", request.user)
-
-        if new_password1 and new_password2 and new_password1 == new_password2:
+        if not new_password1 or not new_password2:
+            messages.error(request, "Bitte geben Sie in jedes Feld das neue Passwort ein.")
+        elif new_password1 != new_password2:
+            messages.error(request, "Passwörter stimmen nicht überein.")
+        elif len(new_password1) < 8:
+            messages.error(request, "Passwort muss mindestens 8 Zeichen lang sein.")
+        elif new_password1.isnumeric() or new_password1.isalpha():
+            messages.error(request, "Passwort muss mindestens 1 Buchstaben und 1 Zahl enthalten.")
+        elif new_password1 in haeufigste_passwoerter:
+            messages.error(request, "Passwort ist zu unsicher.")
+        else:
             user = request.user
             user.set_password(new_password1)
             user.save()
@@ -39,8 +61,7 @@ def first_login(request):
             bezeichnung = user.profile.klasse.bezeichnung
             return redirect('index_view', bezeichnung=bezeichnung)
 
-        else:
-            messages.error(request, "Passwörter stimmen nicht überein.")
+       
 
     return render(request, "first_login.html", {"request": request})
 
