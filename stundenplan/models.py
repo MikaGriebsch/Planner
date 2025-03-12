@@ -61,6 +61,9 @@ class Class(models.Model):
         verbose_name = 'Klasse'
         verbose_name_plural = 'Klassen'
 
+    def get_stundenplan(self):
+        return Lesson.objects.filter(klasse=self).order_by('weekday', 'lesson_number')
+
     def save(self, *args, **kwargs):
         if not self.bezeichnung:
             self.bezeichnung = f"{self.grade.name}{self.name}"

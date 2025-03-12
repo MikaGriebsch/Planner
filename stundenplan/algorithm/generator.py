@@ -1,121 +1,116 @@
-from stundenplan.models import Grade, Subject, Teacher, Room, Lesson, Subject_Grade, Class, Week
-from random import randint
-
-globalerStundenplan=[[0,1],[1],[2],[3],[4]],[[5],[6],[],[],[]],[[],[],[],[],[]],[[],[],[],[],[]],[[],[],[],[],[]]
-fehlendeZuweisungen=0
+from django.db import transaction
+from stundenplan.models import Lesson, Teacher, Subject, Class, Room, Week
+import random
 
 
-def freierRaum(pTag, pTimeslot): #gibt freien Raum zurück
-    global globalerStundenplan
-    x = 0
-    for i in Room.objects.all():
-        isFree = True
+class StundenplanGenerator:
+    def __init__(self):
+        self.alle_lehrer = list(Teacher.objects.all())
+        self.raeume = list(Room.objects.all())
+        self.globaler_stundenplan = {day: {slot: [] for slot in ['1', '2', '3/4', '5/6', '7/8']} for day in
+                                     ['MO', 'DI', 'MI', 'DO', 'FR']}
+        self.fehlende_zuweisungen = 0
+        self.week = Week.objects.first()
 
-        for j in globalerStundenplan[pTag][pTimeslot]:
-            if j.room_number == i.room_number:
-                isFree = False
-                break
+    def _freier_raum(self, tag, timeslot):
+        belegte_raeume = set(
+            lesson.room_number.room_number
+            for lesson in Lesson.objects.filter(
+                weekday=tag,
+                lesson_number=timeslot,
+                week_choice=self.week
+            )
+        )
+        for raum in self.raeume:
+            if raum.room_number not in belegte_raeume:
+                return raum
+        return None
 
-        if isFree:
-            return i
-        
-    return None
+    def _freier_lehrer(self, tag, timeslot, fach):
+        kompetente_lehrer = Teacher.objects.filter(subjects=fach)
+        gebundene_lehrer = set(
+            lesson.teacher.id
+            for lesson in Lesson.objects.filter(
+                weekday=tag,
+                lesson_number=timeslot,
+                week_choice=self.week
+            )
+        )
+        for lehrer in kompetente_lehrer:
+            if lehrer.id not in gebundene_lehrer:
+                return lehrer
+        return None
 
-def freierLehrer(pTag, pTimeslot, pFach): #gibt freien Lehrer zurück
-    fachlehrer = []
-    global globalerStundenplan
+    def _gueltige_stunde(self, tag, timeslot, kontingent, klasse):
+        random.shuffle(kontingent)
+        for stunde in kontingent:
+            lehrer = self._freier_lehrer(tag, timeslot, stunde['fach'])
+            raum = self._freier_raum(tag, timeslot)
+            if lehrer and raum:
+                kontingent.remove(stunde)
+                return {
+                    'lehrer': lehrer,
+                    'fach': stunde['fach'],
+                    'raum': raum,
+                    'dauer': stunde['dauer']
+                }
+        return None
 
-    for i in Teacher.objects.all():
-        if i.subject == pFach:
-            fachlehrer.append(i)
+    @transaction.atomic
+    def generate(self, klasse):
+        subjects_grade = klasse.grade.subject_grade_set.all()
+        bricks = []
+        slabs = []
 
-    for i in fachlehrer():
-        isFree = True
-        for j in globalerStundenplan[pTag][pTimeslot]:
-            if j.teacher == i:
-                isFree = False
-                break
+        for sg in subjects_grade:
+            wochenstunden = sg.wochenstunden
+            if wochenstunden % 2 == 1:
+                slabs.append({'fach': sg.subject, 'dauer': 1})
+                wochenstunden -= 1
+            bricks.extend([{'fach': sg.subject, 'dauer': 2}] * (wochenstunden // 2))
 
-        if isFree:
-            return i
-        
-    return None
-
-def gueltigeStunde(pTag, pTimeslot, pKontingent, pKlasse): #sucht nach gültiger Stunde
-    reihenfolge = []
-    x = 0
-    for i in pKontingent:
-        reihenfolge.append(x)
-        x += 1
-
-    for i in reihenfolge: #andersrum als Bjarne
-        switchIndex = randint(0, len(reihenfolge) - 1)
-        temp = reihenfolge[i]
-        reihenfolge[i] = reihenfolge[switchIndex]
-        reihenfolge[switchIndex] = temp
-
-    for i in range(len(reihenfolge)):
-        template = pKontingent[reihenfolge[i]]
-
-        lehrer = freierLehrer(pTag, pTimeslot, template.subject)
-        raum = freierRaum(pTag, pTimeslot)
-
-        if lehrer != None and raum != None:
-            pKontingent.pop(reihenfolge[i])
-            return Lesson(teacher=lehrer, subject=template.subject, klasse=pKlasse, room_number=raum, weekday=pTag, week_choice=0)
-        
-    return None
-
-def generate(pKurs):
-    bricks = []
-    slabs = []
-    global globalerStundenplan
-
-    for i in Subject_Grade.objects.filter(grade=pKurs.grade).subject.all():
-        uebrigeStunden = i.wochenstunden
-        if uebrigeStunden%2 == 1:
-            slabs.append(Lesson(subject = i))
-            uebrigeStunden -= 1
-        for j in range(uebrigeStunden//2):
-            bricks.append(Lesson(subject = i))
-
-    for i in range(len(globalerStundenplan)):
-        for j in range(len(globalerStundenplan[i])):
-            if len(bricks) > 0:
-                temp = gueltigeStunde(i, j, bricks, pKurs)
-                if temp != None:
-                    globalerStundenplan[i][j].append(temp)
+        for day in ['MO', 'DI', 'MI', 'DO', 'FR']:
+            for slot in ['1', '2']:
+                if not slabs:
+                    break
+                stunde = self._gueltige_stunde(day, slot, slabs, klasse)
+                if stunde:
+                    Lesson.objects.create(
+                        lesson_number=slot,
+                        weekday=day,
+                        teacher=stunde['lehrer'],
+                        subject=stunde['fach'],
+                        klasse=klasse,
+                        room_number=stunde['raum'],
+                        week_choice=self.week
+                    )
                 else:
-                    global fehlendeZuweisungen
-                    fehlendeZuweisungen += 1
-            elif len(slabs) > 0:
-                temp = gueltigeStunde(i, j, slabs, pKurs)
-                if temp != None:
-                    globalerStundenplan[i][j].append(temp)
+                    print(f"Fehler: Keine gültige Stunde gefunden für {klasse} am {day} in Slot {slot} (Slab)")
+
+        for day in ['MO', 'DI', 'MI', 'DO', 'FR']:
+            for slot in ['3/4', '5/6', '7/8']:
+                if not bricks:
+                    break
+                stunde = self._gueltige_stunde(day, slot, bricks, klasse)
+                if stunde:
+                    Lesson.objects.create(
+                        lesson_number=slot,
+                        weekday=day,
+                        teacher=stunde['lehrer'],
+                        subject=stunde['fach'],
+                        klasse=klasse,
+                        room_number=stunde['raum'],
+                        week_choice=self.week
+                    )
                 else:
-                    global fehlendeZuweisungen
-                    fehlendeZuweisungen += 1
-            else:
-                break
-    
-def kursFrei(pKurs, pTag, pStunde):
-    global globalerStundenplan
-    for i in globalerStundenplan[pTag][pStunde]:
-        if i.klasse == pKurs:
-            return False
-    return True
+                    print(f"Fehler: Keine gültige Stunde gefunden für {klasse} am {day} in Slot {slot} (Brick)")
 
-def stundenFuerKurs(pKurs):
-    global globalerStundenplan
-    ret = [[],[],[],[],[]],[[],[],[],[],[]],[[],[],[],[],[]],[[],[],[],[],[]],[[],[],[],[],[]]
+        remaining = len(slabs) + len(bricks)
+        if remaining > 0:
+            self.fehlende_zuweisungen += remaining
+            print(f"Warnung: {remaining} Stunden konnten nicht zugeordnet werden für {klasse}")
 
-    for i in range(len(globalerStundenplan)):
-        for j in range(len(globalerStundenplan[i])):
-            for k in globalerStundenplan[i][j]:
-                if k.klasse == pKurs:
-                    ret[i][j].append(k)
-    return ret
+        return self.fehlende_zuweisungen
 
-def getFehlendeZuweisungen():
-    global fehlendeZuweisungen
-    return fehlendeZuweisungen
+    def cleanup(self):
+        Lesson.objects.all().delete()
