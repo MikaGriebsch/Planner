@@ -154,14 +154,14 @@ LOGOUT_REDIRECT_URL = '/'
 
 #custom django admin
 JAZZMIN_SETTINGS = {
-    'site_title': 'Time-Table-Planner',
-    "site_header": "Time-Table-Planner",
-    "site_brand": "Time-Table-Planner",
+    'site_title': 'TimeMaster',
+    "site_header": "TimeMaster",
+    "site_brand": "TimeMaster",
     "site_logo": "Logo1.png",
     "login_logo": "Logo1.png",
     "login_logo_dark": None,
-    "welcome_sign": "Time-Table-Planner Admin",
-    "copyright": "Time-Table-Planner-Team",
+    "welcome_sign": "TimeMaster Admin",
+    "copyright": "DataDudes",
     #"search_model": ["auth.User", "auth.Group"],
     "topmenu_links": [
 
