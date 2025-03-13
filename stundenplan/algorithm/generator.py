@@ -105,8 +105,12 @@ class StundenplanGenerator:
                 else:
                     print(f"Fehler: Keine gültige Stunde gefunden für {klasse} am {day} in Slot {slot} (Brick)")
 
-        day = random.choice(['MO', 'DI', 'MI', 'DO', 'FR'])
+        saved_day = random.choice(['MO', 'DI', 'MI', 'DO', 'FR'])
         while bricks:
+            day = random.choice(['MO', 'DI', 'MI', 'DO', 'FR'])
+            while saved_day == day:
+                day = random.choice(['MO', 'DI', 'MI', 'DO', 'FR'])
+            saved_day = day
             stunde = self._gueltige_stunde(day, '7/8', bricks, klasse)
             if stunde:
                 Lesson.objects.create(
