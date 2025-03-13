@@ -88,7 +88,7 @@ class StundenplanGenerator:
                     print(f"Fehler: Keine gültige Stunde gefunden für {klasse} am {day} in Slot {slot} (Slab)")
 
         for day in ['MO', 'DI', 'MI', 'DO', 'FR']:
-            for slot in ['3/4', '5/6', '7/8']:
+            for slot in ['3/4', '5/6']:
                 if not bricks:
                     break
                 stunde = self._gueltige_stunde(day, slot, bricks, klasse)
@@ -104,6 +104,23 @@ class StundenplanGenerator:
                     )
                 else:
                     print(f"Fehler: Keine gültige Stunde gefunden für {klasse} am {day} in Slot {slot} (Brick)")
+
+        day = random.choice(['MO', 'DI', 'MI', 'DO', 'FR'])
+        while bricks:
+            stunde = self._gueltige_stunde(day, '7/8', bricks, klasse)
+            if stunde:
+                Lesson.objects.create(
+                    lesson_number='7/8',
+                    weekday=day,
+                    teacher=stunde['lehrer'],
+                    subject=stunde['fach'],
+                    klasse=klasse,
+                    room_number=stunde['raum'],
+                    week_choice=self.week
+                )
+            else:
+                print(f"Fehler: Keine gültige Stunde gefunden für {klasse} am {day} in Slot 7/8 (Brick)")
+                break
 
         remaining = len(slabs) + len(bricks)
         if remaining > 0:
