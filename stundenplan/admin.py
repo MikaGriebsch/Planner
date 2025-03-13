@@ -53,7 +53,7 @@ class SubjectGradeAdmin(admin.ModelAdmin):
 class LessonAdmin(admin.ModelAdmin):
     list_display = ("id", "lesson_number", "weekday", "teacher", "klasse", "subject", "room_number", 'week_choice')
     search_fields = ("lesson_number", "weekday")
-    list_filter = ("weekday", "teacher", "klasse", "subject", "room_number", 'week_choice')
+    list_filter = ("weekday", "teacher", "klasse", "subject", "room_number", 'week_choice', 'lesson_number')
 
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
