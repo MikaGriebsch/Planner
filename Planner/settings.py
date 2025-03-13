@@ -166,6 +166,7 @@ JAZZMIN_SETTINGS = {
     "topmenu_links": [
 
             {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+            {"name": "Dashboard", "url": "admin:custom-dashboard", "permissions": ["auth.view_user"]},
 
             #example how to set up more links to moddels or apps
             {"model": "auth.User"},

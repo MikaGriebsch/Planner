@@ -149,3 +149,45 @@ class StudentDataImportAdmin(admin.ModelAdmin):
                 messages.success(request, f"Das Skript wurde erfolgreich mit der Datei {data_import.file.name} ausgeführt.")
             except Exception as e:
                 messages.error(request, f"Fehler beim Ausführen des Skripts mit der Datei {data_import.file.name}: {e}")
+
+
+from django.contrib import admin
+from django.urls import path
+from django.http import HttpResponseRedirect
+from django.contrib import messages
+from django.core.management import call_command
+
+# Funktion für "Stundenplan erstellen"
+@admin.site.admin_view
+def create_stundenplan_view(request):
+    if request.method == "GET":
+        try:
+            call_command('generatestundenplan')
+            messages.success(request, "Stundenplan wurde erstellt!")
+        except Exception as e:
+            messages.error(request, f"Fehler: {str(e)}")
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/admin/'))
+
+# Funktion für "Stundenplan löschen"
+@admin.site.admin_view
+def delete_stundenplan_view(request):
+    if request.method == "GET":
+        try:
+            call_command('clearstundenplan')
+            messages.success(request, "Stundenplan wurde gelöscht!")
+        except Exception as e:
+            messages.error(request, f"Fehler: {str(e)}")
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/admin/'))
+
+# URLs erweitern (für beide Buttons)
+def extend_admin_urls(get_urls_func):
+    def wrapper():
+        original_urls = get_urls_func()
+        custom_urls = [
+            path('create-stundenplan/', create_stundenplan_view, name='create-stundenplan'),
+            path('delete-stundenplan/', delete_stundenplan_view, name='delete-stundenplan'),
+        ]
+        return custom_urls + original_urls
+    return wrapper
+
+admin.site.get_urls = extend_admin_urls(admin.site.get_urls)
