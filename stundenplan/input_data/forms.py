@@ -20,11 +20,9 @@ class GradeForm(forms.ModelForm):
 class TeacherForm(forms.ModelForm):
     class Meta:
         model = Teacher
-        fields = ['first_name', 'last_name', 'short_name']
+        fields = ['first_name', 'last_name', 'short_name', 'subjects']
 
     #Fächer als Dropdown
-
-
 class SubjectForm(forms.ModelForm):
     class Meta:
         model = Subject
@@ -35,3 +33,5 @@ class RoomForm(forms.ModelForm):
     class Meta:
         model = Room
         fields = ['room_number']
+
+TeacherFormSet = forms.modelformset_factory(Teacher, form=TeacherForm, extra=1)

@@ -1,10 +1,13 @@
 from django.contrib.auth.decorators import login_required
+from django.forms import modelformset_factory
 from django.shortcuts import render
 from stundenplan import get_plan
 from django.shortcuts import render
+
+from stundenplan.models import Teacher
 from .get_plan import get_plan
 from django.http import HttpResponse
-from .input_data.forms import ClassForm, GradeForm
+from .input_data.forms import *
 
 
 @login_required
@@ -21,6 +24,14 @@ def default_view(request):
 
 #@login_required
 def input_view(request):
-    class_form = ClassForm()
-    grade_form = GradeForm()
-    return render(request,'input.html', {'class_form': class_form, 'grade_form': grade_form})
+    if request.method == "POST":
+        #Validierung der Lehrer
+        teacher_form_set = TeacherFormSet(request.POST)
+        if teacher_form_set.is_valid():
+            teacher_form_set.save()
+            print("saved")
+        else:
+            return 
+    else: 
+        teacher_form_set = TeacherFormSet()
+    return render(request, 'input.html', {'teacher_form_set': teacher_form_set})

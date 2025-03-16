@@ -1,32 +1,58 @@
 <!DOCTYPE html>
-<html lang='de'>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="de">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		{% load static %}
 
-    <!--{% load static %}
-    <script> src="{% static 'input.js' %}"</script>-->
-    <script>
-        function showClassForm() {
-            document.getElementById("class-form-container").style.display = "block";
+		<!--{% load static %}
+        <script> src="{% static 'input.js' %}"</script>-->
+
+        <script>
+        // setze den aktuellen Formindex (total_form_count liefert die Anzahl der bereits angezeigten Forms)
+        let formIdx = {{ teacher_form_set.total_form_count }};
+        function addTeacher() {
+            // Hole das HTML des leeren Formulars und ersetze den Platzhalter __prefix__ mit dem aktuellen Index
+            let template = document.getElementById("empty-teacher-form").innerHTML;
+            let newForm = template.replace(/__prefix__/g, formIdx);
+            // Füge das generierte Formular an das Container-DIV an
+            document.getElementById("teacher-forms").insertAdjacentHTML('beforeend', newForm);
+            formIdx++;
+            // Aktualisiere den Management-Form-Wert, damit Django die korrekte Formanzahl kennt
+            document.getElementById("id_form-TOTAL_FORMS").value = formIdx;
         }
-    </script>
-    <script src="https://kit.fontawesome.com/ba54478102.js" crossorigin="anonymous"></script>
-    <title>Dateneingabe</title>
-</head>
-<body>
-    <h2>Klassenstufe</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ grade_form.as_p }}
-        <button type="button" onclick="showClassForm()" class="fa-solid fa-plus"></button>
-        
-        <div id="class-form-container" style="display:none;">
-            <h3>Klasse</h3>
-            {{ class_form.as_p }}
+        </script>
+		<script
+			src="https://kit.fontawesome.com/ba54478102.js" crossorigin="anonymous"></script>
+		<title>Dateneingabe</title>
+	</head>
+	<body>
+        <!-- Leeres TeacherFormular (hidden)-->
+        <div id="empty-teacher-form" style="display: none;">
+            <div class="teacher-form">
+                {{ teacher_form_set.empty_form.first_name }}
+                {{ teacher_form_set.empty_form.last_name }}
+                {{ teacher_form_set.empty_form.short_name }}
+                {{ teacher_form_set.empty_form.subjects }}
+            </div>
         </div>
-        
-        <button type="submit">Speichern</button>
-    </form>
-</body>
+
+		<h1>Dateneingabe</h1>
+		<form method="post">
+			{% csrf_token %} 
+            {{ teacher_form_set.management_form }} 
+            <div id="teacher-forms">
+                {% for teacher in teacher_form_set %}
+                    <div class="teacher-form" >
+                        {{ teacher.first_name }}
+                        {{ teacher.last_name }}
+                        {{ teacher.short_name }}
+                        {{ teacher.subjects }}
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="button" onclick="addTeacher()" class="fa-solid fa-plus"></button>
+            <button type="submit">Speichern</button>
+		</form>
+	</body>
 </html>
