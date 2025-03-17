@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.forms import modelformset_factory
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from stundenplan import get_plan
 from django.shortcuts import render
 
@@ -24,14 +24,18 @@ def default_view(request):
 
 #@login_required
 def input_view(request):
+    print(request.POST)
     if request.method == "POST":
         #Validierung der Lehrer
         teacher_form_set = TeacherFormSet(request.POST)
         if teacher_form_set.is_valid():
             teacher_form_set.save()
             print("saved")
+
         else:
-            return 
+            print("not saved")
+            print(teacher_form_set.errors)
+        return redirect("/schedule/create")
     else: 
         teacher_form_set = TeacherFormSet()
     return render(request, 'input.html', {'teacher_form_set': teacher_form_set})

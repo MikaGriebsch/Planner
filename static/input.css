@@ -2,3 +2,7 @@
 	display: flex;
   margin-right: 10px;
 }
+
+.django-select2 {
+	width: 100%;
+}

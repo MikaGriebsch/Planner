@@ -1,58 +1,59 @@
 <!DOCTYPE html>
 <html lang="de">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		{% load static %}
-
-		<!--{% load static %}
-        <script> src="{% static 'input.js' %}"</script>-->
-
-        <script>
-        // setze den aktuellen Formindex (total_form_count liefert die Anzahl der bereits angezeigten Forms)
-        let formIdx = {{ teacher_form_set.total_form_count }};
-        function addTeacher() {
-            // Hole das HTML des leeren Formulars und ersetze den Platzhalter __prefix__ mit dem aktuellen Index
-            let template = document.getElementById("empty-teacher-form").innerHTML;
-            let newForm = template.replace(/__prefix__/g, formIdx);
-            // Füge das generierte Formular an das Container-DIV an
-            document.getElementById("teacher-forms").insertAdjacentHTML('beforeend', newForm);
-            formIdx++;
-            // Aktualisiere den Management-Form-Wert, damit Django die korrekte Formanzahl kennt
-            document.getElementById("id_form-TOTAL_FORMS").value = formIdx;
-        }
-        </script>
-		<script
-			src="https://kit.fontawesome.com/ba54478102.js" crossorigin="anonymous"></script>
-		<title>Dateneingabe</title>
-	</head>
-	<body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'input.css' %}">
+        <!--2SelectSetup-->
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script src="https://kit.fontawesome.com/ba54478102.js" crossorigin="anonymous"></script>
+        
+        <script type="text/javascript" src="{% static 'input.js' %}"></script>
+        <title>Dateneingabe</title>
+    </head>
+    <body>
         <!-- Leeres TeacherFormular (hidden)-->
         <div id="empty-teacher-form" style="display: none;">
-            <div class="teacher-form">
+            <div class="teacher-form" id="form-__prefix__">
+                {{ teacher_form_set.empty_form.id }}
                 {{ teacher_form_set.empty_form.first_name }}
                 {{ teacher_form_set.empty_form.last_name }}
                 {{ teacher_form_set.empty_form.short_name }}
                 {{ teacher_form_set.empty_form.subjects }}
+                {{ teacher_form_set.empty_form.DELETE }}
+                <button type="button" class="delete-btn" onclick="deleteForm('form-__prefix__')">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
             </div>
         </div>
 
-		<h1>Dateneingabe</h1>
-		<form method="post">
-			{% csrf_token %} 
+        <h1>Dateneingabe</h1>
+        <form method="post">
+            {% csrf_token %} 
             {{ teacher_form_set.management_form }} 
             <div id="teacher-forms">
                 {% for teacher in teacher_form_set %}
-                    <div class="teacher-form" >
-                        {{ teacher.first_name }}
-                        {{ teacher.last_name }}
-                        {{ teacher.short_name }}
-                        {{ teacher.subjects }}
-                    </div>
+                <div class="teacher-form" id="form-{{ forloop.counter0 }}">
+                    {{ teacher.id }}
+                    {{ teacher.first_name }}
+                    {{ teacher.last_name }}
+                    {{ teacher.short_name }}
+                    {{ teacher.subjects }}
+                    <button type="button" class="delete-btn" onclick="deleteForm('form-{{ forloop.counter0 }}')">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                    <!-- DELETE-Feld (wird per JavaScript versteckt) -->
+                    {{ teacher.DELETE }}
+                </div>
                 {% endfor %}
             </div>
-            <button type="button" onclick="addTeacher()" class="fa-solid fa-plus"></button>
+            <button type="button" onclick="addTeacher()">
+                <i class="fa-solid fa-plus"></i>
+            </button>
             <button type="submit">Speichern</button>
-		</form>
-	</body>
+        </form>
+    </body>
 </html>
