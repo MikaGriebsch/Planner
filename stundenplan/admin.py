@@ -28,6 +28,11 @@ class ClassAdmin(admin.ModelAdmin):
 
     @admin.action(description="Ein Jahr weiter springen")
     def next_year(self, request, queryset):
+        all_classes = Class.objects.all()
+        if queryset.count() != all_classes.count():
+            self.message_user(request, "Es müssen alle Klassen ausgewählt werden, um diese Aktion auszuführen.", level='error')
+            return
+        
         for klasse in queryset:
             current_grade = klasse.grade
             if current_grade.name < 12:
