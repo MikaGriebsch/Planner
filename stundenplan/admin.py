@@ -7,27 +7,35 @@ from django.contrib import admin
 from django.core.management import call_command
 from .models import Teacher, Grade, Class, Subject, Subject_Grade, Lesson, UserProfile, Room, StundentDataImport, Week
 
+admin.site.disable_action("delete_selected")
 
 @admin.register(Teacher)
 class TeacherAdmin(admin.ModelAdmin):
     list_display = ("first_name", "last_name", "short_name")
     search_fields = ("first_name", "last_name", "short_name")
+    actions = ["delete_selected"]
 
 @admin.register(Grade)
 class GradeAdmin(admin.ModelAdmin):
     list_display = ("name",)
     search_fields = ("name",)
     list_filter = ("name",)
+    actions = ['delete_selected']
 
 @admin.register(Class)
 class ClassAdmin(admin.ModelAdmin):
     list_display = ( "grade", "name", "schueleranzahl", "schueler_in_class")
     search_fields = ( "grade", "name", "schueleranzahl", "schueler_in_class")
     list_filter = ("grade", "name",)
-    actions = ['next_year',]
+    actions = ['next_year', "delete_selected"]
 
     @admin.action(description="Ein Jahr weiter springen")
     def next_year(self, request, queryset):
+        all_classes = Class.objects.all()
+        if queryset.count() != all_classes.count():
+            self.message_user(request, "Es müssen alle Klassen ausgewählt werden, um diese Aktion auszuführen.", level='error')
+            return
+        
         for klasse in queryset:
             current_grade = klasse.grade
             if current_grade.name < 12:
@@ -42,33 +50,38 @@ class ClassAdmin(admin.ModelAdmin):
 class SubjectAdmin(admin.ModelAdmin):
     list_display = ("abkuerzung", "name")
     search_fields = ("abkuerzung", "name")
+    actions = ['delete_selected']
 
 @admin.register(Subject_Grade)
 class SubjectGradeAdmin(admin.ModelAdmin):
     list_display = ("subject", "grade", "wochenstunden")
     search_fields = ("subject", "grade", "wochenstunden")
     list_filter = ("subject", "grade",)
+    actions = ['delete_selected']
 
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
     list_display = ("id", "lesson_number", "weekday", "teacher", "klasse", "subject", "room_number", 'week_choice')
     search_fields = ("lesson_number", "weekday")
-    list_filter = ("weekday", "teacher", "klasse", "subject", "room_number", 'week_choice')
+    list_filter = ("weekday", "teacher", "klasse", "subject", "room_number", 'week_choice', 'lesson_number')
+    actions = ['delete_selected']
 
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
     list_display = ("room_number",)
+    actions = ['delete_selected']
 
 @admin.register(Week)
 class WeekAdmin(admin.ModelAdmin):
     list_display = ('week_choice',)
     search_fields = ('week_choice',)
+    actions = ['delete_selected']
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'first_name', 'last_name', 'klasse')
     list_filter = ("klasse__grade", "klasse__name",)
-    actions = ['assign_user_to_class']
+    actions = ['assign_user_to_class', "delete_selected"]
 
 
     @admin.action(description="Nutzer einer 7. Klasse zuordnen")
@@ -149,3 +162,45 @@ class StudentDataImportAdmin(admin.ModelAdmin):
                 messages.success(request, f"Das Skript wurde erfolgreich mit der Datei {data_import.file.name} ausgeführt.")
             except Exception as e:
                 messages.error(request, f"Fehler beim Ausführen des Skripts mit der Datei {data_import.file.name}: {e}")
+
+
+from django.contrib import admin
+from django.urls import path
+from django.http import HttpResponseRedirect
+from django.contrib import messages
+from django.core.management import call_command
+
+# Funktion für "Stundenplan erstellen"
+@admin.site.admin_view
+def create_stundenplan_view(request):
+    if request.method == "GET":
+        try:
+            call_command('generatestundenplan')
+            messages.success(request, "Stundenplan wurde erstellt!")
+        except Exception as e:
+            messages.error(request, f"Fehler: {str(e)}")
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/admin/'))
+
+# Funktion für "Stundenplan löschen"
+@admin.site.admin_view
+def delete_stundenplan_view(request):
+    if request.method == "GET":
+        try:
+            call_command('clearstundenplan')
+            messages.success(request, "Stundenplan wurde gelöscht!")
+        except Exception as e:
+            messages.error(request, f"Fehler: {str(e)}")
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/admin/'))
+
+# URLs erweitern (für beide Buttons)
+def extend_admin_urls(get_urls_func):
+    def wrapper():
+        original_urls = get_urls_func()
+        custom_urls = [
+            path('create-stundenplan/', create_stundenplan_view, name='create-stundenplan'),
+            path('delete-stundenplan/', delete_stundenplan_view, name='delete-stundenplan'),
+        ]
+        return custom_urls + original_urls
+    return wrapper
+
+admin.site.get_urls = extend_admin_urls(admin.site.get_urls)

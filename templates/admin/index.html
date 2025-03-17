@@ -1,0 +1,15 @@
+{% extends "admin/index.html" %}
+
+{% block content %}
+<div style="margin-bottom: 20px; margin-left: 15px;padding: 10px; background-color: #f0f0f0; border: 1px solid #ccc; padding-bottom: 20px">
+    <h2 style="margin-bottom: 20px">Stundenplände generieren und löschen</h2>
+    <a href="{% url 'admin:create-stundenplan' %}" class="button" style="background-color: #4CAF50; color: white; padding: 10px 20px; margin-top: 20px; margin-bottom: 20px">
+        Stundenpläne erstellen
+    </a>
+
+    <a href="{% url 'admin:delete-stundenplan' %}" class="button" style="background-color: #d50808; color: white; padding: 10px 20px; margin-top: 20px; margin-bottom: 20px">
+        Stundenpläne löschen
+    </a>
+</div>
+{{ block.super }}
+{% endblock %}

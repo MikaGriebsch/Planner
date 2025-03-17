@@ -61,6 +61,9 @@ class Class(models.Model):
         verbose_name = 'Klasse'
         verbose_name_plural = 'Klassen'
 
+    def get_stundenplan(self):
+        return Lesson.objects.filter(klasse=self).order_by('weekday', 'lesson_number')
+
     def save(self, *args, **kwargs):
         if not self.bezeichnung:
             self.bezeichnung = f"{self.grade.name}{self.name}"
@@ -128,8 +131,8 @@ class Lesson(models.Model):
         ('FR', 'Freitag'),
     ]
     
-    lesson_number = models.CharField(max_length=5, choices=LESSON_NUMBER_CHOICES)
-    weekday = models.CharField(max_length=2, choices=WEEKDAY_CHOICES)
+    lesson_number = models.CharField(max_length=5, choices=LESSON_NUMBER_CHOICES, null=True)
+    weekday = models.CharField(max_length=2, choices=WEEKDAY_CHOICES, null=True)
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, null=True)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     klasse = models.ForeignKey(Class, on_delete=models.CASCADE, null=True)
