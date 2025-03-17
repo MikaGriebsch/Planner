@@ -57,9 +57,13 @@ def first_login(request):
                 user.profile.save()
                 print(user.profile.first_login)
             update_session_auth_hash(request, user)
-            messages.success(request, "Dein Passwort wurde erfolgreich geändert!")
-            bezeichnung = user.profile.klasse.bezeichnung
+            klasse = getattr(user.profile, 'klasse', None) #gesichert zugriff auf Daten --> falls Klasse nicht vorhanden, wird None zurückgegeben
+            bezeichnung = getattr(klasse, 'bezeichnung', None)
+
+            if not bezeichnung:
+                return redirect('/schedule/default/')
             return redirect('index_view', bezeichnung=bezeichnung)
+
 
        
 
