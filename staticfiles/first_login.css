@@ -186,3 +186,11 @@ body {
 .error-message {
   color: #e03838;
 }
+
+
+.password_advice{
+  margin: 4px;
+  font-size: 0.7rem;
+  color: #8B8E98;
+  text-decoration: underline;
+}
