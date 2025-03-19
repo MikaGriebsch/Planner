@@ -1,10 +1,14 @@
 $(document).ready(function() {
-	initSelect2();
+	//select2 für alle sichtbaren select2-Elemente 
+	let selection = Array.from(document.querySelectorAll('.django-select2'))
+		.filter(sel => sel.offsetParent !== null);
+	initSelect2(selection);
+
 	hideDeleteCheckboxes();
 });
 
-function initSelect2() {
-	$('.django-select2').not('#empty-teacher-form .django-select2').select2({
+function initSelect2(selection) {
+	$(selection).select2({
 		placeholder: "Wähle Fächer aus...",
 		allowClear: true, 
 		tokenSeparators: [','],
@@ -17,26 +21,24 @@ function hideDeleteCheckboxes() {
 	});
 }
 
-function addTeacher() {
+function addForm(templateId, formsetId, select2 = true) {
     let formIdx = parseInt(document.getElementById("id_form-TOTAL_FORMS").value, 10);
-    let template = document.getElementById("empty-teacher-form").innerHTML;
+    let template = document.getElementById(templateId).innerHTML;
     let newForm = template.replace(/__prefix__/g, formIdx);
             
-    document.getElementById("teacher-forms").insertAdjacentHTML('beforeend', newForm);
+    document.getElementById(formsetId).insertAdjacentHTML('beforeend', newForm);
     
     // WICHTIG: ID des neuen Formulars explizit setzen
-    let newFormContainer = document.getElementById("teacher-forms").lastElementChild;
+    let newFormContainer = document.getElementById(formsetId).lastElementChild;
     newFormContainer.id = 'form-' + formIdx;
     console.log("Added new form with ID:", 'form-' + formIdx);
-    
-    document.getElementById("id_form-TOTAL_FORMS").value = formIdx + 1;
-		$(newFormContainer.querySelector('.django-select2')).select2({
-			placeholder: "Wähle Fächer aus...",
-			allowClear: true, 
-			tokenSeparators: [','],
-			width: 200,
-		});
+
+		if (select2){
+			initSelect2(newFormContainer.querySelector('.django-select2'));
+		}
 		hideDeleteCheckboxes();
+
+		document.getElementById("id_form-TOTAL_FORMS").value = formIdx + 1;
 }
         
 function deleteForm(formId) {
