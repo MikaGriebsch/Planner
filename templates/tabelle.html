@@ -53,7 +53,7 @@
         </table>
         <button type="submit">Noten speichern</button>
     </form>
-
+    <!--
     <h2>Halbjahresnoten</h2>
     <form method="post" action="{% url 'save_marks' %}">
         {% csrf_token %}
@@ -71,19 +71,19 @@
                 {% for subject in subjects_in_class %}
                 <tr>
                     <td>{{ subject.name }}</td>
-                    {% with semester_marks=semester_marks|get_semester_marks_for_subject:subject %}
+                    {mussweg% with semester_marks=semester_marks|get_semester_marks_for_subject:subject %}
                     <td><input type="number" name="semester_1_{{ semester_marks.id }}" value="{{ semester_marks.semester_1|default_if_none:'' }}" min="0" max="15"></td>
                     <td><input type="number" name="semester_2_{{ semester_marks.id }}" value="{{ semester_marks.semester_2|default_if_none:'' }}" min="0" max="15"></td>
                     <td><input type="number" name="semester_3_{{ semester_marks.id }}" value="{{ semester_marks.semester_3|default_if_none:'' }}" min="0" max="15"></td>
                     <td><input type="number" name="semester_4_{{ semester_marks.id }}" value="{{ semester_marks.semester_4|default_if_none:'' }}" min="0" max="15"></td>
-                    {% endwith %}
+                    "{mussweg% endwith %}""
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
         <button type="submit">Halbjahresnoten speichern</button>
     </form>
-
+    -->
     {% if messages %}
     <ul class="messages">
         {% for message in messages %}
