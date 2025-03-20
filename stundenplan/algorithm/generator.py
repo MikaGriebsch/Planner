@@ -11,6 +11,7 @@ class StundenplanGenerator:
                                      ['MO', 'DI', 'MI', 'DO', 'FR']}
         self.fehlende_zuweisungen = 0
         self.week = Week.objects.first()
+        self.lehrer_zuordnung = {}  # Speichert die Lehrer-Fach-Zuordnung pro Klasse
 
     def _freier_raum(self, tag, timeslot):
         belegte_raeume = set(
@@ -26,42 +27,66 @@ class StundenplanGenerator:
                 return raum
         return None
 
-    def _freier_lehrer(self, tag, timeslot, fach):
+    def _lehrer_frei(self, tag, timeslot, lehrer):
+        if not lehrer:
+            return False
+        return not Lesson.objects.filter(
+            weekday=tag,
+            lesson_number=timeslot,
+            teacher=lehrer,
+            week_choice=self.week
+        ).exists()
+
+    def _get_random_lehrer(self, fach):
         kompetente_lehrer = Teacher.objects.filter(subjects=fach)
-        gebundene_lehrer = set(
-            lesson.teacher.id
-            for lesson in Lesson.objects.filter(
-                weekday=tag,
-                lesson_number=timeslot,
-                week_choice=self.week
-            )
-        )
-        for lehrer in kompetente_lehrer:
-            if lehrer.id not in gebundene_lehrer:
-                return lehrer
-        return None
+        if not kompetente_lehrer:
+            return None
+        return random.choice(kompetente_lehrer)
 
     def _gueltige_stunde(self, tag, timeslot, kontingent, klasse):
+        if not kontingent:
+            return None
+            
         random.shuffle(kontingent)
         for stunde in kontingent:
-            lehrer = self._freier_lehrer(tag, timeslot, stunde['fach'])
+            # Hole den bereits zugeordneten Lehrer für dieses Fach in dieser Klasse
+            if klasse not in self.lehrer_zuordnung:
+                self.lehrer_zuordnung[klasse] = {}
+            
+            if stunde['fach'] not in self.lehrer_zuordnung[klasse]:
+                self.lehrer_zuordnung[klasse][stunde['fach']] = self._get_random_lehrer(stunde['fach'])
+            
+            lehrer = self.lehrer_zuordnung[klasse][stunde['fach']]
+            
+            if not lehrer:
+                continue
+
+            if not self._lehrer_frei(tag, timeslot, lehrer):
+                continue
+
             raum = self._freier_raum(tag, timeslot)
-            if lehrer and raum:
-                kontingent.remove(stunde)
-                return {
-                    'lehrer': lehrer,
-                    'fach': stunde['fach'],
-                    'raum': raum,
-                    'dauer': stunde['dauer']
-                }
+            if not raum:
+                continue
+
+            kontingent.remove(stunde)
+            return {
+                'lehrer': lehrer,
+                'fach': stunde['fach'],
+                'raum': raum,
+                'dauer': stunde['dauer']
+            }
         return None
 
     @transaction.atomic
     def generate(self, klasse):
+        # Lösche bestehende Zuordnungen für diese Klasse
+        Lesson.objects.filter(klasse=klasse, week_choice=self.week).delete()
+        
         subjects_grade = klasse.grade.subject_grade_set.all()
         bricks = []
         slabs = []
 
+        # Erstelle bricks und slabs
         for sg in subjects_grade:
             wochenstunden = sg.wochenstunden
             if wochenstunden % 2 == 1:
@@ -69,6 +94,7 @@ class StundenplanGenerator:
                 wochenstunden -= 1
             bricks.extend([{'fach': sg.subject, 'dauer': 2}] * (wochenstunden // 2))
 
+        # Verteile Einzelstunden (slabs)
         for day in ['MO', 'DI', 'MI', 'DO', 'FR']:
             for slot in ['1', '2']:
                 if not slabs:
@@ -87,8 +113,9 @@ class StundenplanGenerator:
                 else:
                     print(f"Fehler: Keine gültige Stunde gefunden für {klasse} am {day} in Slot {slot} (Slab)")
 
+        # Verteile Doppelstunden (bricks)
         for day in ['MO', 'DI', 'MI', 'DO', 'FR']:
-            for slot in ['3/4', '5/6']:
+            for slot in ['3/4', '5/6', '7/8']:
                 if not bricks:
                     break
                 stunde = self._gueltige_stunde(day, slot, bricks, klasse)
@@ -104,27 +131,6 @@ class StundenplanGenerator:
                     )
                 else:
                     print(f"Fehler: Keine gültige Stunde gefunden für {klasse} am {day} in Slot {slot} (Brick)")
-
-        saved_day = random.choice(['MO', 'DI', 'MI', 'DO', 'FR'])
-        while bricks:
-            day = random.choice(['MO', 'DI', 'MI', 'DO', 'FR'])
-            while saved_day == day:
-                day = random.choice(['MO', 'DI', 'MI', 'DO', 'FR'])
-            saved_day = day
-            stunde = self._gueltige_stunde(day, '7/8', bricks, klasse)
-            if stunde:
-                Lesson.objects.create(
-                    lesson_number='7/8',
-                    weekday=day,
-                    teacher=stunde['lehrer'],
-                    subject=stunde['fach'],
-                    klasse=klasse,
-                    room_number=stunde['raum'],
-                    week_choice=self.week
-                )
-            else:
-                print(f"Fehler: Keine gültige Stunde gefunden für {klasse} am {day} in Slot 7/8 (Brick)")
-                break
 
         remaining = len(slabs) + len(bricks)
         if remaining > 0:
