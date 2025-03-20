@@ -17,7 +17,7 @@ class Grade(models.Model):
     
 
 class Subject(models.Model):
-    abkuerzung = models.CharField(max_length=10, unique=True)
+    abkuerzung = models.CharField(max_length=3, unique=True)
     name = models.CharField(max_length=100, unique=True)
     grade = models.ManyToManyField(Grade, through='Subject_Grade')
 

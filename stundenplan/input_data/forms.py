@@ -31,8 +31,7 @@ class TeacherForm(forms.ModelForm):
 class SubjectForm(forms.ModelForm):
     class Meta:
         model = Subject
-        fields = ['abkuerzung', 'name', 'grade']
-
+        fields = ['abkuerzung', 'name']
 
 
 # liber mit standardform  und dann einfach rooms als list input angeben
@@ -42,3 +41,4 @@ class RoomForm(forms.ModelForm):
         fields = ['room_number']
 
 TeacherFormSet = forms.modelformset_factory(Teacher, form=TeacherForm, extra=1, can_delete=True)
+SubjectFormSet = forms.modelformset_factory(Subject, form=SubjectForm, extra=1, can_delete=True)

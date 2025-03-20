@@ -7,6 +7,7 @@ from django.shortcuts import render
 from stundenplan.models import Teacher
 from .get_plan import get_plan
 from django.http import HttpResponse
+from django.views.decorators.http import require_POST
 from .input_data.forms import *
 
 
@@ -24,18 +25,42 @@ def default_view(request):
 
 #@login_required
 def input_view(request):
-    print(request.POST)
-    if request.method == "POST":
-        #Validierung der Lehrer
-        teacher_form_set = TeacherFormSet(request.POST)
-        if teacher_form_set.is_valid():
-            teacher_form_set.save()
-            print("saved")
+    teacher_form_set = TeacherFormSet(prefix="teacher")
+    subject_form_set = SubjectFormSet(prefix="subject")
 
-        else:
-            print("not saved")
-            print(teacher_form_set.errors)
-        return redirect("/schedule/create")
-    else: 
-        teacher_form_set = TeacherFormSet()
-    return render(request, 'input.html', {'teacher_form_set': teacher_form_set})
+    return render(request, 'input.html', {
+        'teacher_form_set': teacher_form_set,
+        'subject_form_set': subject_form_set,
+        })
+
+@require_POST
+def save_input(request):
+    print(request.POST)
+    print("")
+    teacher_form_set = TeacherFormSet(request.POST, prefix="teacher")
+    subject_form_set = SubjectFormSet(request.POST, prefix="subject")  
+
+    teachers_valid = teacher_form_set.is_valid()
+    subjects_valid = subject_form_set.is_valid()
+    
+    if teachers_valid and subjects_valid:
+        teacher_form_set.save()
+        subject_form_set.save()
+        
+        print("Saved teachers successfully")
+        print("Saved subjects successfully")
+
+        return redirect("/schedule/create") 
+    else:
+        # Fehlerausgabe
+        if not teachers_valid:
+            print(f"Unable to save teachers: {teacher_form_set.errors}")
+        
+        if not subjects_valid:
+            print(f"Unable to save subjects: {subject_form_set.errors}")
+        
+        return render(request, 'input.html', {
+            'teacher_form_set': teacher_form_set,
+            'subject_form_set': subject_form_set,
+        })
+

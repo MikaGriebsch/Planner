@@ -15,44 +15,78 @@
         <title>Dateneingabe</title>
     </head>
     <body>
-        <!-- Leeres TeacherFormular (hidden)-->
-        <div id="empty-teacher-form" style="display: none;">
-            <div class="teacher-form" id="form-__prefix__">
-                {{ teacher_form_set.empty_form.id }}
-                {{ teacher_form_set.empty_form.first_name }}
-                {{ teacher_form_set.empty_form.last_name }}
-                {{ teacher_form_set.empty_form.short_name }}
-                {{ teacher_form_set.empty_form.subjects }}
-                {{ teacher_form_set.empty_form.DELETE }}
-                <button type="button" class="delete-btn" onclick="deleteForm('form-__prefix__')">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
+        <!-- Leere Forms zur Erstellung von neuen als Template-->
+        <div id="empty-forms" style="display: none;">
+            <div id="empty-teacher-form">
+                <div class="teacher-form" id="form-__prefix__">
+                    {{ teacher_form_set.empty_form.id }}
+                    {{ teacher_form_set.empty_form.first_name }}
+                    {{ teacher_form_set.empty_form.last_name }}
+                    {{ teacher_form_set.empty_form.short_name }}
+                    {{ teacher_form_set.empty_form.subjects }}
+                    {{ teacher_form_set.empty_form.DELETE }}
+                    <button type="button" class="delete-btn" onclick="deleteForm('teacher-form-__prefix__')">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="empty-subject-form">
+                <div class="subject-form" id="form-prefix__">
+                    {{ subject_form_set.empty_form.id }}
+                    {{ subject_form_set.empty_form.name }}
+                    {{ subject_form_set.empty_form.abkuerzung }}
+                    <button type="button" class="delete-btn" onclick="deleteForm('subject-form-__prefix__')">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
             </div>
         </div>
 
         <h1>Dateneingabe</h1>
-        <form method="post">
+        <form method="post" action={% url 'save_input' %}>
             {% csrf_token %} 
-            {{ teacher_form_set.management_form }} 
-            <div id="teacher-forms">
-                {% for teacher in teacher_form_set %}
-                <div class="teacher-form" id="form-{{ forloop.counter0 }}">
-                    {{ teacher.id }}
-                    {{ teacher.first_name }}
-                    {{ teacher.last_name }}
-                    {{ teacher.short_name }}
-                    {{ teacher.subjects }}
-                    <button type="button" class="delete-btn" onclick="deleteForm('form-{{ forloop.counter0 }}')">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
-                    <!-- DELETE-Feld (wird per JavaScript versteckt) -->
-                    {{ teacher.DELETE }}
+            <details >
+                <summary>Fächer</summary>
+                {{ subject_form_set.management_form }}
+                <div id = "subject-forms">
+                    {% for subject in subject_form_set %}
+                    <div class="subject-form" id="subject-form-{{ forloop.counter0 }}">
+                        {{ subject.name }}
+                        {{ subject.abkuerzung}}
+                        <button type="button" class="delete-btn" onclick="deleteForm('subject-form-{{ forloop.counter0 }}')">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                        <!-- DELETE-Feld (wird per JavaScript versteckt) -->
+                        {{ subject.DELETE }}
+                    </div>
+                    {% endfor%}
                 </div>
-                {% endfor %}
-            </div>
-            <button type="button" onclick="addForm('empty-teacher-form', 'teacher-forms')">
-                <i class="fa-solid fa-plus"></i>
-            </button>
+                <button type="button" onclick="addForm('empty-subject-form', 'subject-forms')">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </details>
+            <details>
+                <summary>Lehrer</summary>
+                {{ teacher_form_set.management_form }} 
+                <div id = "teacher-forms">
+                    {% for teacher in teacher_form_set %}
+                    <div class="teacher-form" id="teacher-form-{{ forloop.counter0 }}">
+                        {{ teacher.first_name }}
+                        {{ teacher.last_name }}
+                        {{ teacher.short_name }}
+                        {{ teacher.subjects }}
+                        <button type="button" class="delete-btn" onclick="deleteForm('teacher-form-{{ forloop.counter0 }}')">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                        <!-- DELETE-Feld (wird per JavaScript versteckt) -->
+                        {{ teacher.DELETE }}
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="button" onclick="addForm('empty-teacher-form', 'teacher-forms')">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </details>
             <button type="submit">Speichern</button>
         </form>
     </body>
