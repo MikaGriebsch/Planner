@@ -51,6 +51,7 @@
                 <div id = "subject-forms">
                     {% for subject in subject_form_set %}
                     <div class="subject-form" id="subject-form-{{ forloop.counter0 }}">
+                        {{ subject.id }}
                         {{ subject.name }}
                         {{ subject.abkuerzung}}
                         <button type="button" class="delete-btn" onclick="deleteForm('subject-form-{{ forloop.counter0 }}')">
@@ -71,6 +72,7 @@
                 <div id = "teacher-forms">
                     {% for teacher in teacher_form_set %}
                     <div class="teacher-form" id="teacher-form-{{ forloop.counter0 }}">
+                        {{ teacher.id }}
                         {{ teacher.first_name }}
                         {{ teacher.last_name }}
                         {{ teacher.short_name }}

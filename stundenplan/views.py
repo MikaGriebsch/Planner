@@ -25,8 +25,11 @@ def default_view(request):
 
 #@login_required
 def input_view(request):
-    teacher_form_set = TeacherFormSet(prefix="teacher")
-    subject_form_set = SubjectFormSet(prefix="subject")
+    teacher_queryset = Teacher.objects.all()
+    subject_queryset = Subject.objects.all()
+
+    teacher_form_set = TeacherFormSet(prefix="teacher", queryset=teacher_queryset)
+    subject_form_set = SubjectFormSet(prefix="subject", queryset=subject_queryset)  
 
     return render(request, 'input.html', {
         'teacher_form_set': teacher_form_set,
@@ -37,8 +40,17 @@ def input_view(request):
 def save_input(request):
     print(request.POST)
     print("")
-    teacher_form_set = TeacherFormSet(request.POST, prefix="teacher")
-    subject_form_set = SubjectFormSet(request.POST, prefix="subject")  
+
+    print("Posted ID fields:")
+    for key in request.POST.keys():
+        if '-id' in key:
+            print(f"{key}: {request.POST[key]}")
+            
+    teacher_queryset = Teacher.objects.all()
+    subject_queryset = Subject.objects.all()
+
+    teacher_form_set = TeacherFormSet(request.POST, prefix="teacher", queryset=teacher_queryset)
+    subject_form_set = SubjectFormSet(request.POST, prefix="subject", queryset=subject_queryset)  
 
     teachers_valid = teacher_form_set.is_valid()
     subjects_valid = subject_form_set.is_valid()
