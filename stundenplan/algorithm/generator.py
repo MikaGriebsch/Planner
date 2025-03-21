@@ -94,9 +94,9 @@ class StundenplanGenerator:
                 wochenstunden -= 1
             bricks.extend([{'fach': sg.subject, 'dauer': 2}] * (wochenstunden // 2))
 
-        # Verteile Einzelstunden (slabs)
-        for day in ['MO', 'DI', 'MI', 'DO', 'FR']:
-            for slot in ['1', '2']:
+        # Verteile Einzelstunden (slabs) - 1. und 2. Stunde für alle Tage
+        for slot in ['1', '2']:
+            for day in ['MO', 'DI', 'MI', 'DO', 'FR']:
                 if not slabs:
                     break
                 stunde = self._gueltige_stunde(day, slot, slabs, klasse)
@@ -112,10 +112,12 @@ class StundenplanGenerator:
                     )
                 else:
                     print(f"Fehler: Keine gültige Stunde gefunden für {klasse} am {day} in Slot {slot} (Slab)")
+            if not slabs:
+                break
 
-        # Verteile Doppelstunden (bricks)
-        for day in ['MO', 'DI', 'MI', 'DO', 'FR']:
-            for slot in ['3/4', '5/6', '7/8']:
+        # Verteile Doppelstunden (bricks) für 3/4 und 5/6 für alle Tage
+        for slot in ['3/4', '5/6']:
+            for day in ['MO', 'DI', 'MI', 'DO', 'FR']:
                 if not bricks:
                     break
                 stunde = self._gueltige_stunde(day, slot, bricks, klasse)
@@ -131,6 +133,29 @@ class StundenplanGenerator:
                     )
                 else:
                     print(f"Fehler: Keine gültige Stunde gefunden für {klasse} am {day} in Slot {slot} (Brick)")
+            if not bricks:
+                break
+
+        # Verteile übrige Doppelstunden für 7/8 für alle Tage
+        slot = '7/8'
+        days = ['MO', 'DI', 'MI', 'DO', 'FR']
+        random.shuffle(days)
+        for day in days:
+            if not bricks:
+                break
+            stunde = self._gueltige_stunde(day, slot, bricks, klasse)
+            if stunde:
+                Lesson.objects.create(
+                    lesson_number=slot,
+                    weekday=day,
+                    teacher=stunde['lehrer'],
+                    subject=stunde['fach'],
+                    klasse=klasse,
+                    room_number=stunde['raum'],
+                    week_choice=self.week
+                )
+            else:
+                print(f"Fehler: Keine gültige Stunde gefunden für {klasse} am {day} in Slot {slot} (Brick)")
 
         remaining = len(slabs) + len(bricks)
         if remaining > 0:
