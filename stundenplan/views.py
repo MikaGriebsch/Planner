@@ -111,33 +111,50 @@ def save_input(request):
         all_grades = Grade.objects.all()
 
         for grade in all_grades:
-            subject_grade_form_set = SubjectGradeFormSet(
+            # überprüfen ob es Daten für Subject_Grade und Class gibt
+            has_subject_grade_data = False
+            has_class_data = False
+            
+            for key in request.POST.keys():
+                if f"subject_grade{grade.pk}-" in key and not key.endswith('TOTAL_FORMS'):
+                    has_subject_grade_data = True
+                if f"class{grade.pk}-" in key and not key.endswith('TOTAL_FORMS'):
+                    has_class_data = True
+            
+            # keine Daten für Subject_Grade und Class überspringe Validierung
+            if not has_subject_grade_data and not has_class_data:
+                print(f"No additional data for Grade {grade.name}. This is likely a new grade.")
+                continue
+            
+            # Validierung Subject_Grade
+            if has_subject_grade_data:
+                subject_grade_form_set = SubjectGradeFormSet(
                 request.POST, 
                 instance=grade,
                 prefix=f"subject_grade{grade.pk}",
                 queryset=Subject_Grade.objects.filter(grade=grade)
-            )
-            if subject_grade_form_set.is_valid():
-                subject_grade_form_set.save()
-                print(f"Saved subjects for grade {grade.name} successfully")
-            else:
-                valid = False
-                print(f"Unable to save subjects for Grade {grade.name}: {subject_grade_form_set.errors}")
-
-        # Class Validierung
-        for grade in all_grades:
-            class_form_set = ClassFormSet(
+                )
+                if subject_grade_form_set.is_valid():
+                    subject_grade_form_set.save()
+                    print(f"Saved subjects for grade {grade.name} successfully")
+                else:
+                    valid = False
+                    print(f"Unable to save subjects for Grade {grade.name}: {subject_grade_form_set.errors}")
+            
+            # Validierung Class
+            if has_class_data:
+                class_form_set = ClassFormSet(
                 request.POST, 
                 instance=grade,
                 prefix=f"class{grade.pk}",
                 queryset=Class.objects.filter(grade=grade)
-            )
-            if class_form_set.is_valid():
-                class_form_set.save()
-                print(f"Saved classes for grade {grade.name} successfully")
-            else:
-                valid = False
-                print(f"Unable to save classes for Grade {grade.name}: {class_form_set.errors}")
+                )
+                if class_form_set.is_valid():
+                    class_form_set.save()
+                    print(f"Saved classes for grade {grade.name} successfully")
+                else:
+                    valid = False
+                    print(f"Unable to save classes for Grade {grade.name}: {class_form_set.errors}")
     else:
         valid = False
         print(f"Unable to save grades: {grade_form_set.errors}")
