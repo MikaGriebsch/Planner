@@ -27,52 +27,69 @@ def default_view(request):
 def input_view(request):
     teacher_queryset = Teacher.objects.all()
     subject_queryset = Subject.objects.all()
+    room_queryset = Room.objects.all()
 
     teacher_form_set = TeacherFormSet(prefix="teacher", queryset=teacher_queryset)
     subject_form_set = SubjectFormSet(prefix="subject", queryset=subject_queryset)  
+    room_form_set = RoomFormSet(prefix="room", queryset=room_queryset)
 
     return render(request, 'input.html', {
         'teacher_form_set': teacher_form_set,
         'subject_form_set': subject_form_set,
+        'room_form_set': room_form_set
         })
 
 @require_POST
 def save_input(request):
-    print(request.POST)
-    print("")
+    valid = True
 
     print("Posted ID fields:")
     for key in request.POST.keys():
         if '-id' in key:
             print(f"{key}: {request.POST[key]}")
-            
+
     teacher_queryset = Teacher.objects.all()
     subject_queryset = Subject.objects.all()
+    room_queryset = Room.objects.all()
 
     teacher_form_set = TeacherFormSet(request.POST, prefix="teacher", queryset=teacher_queryset)
-    subject_form_set = SubjectFormSet(request.POST, prefix="subject", queryset=subject_queryset)  
-
-    teachers_valid = teacher_form_set.is_valid()
-    subjects_valid = subject_form_set.is_valid()
+    subject_form_set = SubjectFormSet(request.POST, prefix="subject", queryset=subject_queryset)
+    room_form_set = RoomFormSet(request.POST, prefix="room", queryset=room_queryset)
     
-    if teachers_valid and subjects_valid:
+    if teacher_form_set.is_valid():
         teacher_form_set.save()
-        subject_form_set.save()
-        
         print("Saved teachers successfully")
-        print("Saved subjects successfully")
+    else:
+        valid = False
 
-        return redirect("/schedule/create") 
+    if subject_form_set.is_valid():
+        subject_form_set.save()
+        print("Saved subjects successfully")
+    else:
+        valid = False
+    
+    if room_form_set.is_valid():
+        room_form_set.save()
+        print("Saved rooms successfully")
+    else:
+        valid = False
+
+    if valid:
+        return redirect("/schedule/create")
     else:
         # Fehlerausgabe
-        if not teachers_valid:
+        if not teacher_form_set.is_valid():
             print(f"Unable to save teachers: {teacher_form_set.errors}")
         
-        if not subjects_valid:
+        if not subject_form_set.is_valid():
             print(f"Unable to save subjects: {subject_form_set.errors}")
+        
+        if not room_form_set.is_valid():
+            print(f"Unable to save rooms: {room_form_set.errors}")
         
         return render(request, 'input.html', {
             'teacher_form_set': teacher_form_set,
             'subject_form_set': subject_form_set,
+            'room_form_set': room_form_set,
         })
 

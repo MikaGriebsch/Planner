@@ -40,7 +40,16 @@
                     </button>
                 </div>
             </div>
-        </div>
+            <div id="empty-room-form">
+                <div class="room-form" id="form-prefix__">
+                    {{ room_form_set.empty_form.id }}
+                    {{ room_form_set.empty_form.room_number}}
+                    <button type="button" class="delete-btn" onclick="deleteForm('room-form-__prefix__')">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div> 
 
         <h1>Dateneingabe</h1>
         <form method="post" action={% url 'save_input' %}>
@@ -86,6 +95,26 @@
                     {% endfor %}
                 </div>
                 <button type="button" onclick="addForm('empty-teacher-form', 'teacher-forms')">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </details>
+            <details>
+                <summary>Räume</summary>
+                {{ room_form_set.management_form }}
+                <div id = "room-forms">
+                    {% for room in room_form_set %}
+                    <div class="room-form" id="room-form-{{ forloop.counter0 }}">
+                        {{ room.id }}
+                        {{ room.room_number }}
+                        <button type="button" class="delete-btn" onclick="deleteForm('room-form-{{ forloop.counter0 }}')">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                        <!-- DELETE-Feld (wird per JavaScript versteckt) -->
+                        {{ room.DELETE }}
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="button" onclick="addForm('empty-room-form', 'room-forms')">
                     <i class="fa-solid fa-plus"></i>
                 </button>
             </details>

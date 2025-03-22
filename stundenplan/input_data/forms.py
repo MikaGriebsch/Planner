@@ -40,5 +40,16 @@ class RoomForm(forms.ModelForm):
         model = Room
         fields = ['room_number']
 
-TeacherFormSet = forms.modelformset_factory(Teacher, form=TeacherForm, extra=1, can_delete=True)
-SubjectFormSet = forms.modelformset_factory(Subject, form=SubjectForm, extra=1, can_delete=True)
+TeacherFormSet = forms.modelformset_factory(Teacher, 
+    form=TeacherForm,
+    extra=1, 
+    can_delete=True)
+SubjectFormSet = forms.modelformset_factory(Subject, 
+    form=SubjectForm, 
+    extra=1, 
+    can_delete=True)
+RoomFormSet = forms.modelformset_factory(Room,
+    form=RoomForm,
+    extra=1,
+    can_delete=True)
+GradeClassFormSet = forms.inlineformset_factory(Grade, Class, form=ClassForm, extra=1, can_delete=True)
