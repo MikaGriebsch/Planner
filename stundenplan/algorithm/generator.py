@@ -13,7 +13,7 @@ class StundenplanGenerator:
         self.week = Week.objects.first()
         self.lehrer_zuordnung = {}  # Speichert die Lehrer-Fach-Zuordnung pro Klasse
 
-    def _freier_raum(self, tag, timeslot):
+    def _freier_raum(self, tag, timeslot, fach):
         belegte_raeume = set(
             lesson.room_number.room_number
             for lesson in Lesson.objects.filter(
@@ -22,7 +22,8 @@ class StundenplanGenerator:
                 week_choice=self.week
             )
         )
-        for raum in self.raeume:
+        fachraeume = Room.objects.filter(faecher=fach)
+        for raum in fachraeume:
             if raum.room_number not in belegte_raeume:
                 return raum
         return None
@@ -64,7 +65,7 @@ class StundenplanGenerator:
             if not self._lehrer_frei(tag, timeslot, lehrer):
                 continue
 
-            raum = self._freier_raum(tag, timeslot)
+            raum = self._freier_raum(tag, timeslot, fach=stunde['fach'])
             if not raum:
                 continue
 

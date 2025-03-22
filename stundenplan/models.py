@@ -92,6 +92,7 @@ class Subject_Grade(models.Model):
 
 class Room(models.Model):
     room_number = models.CharField(max_length=30, unique=True)
+    faecher = models.ManyToManyField(Subject)
 
     class Meta:
         verbose_name = 'Raum'
