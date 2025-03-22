@@ -10,13 +10,21 @@ class ClassForm(forms.ModelForm):
     class Meta:
         model = Class 
         fields = ['name', 'schueleranzahl']
+    
 
 class GradeForm(forms.ModelForm):
     class Meta:
         model = Grade
         fields = ['name']
 
-    #subject grade connection
+
+class SubjectGradeForm(forms.ModelForm):
+    class Meta:
+        model = Subject_Grade
+        fields = ['subject', 'grade', 'wochenstunden']
+        widgets = {
+            'subject': Select2Widget()
+        }
 
 class TeacherForm(forms.ModelForm):
     class Meta:
@@ -33,23 +41,46 @@ class SubjectForm(forms.ModelForm):
         model = Subject
         fields = ['abkuerzung', 'name']
 
-
-# liber mit standardform  und dann einfach rooms als list input angeben
 class RoomForm(forms.ModelForm):
     class Meta:
         model = Room
         fields = ['room_number']
 
-TeacherFormSet = forms.modelformset_factory(Teacher, 
+TeacherFormSet = forms.modelformset_factory(
+    Teacher, 
     form=TeacherForm,
     extra=1, 
-    can_delete=True)
-SubjectFormSet = forms.modelformset_factory(Subject, 
+    can_delete=True
+)
+SubjectFormSet = forms.modelformset_factory(
+    Subject, 
     form=SubjectForm, 
     extra=1, 
-    can_delete=True)
-RoomFormSet = forms.modelformset_factory(Room,
+    can_delete=True
+)
+RoomFormSet = forms.modelformset_factory(
+    Room,
     form=RoomForm,
     extra=1,
-    can_delete=True)
-GradeClassFormSet = forms.inlineformset_factory(Grade, Class, form=ClassForm, extra=1, can_delete=True)
+    can_delete=True
+)
+GradeFormSet = forms.modelformset_factory(
+    Grade, 
+    form=GradeForm, 
+    extra=0, 
+    can_delete=True
+)
+ClassFormSet = forms.inlineformset_factory(
+    Grade, 
+    Class, 
+    form=ClassForm, 
+    extra=1, 
+    can_delete=True
+)
+SubjectGradeFormSet = forms.inlineformset_factory(
+    Grade,
+    Subject_Grade,
+    form=SubjectGradeForm,
+    extra=0,
+    can_delete=True
+)

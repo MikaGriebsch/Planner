@@ -6,7 +6,7 @@ from django.db.models import Model
 from django.db.models.constraints import UniqueConstraint
 
 class Grade(models.Model):
-    name = models.IntegerField(unique=True, validators=[MinValueValidator(1), MaxValueValidator(12)])
+    name = models.IntegerField(unique=True, validators=[MinValueValidator(1), MaxValueValidator(15)])
 
     class Meta:
         verbose_name = 'Klassenstufe'
@@ -53,7 +53,7 @@ class Class(models.Model):
     ]
 
     name = models.CharField(max_length=1, choices=NAME_CHOICES)
-    schueleranzahl = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(30)], default=30)
+    schueleranzahl = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(30)])
     schueler_in_class = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(30)], default=0)
     grade = models.ForeignKey(Grade, on_delete=models.CASCADE, default=-1)  # wenn ID==1 ist etwas falsch
     bezeichnung = models.CharField(max_length=20, blank=True)

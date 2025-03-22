@@ -5,6 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         {% load static %}
         <link rel="stylesheet" type="text/css" href="{% static 'input.css' %}">
+        <!--get_item Filter laden-->
+        {% load get_item %}
         <!--2SelectSetup-->
         <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -18,33 +20,70 @@
         <!-- Leere Forms zur Erstellung von neuen als Template-->
         <div id="empty-forms" style="display: none;">
             <div id="empty-teacher-form">
-                <div class="teacher-form" id="form-__prefix__">
+                <div class="teacher-form">
                     {{ teacher_form_set.empty_form.id }}
                     {{ teacher_form_set.empty_form.first_name }}
                     {{ teacher_form_set.empty_form.last_name }}
                     {{ teacher_form_set.empty_form.short_name }}
                     {{ teacher_form_set.empty_form.subjects }}
                     {{ teacher_form_set.empty_form.DELETE }}
-                    <button type="button" class="delete-btn" onclick="deleteForm('teacher-form-__prefix__')">
+                    <button type="button" class="delete-btn">
                         <i class="fa-solid fa-trash"></i>
                     </button>
                 </div>
             </div>
             <div id="empty-subject-form">
-                <div class="subject-form" id="form-prefix__">
+                <div class="subject-form">
                     {{ subject_form_set.empty_form.id }}
                     {{ subject_form_set.empty_form.name }}
                     {{ subject_form_set.empty_form.abkuerzung }}
-                    <button type="button" class="delete-btn" onclick="deleteForm('subject-form-__prefix__')">
+                    {{ subject_form_set.empty_form.DELETE }}
+                    <button type="button" class="delete-btn">
                         <i class="fa-solid fa-trash"></i>
                     </button>
                 </div>
             </div>
             <div id="empty-room-form">
-                <div class="room-form" id="form-prefix__">
+                <div class="room-form">
                     {{ room_form_set.empty_form.id }}
                     {{ room_form_set.empty_form.room_number}}
-                    <button type="button" class="delete-btn" onclick="deleteForm('room-form-__prefix__')">
+                    {{ room_form_set.empty_form.DELETE }}
+                    <button type="button" class="delete-btn">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="empty-grade-form">
+                <div class="grade-form">
+                    <h2></h2>
+                    {{ grade_form_set.empty_form.id }}
+                    {{ grade_form_set.empty_form.name }}
+                    {{ grade_form_set.empty_form.DELETE}}
+                    <button type="button" class="delete-btn">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="empty-class-form">
+                <div class="class-form">
+                    {{ empty_class_form.id }}
+                    {{ empty_class_form.name }}
+                    {{ empty_class_form.schueleranzahl }}
+                    {{ empty_class_form.grade }}
+                    {{ empty_class_form.DELETE }}
+                    <button type="button" class="delete-btn">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="empty-subject_grade-form">
+                <div class="subject_grade-form">
+                    {{ empty_subject_grade_form.id }}
+                    {{ empty_subject_grade_form.subject }}
+                    {{ empty_subject_grade_form.grade }}
+                    {{ empty_subject_grade_form.wochenstunden }}
+                    {{ empty_subject_grade_form.DELETE }}
+                    <button type="button" class="delete-btn">
                         <i class="fa-solid fa-trash"></i>
                     </button>
                 </div>
@@ -94,7 +133,7 @@
                     </div>
                     {% endfor %}
                 </div>
-                <button type="button" onclick="addForm('empty-teacher-form', 'teacher-forms')">
+                <button type="button" onclick="addForm('empty-teacher-form', 'teacher-forms', true)">
                     <i class="fa-solid fa-plus"></i>
                 </button>
             </details>
@@ -115,6 +154,75 @@
                     {% endfor %}
                 </div>
                 <button type="button" onclick="addForm('empty-room-form', 'room-forms')">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </details>
+            <details>
+                <summary>Klassenstufen</summary>
+                {{ grade_form_set.management_form }}
+                <div id = "grade-forms">
+                    {% for grade in grade_form_set %}
+                    <div class="grade-form" id="grade-form-{{ forloop.counter0 }}">
+                        <h2>Klassenstufe {{grade.instance.name}}</h2>
+                        {{ grade.id }}
+                        {{ grade.name}}
+                        <button type="button" class="delete-btn" onclick="deleteForm('grade-form-{{ forloop.counter0 }}')">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                        <!-- DELETE-Feld (wird per JavaScript versteckt) -->
+                        {{ grade.DELETE }}
+
+                        <!-- Subject_Grade-Formulare-->
+                        {% with subject_grade_form_sets|get_item:grade.instance.pk as subject_grade_formset %}
+                        {{ subject_grade_formset.management_form }}
+                        <div id="subject_grade{{ grade.instance.pk }}-forms">
+                            <h3>Unterrichtete Fächer</h3>
+                            {% for subject_grade in subject_grade_formset %}
+                                <div class="subject_grade-form" id="subject-grade{{ grade.instance.pk }}-form-{{ forloop.counter0 }}">
+                                    {{ subject_grade.id }}
+                                    {{ subject_grade.subject }}
+                                    {{ subject_grade.wochenstunden}}
+                                    {{ subject_grade.grade }}
+                                    <button type="button" class="delete-btn" onclick="deleteForm('subject-grade{{ grade.instance.pk }}-form-{{ forloop.counter0 }}')">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                    <!-- DELETE-Feld (wird per JavaScript versteckt) -->
+                                    {{ subject_grade.DELETE }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <button type="button" onclick="addForm('empty-subject_grade-form', 'subject_grade{{ grade.instance.pk }}-forms', true)">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                        {% endwith %}
+
+                        <!-- Klassenformulare -->
+                        {% with class_form_sets|get_item:grade.instance.pk as class_formset %}
+                        {{ class_formset.management_form }}
+                        <div id="class{{ grade.instance.pk }}-forms">
+                            <h3>Klassen</h3>
+                            {% for class in class_formset %}
+                                <div class="class-form" id="class{{ grade.instance.pk }}-form-{{ forloop.counter0 }}">
+                                    {{ class.id }}
+                                    {{ class.name }}
+                                    {{ class.schueleranzahl }}
+                                    {{ class.grade }}
+                                    <button type="button" class="delete-btn" onclick="deleteForm('class{{ grade.instance.pk }}-form-{{ forloop.counter0 }}')">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                    <!-- DELETE-Feld (wird per JavaScript versteckt) -->
+                                    {{ class.DELETE }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <button type="button" onclick="addForm('empty-class-form', 'class{{ grade.instance.pk }}-forms')">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                        {% endwith %}
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="button" onclick="addGradeForm('empty-grade-form', 'grade-forms')">
                     <i class="fa-solid fa-plus"></i>
                 </button>
             </details>
