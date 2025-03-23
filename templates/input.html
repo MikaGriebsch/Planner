@@ -18,6 +18,12 @@
         <title>Dateneingabe</title>
     </head>
     <body>
+        {% if form_errors %}
+            <div class="error-message">
+                <h3><i class="fa-solid fa-triangle-exclamation"></i> Fehler beim Speichern</h3>
+                <p>Bitte überprüfe die makierten Eingaben und versuche es erneut.</p>
+        </div>
+        {% endif %}
         <!-- Leere Forms zur Erstellung von neuen als Template-->
         <div id="empty-forms" style="display: none;">
             <div id="empty-teacher-form">
@@ -28,6 +34,16 @@
                     {{ teacher_form_set.empty_form.short_name }}
                     {{ teacher_form_set.empty_form.subjects }}
                     {{ teacher_form_set.empty_form.DELETE }}
+
+                    <!-- Fehlermeldungen anzeigen -->
+                    {% if teacher_form_set.empty_form.errors %}
+                        {% for field, errors in teacher_form_set.empty_form.errors.items %}
+                            {% for error in errors %}
+                                <div class="field-error">{{ field|title }}: {{ error }}</div>
+                        {% endfor %}
+                    {% endfor %}
+                    {% endif %}
+
                     <button type="button" class="delete-btn">
                         <i class="fa-solid fa-trash"></i>
                     </button>
@@ -39,6 +55,16 @@
                     {{ subject_form_set.empty_form.name }}
                     {{ subject_form_set.empty_form.abkuerzung }}
                     {{ subject_form_set.empty_form.DELETE }}
+                    
+                    <!-- Fehlermeldungen anzeigen -->
+                    {% if subject_form_set.empty_form.errors %}
+                        {% for field, errors in subject_form_set.empty_form.errors.items %}
+                            {% for error in errors %}
+                                <div class="field-error">{{ field|title }}: {{ error }}</div>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+                    
                     <button type="button" class="delete-btn">
                         <i class="fa-solid fa-trash"></i>
                     </button>
@@ -49,6 +75,16 @@
                     {{ room_form_set.empty_form.id }}
                     {{ room_form_set.empty_form.room_number}}
                     {{ room_form_set.empty_form.DELETE }}
+
+                    <!-- Fehlermeldungen anzeigen -->
+                    {% if room_form_set.empty_form.errors %}
+                        {% for field, errors in room_form_set.empty_form.errors.items %}
+                            {% for error in errors %}
+                                <div class="field-error">{{ field|title }}: {{ error }}</div>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+
                     <button type="button" class="delete-btn">
                         <i class="fa-solid fa-trash"></i>
                     </button>
@@ -60,6 +96,16 @@
                     {{ grade_form_set.empty_form.id }}
                     {{ grade_form_set.empty_form.name }}
                     {{ grade_form_set.empty_form.DELETE}}
+
+                    <!-- Fehlermeldungen anzeigen -->
+                    {% if grade_form_set.empty_form.errors %}
+                        {% for field, errors in grade_form_set.empty_form.errors.items %}
+                            {% for error in errors %}
+                                <div class="field-error">{{ field|title }}: {{ error }}</div>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+
                     <button type="button" class="delete-btn">
                         <i class="fa-solid fa-trash"></i>
                     </button>
@@ -72,6 +118,16 @@
                     {{ empty_class_form.schueleranzahl }}
                     {{ empty_class_form.grade }}
                     {{ empty_class_form.DELETE }}
+
+                    <!-- Fehlermeldungen anzeigen -->
+                    {% if empty_class_form.errors %}
+                        {% for field, errors in empty_class_form.errors.items %}
+                            {% for error in errors %}
+                                <div class="field-error">{{ field|title }}: {{ error }}</div>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+
                     <button type="button" class="delete-btn">
                         <i class="fa-solid fa-trash"></i>
                     </button>
@@ -84,6 +140,16 @@
                     {{ empty_subject_grade_form.grade }}
                     {{ empty_subject_grade_form.wochenstunden }}
                     {{ empty_subject_grade_form.DELETE }}
+
+                    <!-- Fehlermeldungen anzeigen -->
+                    {% if empty_subject_grade_form.errors %}
+                        {% for field, errors in empty_subject_grade_form.errors.items %}
+                            {% for error in errors %}
+                                <div class="field-error">{{ field|title }}: {{ error }}</div>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+
                     <button type="button" class="delete-btn">
                         <i class="fa-solid fa-trash"></i>
                     </button>
@@ -103,6 +169,16 @@
                         {{ subject.id }}
                         {{ subject.name }}
                         {{ subject.abkuerzung}}
+
+                        <!--Fehlermeldung anzeigen -->
+                        {% if subject.errors %}
+                            {% for field, errors in subject.errors.items %}
+                                {% for error in errors %}
+                                    <div class="field-error">{{ field|title }}: {{ error }}</div>
+                                {% endfor %}
+                            {% endfor %}
+                        {% endif %}
+
                         <button type="button" class="delete-btn" onclick="deleteForm('subject-form-{{ forloop.counter0 }}')">
                             <i class="fa-solid fa-trash"></i>
                         </button>
@@ -126,6 +202,16 @@
                         {{ teacher.last_name }}
                         {{ teacher.short_name }}
                         {{ teacher.subjects }}
+
+                        <!--Fehlermeldung anzeigen -->
+                        {% if teacher.errors %}
+                            {% for field, errors in teacher.errors.items %}
+                                {% for error in errors %}
+                                    <div class="field-error">{{ field|title }}: {{ error }}</div>
+                                {% endfor %}
+                            {% endfor %}
+                        {% endif %}
+
                         <button type="button" class="delete-btn" onclick="deleteForm('teacher-form-{{ forloop.counter0 }}')">
                             <i class="fa-solid fa-trash"></i>
                         </button>
@@ -146,6 +232,16 @@
                     <div class="room-form" id="room-form-{{ forloop.counter0 }}">
                         {{ room.id }}
                         {{ room.room_number }}
+
+                        <!--Fehlermeldung anzeigen -->
+                        {% if room.errors %}
+                            {% for field, errors in room.errors.items %}
+                                {% for error in errors %}
+                                    <div class="field-error">{{ field|title }}: {{ error }}</div>
+                                {% endfor %}
+                            {% endfor %}
+                        {% endif %}
+
                         <button type="button" class="delete-btn" onclick="deleteForm('room-form-{{ forloop.counter0 }}')">
                             <i class="fa-solid fa-trash"></i>
                         </button>
@@ -167,6 +263,16 @@
                         <h2>Klassenstufe {{grade.instance.name}}</h2>
                         {{ grade.id }}
                         {{ grade.name}}
+
+                        <!--Fehlermeldung anzeigen -->
+                        {% if grade.errors %}
+                            {% for field, errors in grade.errors.items %}
+                                {% for error in errors %}
+                                    <div class="field-error">{{ field|title }}: {{ error }}</div>
+                                {% endfor %}
+                            {% endfor %}
+                        {% endif %}
+
                         <button type="button" class="delete-btn" onclick="deleteForm('grade-form-{{ forloop.counter0 }}')">
                             <i class="fa-solid fa-trash"></i>
                         </button>
@@ -184,6 +290,16 @@
                                     {{ subject_grade.subject }}
                                     {{ subject_grade.wochenstunden}}
                                     {{ subject_grade.grade }}
+
+                                    <!--Fehlermeldung anzeigen -->
+                                    {% if subject_grade.errors %}
+                                        {% for field, errors in subject_grade.errors.items %}
+                                            {% for error in errors %}
+                                                <div class="field-error">{{ field|title }}: {{ error }}</div>
+                                            {% endfor %}
+                                        {% endfor %}
+                                    {% endif %}
+
                                     <button type="button" class="delete-btn" onclick="deleteForm('subject-grade{{ grade.instance.pk }}-form-{{ forloop.counter0 }}')">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
@@ -208,6 +324,16 @@
                                     {{ class.name }}
                                     {{ class.schueleranzahl }}
                                     {{ class.grade }}
+
+                                    <!--Fehlermeldung anzeigen -->
+                                    {% if class.errors %}
+                                        {% for field, errors in class.errors.items %}
+                                            {% for error in errors %}
+                                                <div class="field-error">{{ field|title }}: {{ error }}</div>
+                                            {% endfor %}
+                                        {% endfor %}
+                                    {% endif %}
+
                                     <button type="button" class="delete-btn" onclick="deleteForm('class{{ grade.instance.pk }}-form-{{ forloop.counter0 }}')">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>

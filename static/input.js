@@ -9,6 +9,8 @@ $(document).ready(function() {
 
 	//setupGradeAutoSave();
   setupSubjectAutoSave();
+
+	showErrorsInForms();
 });
 
 function initSelect2(selection) {
@@ -441,4 +443,25 @@ function updateSubjectDropdowns() {
     .catch(error => {
       console.error("Error updating dropdowns:", error);
     });
+}
+// Funktion zum Aufklappen von Details mit Fehlern
+function showErrorsInForms() {
+  // Alle Formulare mit Fehlern finden
+  const errorForms = document.querySelectorAll('.field-error');
+  
+  if (errorForms.length === 0) return;
+  
+  // Für jedes fehlerhafte Formular das übergeordnete details-Element finden und öffnen
+  errorForms.forEach(form => {
+    const parentDetails = form.closest('details');
+    if (parentDetails) {
+      parentDetails.setAttribute('open', '');
+    }
+  });
+  
+  // Zur ersten Fehlermeldung scrollen
+  const firstError = errorForms[0];
+  if (firstError) {
+    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 }

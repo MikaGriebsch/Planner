@@ -337,3 +337,43 @@ input[type="checkbox"][name$="-DELETE"] {
   flex-wrap: wrap;
   gap: 1rem;
 }
+
+/* Fehlerdarstellung */
+.error-message {
+  background-color: var(--error);
+  color: white;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.error-message h3 {
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: white;
+}
+
+.error-message p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.form-error {
+  border: 2px solid var(--error) !important;
+  background-color: rgba(231, 76, 60, 0.05);
+}
+
+.field-error {
+  color: var(--error);
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  font-weight: 500;
+}
+
+/* Styling für das Erroricon */
+.fa-triangle-exclamation {
+  margin-right: 0.5rem;
+}

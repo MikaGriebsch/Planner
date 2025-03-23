@@ -90,6 +90,7 @@ def save_input(request):
     else:
         valid = False
         print(f"Unable to save teachers: {teacher_form_set.errors}")
+        form_errors = True
     
     # Room Validierung
     if room_form_set.is_valid():
@@ -190,6 +191,7 @@ def save_input(request):
             'empty_class_form': empty_class_form,
             'subject_grade_form_sets': subject_grade_form_sets,
             'empty_subject_grade_form': empty_subject_grade_form,
+            'form_errors': True,
         })
 
 @require_POST
