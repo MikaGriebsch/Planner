@@ -1,14 +1,17 @@
+import json
 from django.contrib.auth.decorators import login_required
-from django.forms import modelformset_factory
 from django.shortcuts import redirect, render
 from stundenplan import get_plan
 from django.shortcuts import render
-
 from stundenplan.models import Teacher
 from .get_plan import get_plan
-from django.http import HttpResponse
-from django.views.decorators.http import require_POST
 from .input_data.forms import *
+from django.http import JsonResponse
+import json
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST, require_GET
+from django.core.exceptions import ValidationError
+from stundenplan.models import Subject
 
 
 @login_required
@@ -77,6 +80,8 @@ def save_input(request):
     subject_form_set = SubjectFormSet(request.POST, prefix="subject", queryset=Subject.objects.all())
     room_form_set = RoomFormSet(request.POST, prefix="room", queryset=Room.objects.all())
     grade_form_set = GradeFormSet(request.POST, prefix="grade", queryset=Grade.objects.all())
+
+    # Subject Validierung für AJAX (save_subject)
     
     # Teacher Validierung
     if teacher_form_set.is_valid():
@@ -85,16 +90,7 @@ def save_input(request):
     else:
         valid = False
         print(f"Unable to save teachers: {teacher_form_set.errors}")
-
-    # Subject Validierung
-    if subject_form_set.is_valid():
-        subject_form_set.save()
-        print("Saved subjects successfully")
-    else:
-        valid = False
-        print(f"Unable to save subjects: {subject_form_set.errors}")
-        
-
+    
     # Room Validierung
     if room_form_set.is_valid():
         room_form_set.save()
@@ -195,4 +191,101 @@ def save_input(request):
             'subject_grade_form_sets': subject_grade_form_sets,
             'empty_subject_grade_form': empty_subject_grade_form,
         })
-    
+
+@require_POST
+def save_subject(request):
+    try:
+        data = json.loads(request.body)
+        payload = data.get('payload', {})
+        
+        subject_id = payload.get('id', '')
+        name = payload.get('name', '')
+        abkuerzung = payload.get('abkuerzung', '')
+        
+        print(f"Received subject data: {payload}")
+        
+        if not name or not abkuerzung:
+            return JsonResponse({
+                'success': False,
+                'message': 'Name und Abkürzung sind erforderlich'
+            }, status=400)
+        
+        # Bestimme, ob Update oder Neuerstellung
+        if subject_id:
+            # Update
+            try:
+                subject = Subject.objects.get(pk=int(subject_id))
+                subject.name = name
+                subject.abkuerzung = abkuerzung
+                subject.full_clean()
+                subject.save()
+                
+                return JsonResponse({
+                    'success': True,
+                    'subject_id': subject.pk,
+                    'message': f'Fach {subject.name} aktualisiert'
+                })
+            except Subject.DoesNotExist:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Fach nicht gefunden'
+                }, status=404)
+            except ValidationError as e:
+                return JsonResponse({
+                    'success': False,
+                    'message': str(e),
+                    'errors': dict(e) if hasattr(e, 'error_dict') else {'__all__': str(e)}
+                }, status=400)
+        else:
+            # Neue Erstellung
+            try:
+                subject = Subject(name=name, abkuerzung=abkuerzung)
+                subject.full_clean()  # Validiere vor dem Speichern
+                subject.save()
+                
+                return JsonResponse({
+                    'success': True,
+                    'subject_id': subject.pk,
+                    'message': f'Neues Fach {subject.name} erstellt'
+                })
+            except ValidationError as e:
+                return JsonResponse({
+                    'success': False,
+                    'message': str(e),
+                    'errors': dict(e) if hasattr(e, 'error_dict') else {'__all__': str(e)}
+                }, status=400)
+    except Exception as e:
+        # Allgemeiner Fehler-Handler
+        import traceback
+        print(f"Error in save_subject: {str(e)}")
+        print(traceback.format_exc())
+        return JsonResponse({
+            'success': False,
+            'message': f'Serverfehler: {str(e)}'
+        }, status=500)
+
+@require_GET
+def get_subjects(request):
+    """Endpunkt zum Abrufen aller Subjects"""
+    try:
+        subjects = Subject.objects.all()
+        subjects_data = [
+            {
+                'id': subject.pk, 
+                'name': subject.name, 
+                'abkuerzung': subject.abkuerzung
+            } for subject in subjects
+        ]
+        
+        return JsonResponse({
+            'success': True,
+            'subjects': subjects_data
+        })
+    except Exception as e:
+        import traceback
+        print(f"Error in get_subjects: {str(e)}")
+        print(traceback.format_exc())
+        return JsonResponse({
+            'success': False,
+            'message': f'Fehler beim Abrufen der Fächer: {str(e)}'
+        }, status=500)

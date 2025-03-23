@@ -6,6 +6,9 @@ $(document).ready(function() {
 
 	hideDeleteCheckboxes();
 	filterEmptyForms();
+
+	//setupGradeAutoSave();
+  setupSubjectAutoSave();
 });
 
 function initSelect2(selection) {
@@ -128,4 +131,314 @@ function filterEmptyForms() {
 					});
 			});
 	});
+}
+//getCookie aus Django-Dokumentation
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== "") {
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      // Does this cookie string begin with the name we want?
+      if (cookie.substring(0, name.length + 1) === (name + "=")) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+// Diese Funktionen müssen ein Promise zurückgeben
+function addOrUpdateModel(url, payload) {
+  return fetch(url, {
+    method: "POST",
+    credentials: "same-origin",
+    headers: {
+      "X-Requested-With": "XMLHttpRequest",
+      "X-CSRFToken": getCookie("csrftoken"),
+      "Content-Type": "application/json" // Wichtig für JSON-Daten
+    },
+    body: JSON.stringify({payload: payload})
+  })
+  .then(response => {
+    return response.json();
+  });
+}
+
+function getModelData(url) {
+  return fetch(url, {
+    method: "GET",
+    credentials: "same-origin",
+    headers: {
+      "X-Requested-With": "XMLHttpRequest",
+    },
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    return response.json();
+  });
+}
+
+function setupSubjectAutoSave() {
+  // Event-Listener für alle bestehenden Subject-Formulare
+  setupSubjectFormListeners();
+  
+  // Wenn neue Subject-Formulare hinzugefügt werden
+  const originalAddForm = addForm;
+  addForm = function(templateId, targetId, select2 = false) {
+    const container = originalAddForm(templateId, targetId, select2);
+    if (templateId === 'empty-subject-form') {
+      setupSubjectFormListener(container);
+    }
+    return container;
+  };
+}
+
+function setupSubjectFormListeners() {
+  document.querySelectorAll('.subject-form').forEach((form) => {
+    setupSubjectFormListener(form);
+  });
+}
+
+function setupSubjectFormListener(form) {
+  // Relevant für Subjects sind name und abkuerzung
+  const nameField = form.querySelector('input[name$="-name"]');
+  const abkuerzungField = form.querySelector('input[name$="-abkuerzung"]');
+  
+  if (!nameField || !abkuerzungField) return;
+  
+  // Timer für verzögerte Speicherung
+  let saveTimer = null;
+  
+  // Event-Listener für Input-Änderungen
+  [nameField, abkuerzungField].forEach(field => {
+    field.addEventListener('input', () => {
+      // Status-Anzeige hinzufügen
+      showSavingStatus(form, "Änderungen werden gespeichert...");
+      
+      // Lösche vorherigen Timer, um zu häufige API-Anfragen zu vermeiden
+      if (saveTimer) clearTimeout(saveTimer);
+      
+      // Setze neuen Timer für verzögerte Speicherung (nur wenn beide Felder Werte haben)
+      saveTimer = setTimeout(() => {
+        if (nameField.value && abkuerzungField.value) {
+          saveSubject(form);
+        }
+      }, 1500); // Verzögerung von 1,5 Sekunden
+    });
+    
+    // Beim Verlassen des Feldes sofort speichern
+    field.addEventListener('blur', () => {
+      // Falls Timer noch läuft, abbrechen
+      if (saveTimer) {
+        clearTimeout(saveTimer);
+        saveTimer = null;
+      }
+      
+      // Nur speichern, wenn beide Felder ausgefüllt sind
+      if (nameField.value && abkuerzungField.value) {
+        saveSubject(form);
+      } else if (nameField.value || abkuerzungField.value) {
+        // Falls nur ein Feld ausgefüllt ist, Hinweis anzeigen
+        showValidationError(form, "Bitte sowohl Namen als auch Abkürzung angeben.");
+      }
+    });
+  });
+}
+
+function saveSubject(form) {
+  // Formular-Daten sammeln
+  const idField = form.querySelector('input[name$="-id"]');
+  const nameField = form.querySelector('input[name$="-name"]');
+  const abkuerzungField = form.querySelector('input[name$="-abkuerzung"]');
+  
+  const subjectData = {
+    id: idField ? idField.value : '',
+    name: nameField.value,
+    abkuerzung: abkuerzungField.value
+  };
+  
+  // Status aktualisieren
+  showSavingStatus(form, "Wird gespeichert...");
+  
+  // Die addOrUpdateModel-Funktion verwenden
+  addOrUpdateModel('/schedule/create/save-subject/', subjectData)
+    .then(data => {
+      if (data.success) {
+        // Erfolgreich gespeichert
+        if (idField && !idField.value) {
+          // Bei neuen Formularen die ID aktualisieren
+          idField.value = data.subject_id;
+        }
+        
+        // Feedback anzeigen
+        showSavingStatus(form, "✓ Gespeichert", "success");
+        
+        // Update Select2 Dropdowns mit dem neuen/aktualisierten Subject
+        updateSubjectDropdowns();
+        
+        // Status nach 2 Sekunden entfernen
+        setTimeout(() => {
+          clearSavingStatus(form);
+        }, 2000);
+      } else {
+        // Fehler anzeigen
+        showValidationError(form, data.message || "Fehler beim Speichern");
+      }
+    })
+    .catch(error => {
+      console.error("Error saving subject:", error);
+      showValidationError(form, "Netzwerkfehler beim Speichern");
+    });
+}
+
+// Hilfsfunktionen für die Benutzeroberfläche
+function showSavingStatus(form, message, type = "info") {
+  let statusEl = form.querySelector('.saving-status');
+  if (!statusEl) {
+    statusEl = document.createElement('div');
+    statusEl.className = 'saving-status';
+    form.appendChild(statusEl);
+  }
+  
+  statusEl.textContent = message;
+  statusEl.className = `saving-status status-${type}`;
+}
+
+function clearSavingStatus(form) {
+  const statusEl = form.querySelector('.saving-status');
+  if (statusEl) {
+    statusEl.remove();
+  }
+}
+
+function showValidationError(form, message) {
+  showSavingStatus(form, message, "error");
+  
+  // Nach 3 Sekunden ausblenden
+  setTimeout(() => {
+    clearSavingStatus(form);
+  }, 3000);
+}
+
+// Funktion zum Aktualisieren aller Subject-Dropdowns
+// Ersetze die komplette updateSubjectDropdowns-Funktion:
+
+function updateSubjectDropdowns() {
+  console.log("Updating subject dropdowns...");
+  
+  // AJAX-Anfrage, um alle aktualisierten Subjects zu holen
+  getModelData('/schedule/create/get-subjects/')
+    .then(data => {
+      if (!data.success) {
+        console.error("Failed to get subjects");
+        return;
+      }
+      
+      console.log(`Got ${data.subjects.length} subjects from server`);
+      
+      // Finde alle relevanten Selects (sowohl normale als auch multiple)
+      const selects = document.querySelectorAll(
+        'select[name$="-subject"], ' +       // Normale Subjects mit -subject am Ende
+        'select[name="subjects"], ' +        // Explizites "subjects" Feld
+        'select[multiple][name*="subject"], ' + // Multiple selects mit "subject" im Namen
+        '.teacher-form select'               // Alle Selects in Lehrer-Formularen
+      );
+      
+      console.log(`Found ${selects.length} subject-related select elements`);
+      
+      // Debug: Alle gefundenen Selects anzeigen
+      selects.forEach((select, index) => {
+        console.log(`Select #${index}:`, {
+          element: select,
+          name: select.name,
+          id: select.id || 'no-id',
+          multiple: select.multiple,
+          className: select.className,
+          optionsCount: select.options.length,
+          isTeacherForm: select.closest('.teacher-form') ? true : false,
+          isSelect2: window.jQuery && (
+            $(select).hasClass('django-select2') || 
+            $(select).data('select2')
+          ) ? true : false
+        });
+      });
+      
+      // Für jedes Select-Element
+      selects.forEach(select => {
+        // Die aktuelle Auswahl speichern 
+        const isMultiple = select.multiple;
+        let currentValues = [];
+        
+        if (isMultiple) {
+          // Multiple-Select: Werte als Array speichern
+          currentValues = Array.from(select.selectedOptions).map(opt => opt.value);
+          console.log(`Multiple select ${select.name}: Current values = [${currentValues.join(', ')}]`);
+        } else {
+          // Single-Select: Wert als String speichern
+          currentValues = [select.value];
+          console.log(`Single select ${select.name}: Current value = ${select.value}`);
+        }
+        
+        // Alte Optionen entfernen
+        select.innerHTML = '';
+        
+        // Leere Option für Single-Selects hinzufügen
+        if (!isMultiple) {
+          const emptyOption = document.createElement('option');
+          emptyOption.value = '';
+          emptyOption.textContent = '--------';
+          select.appendChild(emptyOption);
+        }
+        
+        // Subject-Optionen hinzufügen
+        data.subjects.forEach(subject => {
+          const option = document.createElement('option');
+          option.value = subject.id;
+          option.textContent = `${subject.name} (${subject.abkuerzung})`;
+          
+          // Option als ausgewählt markieren, wenn sie im currentValues-Array ist
+          if (currentValues.includes(subject.id.toString())) {
+            option.selected = true;
+          }
+          
+          select.appendChild(option);
+        });
+        
+        // Select2 aktualisieren, wenn es eins ist
+        if (window.jQuery) {
+          if ($(select).hasClass('django-select2') || $(select).data('select2')) {
+            console.log(`Triggering change for Select2 ${select.name}`);
+            
+            // Bei multiple-select manchmal Probleme - erzwinge komplettes Neu-Rendern
+            if (isMultiple) {
+              // Versuche direkt die Werte mit select2 zu setzen
+              try {
+                $(select).val(currentValues).trigger('change');
+              } catch (e) {
+                console.warn('Error setting values via Select2:', e);
+                
+                // Fallback-Methode
+                currentValues.forEach(value => {
+                  const option = select.querySelector(`option[value="${value}"]`);
+                  if (option) option.selected = true;
+                });
+                $(select).trigger('change');
+              }
+            } else {
+              // Für single-select reicht meistens ein trigger
+              $(select).trigger('change');
+            }
+          }
+        }
+      });
+      
+      console.log("Dropdowns update completed");
+    })
+    .catch(error => {
+      console.error("Error updating dropdowns:", error);
+    });
 }
