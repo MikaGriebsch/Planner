@@ -114,10 +114,25 @@ def save_input(request):
         grade_form_set.save()
         print("Saved grades successfully")
 
-        all_grades = Grade.objects.all()
+        # Initiierung Class Formsets
+        class_form_sets = {
+            grade.pk: ClassFormSet(
+                request.POST,
+                instance=grade, 
+                prefix=f"class{grade.pk}",
+            ) for grade in Grade.objects.all()
+        }
 
-        for grade in all_grades:
-            # überprüfen ob es Daten für Subject_Grade und Class gibt
+        # Initiierung SubjectGrade Formsets
+        subject_grade_form_sets = {
+            grade.pk: SubjectGradeFormSet(
+                request.POST,
+                instance=grade, 
+                prefix=f"subject_grade{grade.pk}",
+            ) for grade in Grade.objects.all()
+        }
+
+        for grade in Grade.objects.all():
             has_subject_grade_data = False
             has_class_data = False
             
@@ -127,19 +142,13 @@ def save_input(request):
                 if f"class{grade.pk}-" in key and not key.endswith('TOTAL_FORMS'):
                     has_class_data = True
             
-            # keine Daten für Subject_Grade und Class überspringe Validierung
             if not has_subject_grade_data and not has_class_data:
                 print(f"No additional data for Grade {grade.name}. This is likely a new grade.")
                 continue
             
             # Validierung Subject_Grade
             if has_subject_grade_data:
-                subject_grade_form_set = SubjectGradeFormSet(
-                request.POST, 
-                instance=grade,
-                prefix=f"subject_grade{grade.pk}",
-                queryset=Subject_Grade.objects.filter(grade=grade)
-                )
+                subject_grade_form_set = subject_grade_form_sets[grade.pk]
                 if subject_grade_form_set.is_valid():
                     subject_grade_form_set.save()
                     print(f"Saved subjects for grade {grade.name} successfully")
@@ -149,12 +158,7 @@ def save_input(request):
             
             # Validierung Class
             if has_class_data:
-                class_form_set = ClassFormSet(
-                request.POST, 
-                instance=grade,
-                prefix=f"class{grade.pk}",
-                queryset=Class.objects.filter(grade=grade)
-                )
+                class_form_set = class_form_sets[grade.pk]
                 if class_form_set.is_valid():
                     class_form_set.save()
                     print(f"Saved classes for grade {grade.name} successfully")
@@ -169,25 +173,10 @@ def save_input(request):
     if valid:
         return redirect("/schedule/create")
     else:
-        # Initiierung Class Formsets
-        class_form_sets = {
-            grade.pk: ClassFormSet(
-                instance=grade, 
-                prefix=f"class{grade.pk}",
-                queryset=Class.objects.filter(grade=grade)
-            ) for grade in Grade.objects.all()
-        }
+        # empty forms für Erstellung neuer Forms
         some_class_formset = next(iter(class_form_sets.values()), None)
         empty_class_form = some_class_formset.empty_form if some_class_formset else None
 
-        # Initiierung SubjectGrade Formsets
-        subject_grade_form_sets = {
-            grade.pk: SubjectGradeFormSet(
-                instance=grade, 
-                prefix=f"subject_grade{grade.pk}",
-                queryset=Subject_Grade.objects.filter(grade=grade)
-            ) for grade in Grade.objects.all()
-        }
         some_subject_grade_formset = next(iter(subject_grade_form_sets.values()), None)
         empty_subject_grade_form = some_subject_grade_formset.empty_form if some_subject_grade_formset else None
 
