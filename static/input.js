@@ -2,14 +2,11 @@ $(document).ready(function() {
 	//select2 für alle sichtbaren select2-Elemente 
 	let selection = Array.from(document.querySelectorAll('.django-select2'))
 		.filter(sel => sel.offsetParent !== null);
-	initSelect2(selection);
 
+	initSelect2(selection);
 	hideDeleteCheckboxes();
 	filterEmptyForms();
-
-	//setupGradeAutoSave();
   setupSubjectAutoSave();
-
 	showErrorsInForms();
 });
 
@@ -41,7 +38,12 @@ function addForm(templateId, targetId, select2 = false) {
 	// Button event richtig setzten
 	let deleteBtn = newFormContainer.querySelector('.delete-btn');
 	if (deleteBtn) {
-		deleteBtn.setAttribute('onclick', `deleteForm('${prefix}-form-${formIdx}')`);
+		if (templateId === 'empty-subject-form') {
+			deleteBtn.setAttribute('onclick', `deleteSubjectForm('${prefix}-form-${formIdx}')`);
+		}
+		else{
+			deleteBtn.setAttribute('onclick', `deleteForm('${prefix}-form-${formIdx}')`);
+		}
 	}
 
 	console.log("Added new form with ID: " + newFormContainer.id);
@@ -66,17 +68,29 @@ function addGradeForm(templateId, targetId, select2 = false){
 			const heading = container.querySelector('h2');
 			heading.textContent = `Klassenstufe ${nextNumber}`;
 	}
-
 }
         
 function deleteForm(formId) {
-		let form = document.getElementById(formId);
-		let deleteCheckbox = form.querySelector('input[name$="-DELETE"]');
-		deleteCheckbox.checked = true;
+	let form = document.getElementById(formId);
+	
+	let isEmpty = true;
+	const inputs = form.querySelectorAll('input:not([type="hidden"]):not([name$="-DELETE"]), select, textarea');
+	inputs.forEach(input => {
+		if (input.value && input.value.trim() !== '') {
+			isEmpty = false;
+		}
+	});
+	
+	// nur wenn nicht empty
+	if (!isEmpty && !confirm('Möchten Sie dieses Fach wirklich löschen?')) {
+		return;
+	}
+	
+	let deleteCheckbox = form.querySelector('input[name$="-DELETE"]');
+	deleteCheckbox.checked = true;
 
-		form.style.display = 'none';
-		
-		console.log("Form " + formId + " marked for deletion. DELETE checkbox checked:", deleteCheckbox.checked);
+	form.style.display = 'none';
+	console.log("Form " + formId + " marked for deletion. DELETE checkbox checked:", deleteCheckbox.checked);
 }
 
 function getNextGradeNumber() {
@@ -110,7 +124,6 @@ function filterEmptyForms() {
 							let isEmpty = true;
 							const deleteChecked = form.querySelector('input[name$="-DELETE"]')?.checked;
 							
-							// Wenn bereits zum Löschen markiert, nicht als leer betrachten
 							if (deleteChecked) {
 									isEmpty = false;
 							} else {
@@ -122,8 +135,6 @@ function filterEmptyForms() {
 											}
 									});
 							}
-							
-							// Wenn das Formular leer ist, deaktiviere alle Felder
 							if (isEmpty) {
 									form.querySelectorAll('input, select, textarea').forEach(function(input) {
 											input.disabled = true;
@@ -151,7 +162,6 @@ function getCookie(name) {
   return cookieValue;
 }
 
-// Diese Funktionen müssen ein Promise zurückgeben
 function addOrUpdateModel(url, payload) {
   return fetch(url, {
     method: "POST",
@@ -159,21 +169,26 @@ function addOrUpdateModel(url, payload) {
     headers: {
       "X-Requested-With": "XMLHttpRequest",
       "X-CSRFToken": getCookie("csrftoken"),
-      "Content-Type": "application/json" // Wichtig für JSON-Daten
+      "Content-Type": "application/json"
     },
     body: JSON.stringify({payload: payload})
   })
-  .then(response => {
+	.then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
     return response.json();
   });
 }
 
+//function to get/write data from/to server
 function getModelData(url) {
   return fetch(url, {
     method: "GET",
     credentials: "same-origin",
     headers: {
       "X-Requested-With": "XMLHttpRequest",
+			"Content-Type": "application/json"
     },
   })
   .then(response => {
@@ -183,6 +198,11 @@ function getModelData(url) {
     return response.json();
   });
 }
+
+function deleteModel(url, payload) {
+	return addOrUpdateModel(url, payload)
+}
+
 
 function setupSubjectAutoSave() {
   // Event-Listener für alle bestehenden Subject-Formulare
@@ -206,53 +226,23 @@ function setupSubjectFormListeners() {
 }
 
 function setupSubjectFormListener(form) {
-  // Relevant für Subjects sind name und abkuerzung
   const nameField = form.querySelector('input[name$="-name"]');
   const abkuerzungField = form.querySelector('input[name$="-abkuerzung"]');
   
   if (!nameField || !abkuerzungField) return;
   
-  // Timer für verzögerte Speicherung
-  let saveTimer = null;
-  
   // Event-Listener für Input-Änderungen
   [nameField, abkuerzungField].forEach(field => {
-    field.addEventListener('input', () => {
-      // Status-Anzeige hinzufügen
-      showSavingStatus(form, "Änderungen werden gespeichert...");
-      
-      // Lösche vorherigen Timer, um zu häufige API-Anfragen zu vermeiden
-      if (saveTimer) clearTimeout(saveTimer);
-      
-      // Setze neuen Timer für verzögerte Speicherung (nur wenn beide Felder Werte haben)
-      saveTimer = setTimeout(() => {
-        if (nameField.value && abkuerzungField.value) {
-          saveSubject(form);
-        }
-      }, 1500); // Verzögerung von 1,5 Sekunden
-    });
-    
-    // Beim Verlassen des Feldes sofort speichern
     field.addEventListener('blur', () => {
-      // Falls Timer noch läuft, abbrechen
-      if (saveTimer) {
-        clearTimeout(saveTimer);
-        saveTimer = null;
-      }
       
-      // Nur speichern, wenn beide Felder ausgefüllt sind
       if (nameField.value && abkuerzungField.value) {
         saveSubject(form);
-      } else if (nameField.value || abkuerzungField.value) {
-        // Falls nur ein Feld ausgefüllt ist, Hinweis anzeigen
-        showValidationError(form, "Bitte sowohl Namen als auch Abkürzung angeben.");
       }
     });
   });
 }
 
 function saveSubject(form) {
-  // Formular-Daten sammeln
   const idField = form.querySelector('input[name$="-id"]');
   const nameField = form.querySelector('input[name$="-name"]');
   const abkuerzungField = form.querySelector('input[name$="-abkuerzung"]');
@@ -263,42 +253,29 @@ function saveSubject(form) {
     abkuerzung: abkuerzungField.value
   };
   
-  // Status aktualisieren
-  showSavingStatus(form, "Wird gespeichert...");
-  
   // Die addOrUpdateModel-Funktion verwenden
   addOrUpdateModel('/schedule/create/save-subject/', subjectData)
     .then(data => {
       if (data.success) {
-        // Erfolgreich gespeichert
         if (idField && !idField.value) {
-          // Bei neuen Formularen die ID aktualisieren
           idField.value = data.subject_id;
         }
-        
-        // Feedback anzeigen
+        console.log(`${idField.value} saved successfully`)
         showSavingStatus(form, "✓ Gespeichert", "success");
-        
-        // Update Select2 Dropdowns mit dem neuen/aktualisierten Subject
         updateSubjectDropdowns();
-        
-        // Status nach 2 Sekunden entfernen
-        setTimeout(() => {
-          clearSavingStatus(form);
-        }, 2000);
+
       } else {
-        // Fehler anzeigen
-        showValidationError(form, data.message || "Fehler beim Speichern");
+        console.log(data.message || "Fehler beim Speichern");
       }
     })
     .catch(error => {
       console.error("Error saving subject:", error);
-      showValidationError(form, "Netzwerkfehler beim Speichern");
     });
 }
 
-// Hilfsfunktionen für die Benutzeroberfläche
-function showSavingStatus(form, message, type = "info") {
+// Hilfsfunktionen für die Benutzeroberfläche (akutell nur success benutzt)
+function showSavingStatus(form, message, type = "info", duration = 2000) {
+	console.log("Form:", form, "Message:", message, "Type:", type);
   let statusEl = form.querySelector('.saving-status');
   if (!statusEl) {
     statusEl = document.createElement('div');
@@ -308,27 +285,13 @@ function showSavingStatus(form, message, type = "info") {
   
   statusEl.textContent = message;
   statusEl.className = `saving-status status-${type}`;
+
+	setTimeout(() => {
+		statusEl.remove();
+	}, duration);
 }
 
-function clearSavingStatus(form) {
-  const statusEl = form.querySelector('.saving-status');
-  if (statusEl) {
-    statusEl.remove();
-  }
-}
-
-function showValidationError(form, message) {
-  showSavingStatus(form, message, "error");
-  
-  // Nach 3 Sekunden ausblenden
-  setTimeout(() => {
-    clearSavingStatus(form);
-  }, 3000);
-}
-
-// Funktion zum Aktualisieren aller Subject-Dropdowns
-// Ersetze die komplette updateSubjectDropdowns-Funktion:
-
+// Funktion zum Aktualisieren aller Subject-Dropdowns (cleanup dringend nötig)
 function updateSubjectDropdowns() {
   console.log("Updating subject dropdowns...");
   
@@ -352,23 +315,6 @@ function updateSubjectDropdowns() {
       
       console.log(`Found ${selects.length} subject-related select elements`);
       
-      // Debug: Alle gefundenen Selects anzeigen
-      selects.forEach((select, index) => {
-        console.log(`Select #${index}:`, {
-          element: select,
-          name: select.name,
-          id: select.id || 'no-id',
-          multiple: select.multiple,
-          className: select.className,
-          optionsCount: select.options.length,
-          isTeacherForm: select.closest('.teacher-form') ? true : false,
-          isSelect2: window.jQuery && (
-            $(select).hasClass('django-select2') || 
-            $(select).data('select2')
-          ) ? true : false
-        });
-      });
-      
       // Für jedes Select-Element
       selects.forEach(select => {
         // Die aktuelle Auswahl speichern 
@@ -378,11 +324,9 @@ function updateSubjectDropdowns() {
         if (isMultiple) {
           // Multiple-Select: Werte als Array speichern
           currentValues = Array.from(select.selectedOptions).map(opt => opt.value);
-          console.log(`Multiple select ${select.name}: Current values = [${currentValues.join(', ')}]`);
         } else {
           // Single-Select: Wert als String speichern
           currentValues = [select.value];
-          console.log(`Single select ${select.name}: Current value = ${select.value}`);
         }
         
         // Alte Optionen entfernen
@@ -444,24 +388,61 @@ function updateSubjectDropdowns() {
       console.error("Error updating dropdowns:", error);
     });
 }
-// Funktion zum Aufklappen von Details mit Fehlern
+
 function showErrorsInForms() {
-  // Alle Formulare mit Fehlern finden
   const errorForms = document.querySelectorAll('.field-error');
   
   if (errorForms.length === 0) return;
   
-  // Für jedes fehlerhafte Formular das übergeordnete details-Element finden und öffnen
+  // Für jedes fehlerhafte Formular das übergeordnete details-Element öffnen
   errorForms.forEach(form => {
     const parentDetails = form.closest('details');
     if (parentDetails) {
       parentDetails.setAttribute('open', '');
     }
   });
-  
   // Zur ersten Fehlermeldung scrollen
   const firstError = errorForms[0];
   if (firstError) {
     firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 }
+
+deleteSubjectForm = function(formId) {
+  const formElement = document.getElementById(formId);
+  const idInput = formElement.querySelector('input[name$="-id"]');
+    
+  if (idInput && idInput.value) {
+    if (!confirm('Möchten Sie dieses Fach wirklich löschen?')) {
+      return;
+    }
+    const payload = {subject_id: idInput.value};
+
+    console.log("Sending delete request with payload:", payload);
+    
+    deleteModel('/schedule/create/delete-subject/', payload)
+    .then(data => {
+      if (data.success) {
+				console.log(data.message || "Fach erfolgreich gelöscht");
+        
+        formElement.remove();
+        
+        const totalForms = document.querySelector('input[name="subject-TOTAL_FORMS"]');
+        if (totalForms) {
+          totalForms.value = parseInt(totalForms.value) - 1;
+        }
+        
+        updateSubjectDropdowns();
+			} else {
+				console.log(data.message || "Fehler beim Speichern");
+				showSavingStatus(formElement, data.message, "error", 5000);
+			}
+    })
+    .catch(error => {
+      console.error("Error deleting subject:", error);
+    });
+	//neue/leere Forms normal löschen
+  } else {
+    deleteForm(formId);
+  }
+};

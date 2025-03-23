@@ -71,17 +71,26 @@ def input_view(request):
 def save_input(request):
     valid = True
 
-    print("Posted ID fields:")
-    for key in request.POST.keys():
-        if '-id' in key:
-            print(f"{key}: {request.POST[key]}")
+    # print("Posted ID fields:")
+    # for key in request.POST.keys():
+    #     if '-id' in key:
+    #         print(f"{key}: {request.POST[key]}")
 
     teacher_form_set = TeacherFormSet(request.POST, prefix="teacher", queryset=Teacher.objects.all())
     subject_form_set = SubjectFormSet(request.POST, prefix="subject", queryset=Subject.objects.all())
     room_form_set = RoomFormSet(request.POST, prefix="room", queryset=Room.objects.all())
     grade_form_set = GradeFormSet(request.POST, prefix="grade", queryset=Grade.objects.all())
 
-    # Subject Validierung für AJAX (save_subject)
+    # eigentliche Subject Validierung mit AJAX (save_subject)
+    if not subject_form_set.is_valid():
+        for subject in subject_form_set:
+            instance = subject.instance
+            print(instance)
+            if Subject.objects.filter(name=instance.name, abkuerzung=instance.abkuerzung).exists():
+                continue
+            else:
+                valid = False
+                print(f"Subject {subject.instance.pk} is invalid: {subject.errors}")
     
     # Teacher Validierung
     if teacher_form_set.is_valid():
@@ -268,7 +277,6 @@ def save_subject(request):
 
 @require_GET
 def get_subjects(request):
-    """Endpunkt zum Abrufen aller Subjects"""
     try:
         subjects = Subject.objects.all()
         subjects_data = [
@@ -291,3 +299,64 @@ def get_subjects(request):
             'success': False,
             'message': f'Fehler beim Abrufen der Fächer: {str(e)}'
         }, status=500)
+
+
+@require_POST
+def delete_subject(request):
+    try:
+        data = json.loads(request.body)
+        payload = data.get('payload', {})
+        
+        subject_id = payload.get('subject_id', '')
+        
+        print(f"Received subject data: {payload}")
+        
+        if not subject_id:
+            return JsonResponse({'success': False, 'message': 'Keine Subject-ID angegeben'})
+            
+        try:
+            subject = Subject.objects.get(pk=subject_id)
+            
+            # Überprüfen, ob das Subject noch referenziert wird
+            has_references = False
+            error_message = ""
+            
+            # Prüfe Subject_Grade-Referenzen
+            if Subject_Grade.objects.filter(subject=subject).exists():
+                has_references = True
+                error_message = "Fach kann nicht gelöscht werden, weil es von Klassenstufen verwendet wird."
+            
+            # Prüfe Teacher-Referenzen
+            if Teacher.objects.filter(subjects=subject).exists():
+                has_references = True
+                error_message = "Fach kann nicht gelöscht werden, weil es von Lehrern unterrichtet wird."
+            
+            if has_references:
+                return JsonResponse({
+                    'success': False,
+                    'message': error_message
+                })
+                
+            # Lösche das Subject
+            subject_name = subject.name
+            subject.delete()
+            
+            return JsonResponse({
+                'success': True,
+                'message': f'Fach "{subject_name}" wurde erfolgreich gelöscht.'
+            })
+            
+        except Subject.DoesNotExist:
+            return JsonResponse({
+                'success': False,
+                'message': 'Fach nicht gefunden'
+            })
+            
+    except Exception as e:
+        import traceback
+        print(f"Error in delete_subject: {str(e)}")
+        print(traceback.format_exc())
+        return JsonResponse({
+            'success': False,
+            'message': f'Serverfehler: {str(e)}'
+        })
