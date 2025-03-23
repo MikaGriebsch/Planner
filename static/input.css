@@ -1,8 +1,339 @@
-.form-inline{
-	display: flex;
+:root {
+  --primary: #4a6fa5;
+  --primary-light: #6b8cbc;
+  --primary-dark: #33537d;
+  --accent: #ff8a5b;
+  --success: #47c479;
+  --error: #e74c3c;
+  --warning: #f39c12;
+  --gray-100: #f8f9fa;
+  --gray-200: #e9ecef;
+  --gray-300: #dee2e6;
+  --gray-400: #ced4da;
+  --gray-500: #adb5bd;
+  --gray-600: #6c757d;
+  --gray-700: #495057;
+  --gray-800: #343a40;
+  --gray-900: #212529;
+  --radius: 8px;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --transition: all 0.2s ease;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  line-height: 1.5;
+  color: var(--gray-800);
+  background-color: var(--gray-100);
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h1 {
+  color: var(--primary-dark);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--primary-light);
+}
+
+h2 {
+  color: var(--primary);
+  font-size: 1.2rem;
+  margin: 1rem 0 0.5rem;
+}
+
+h3 {
+  color: var(--gray-700);
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 1rem 0 0.5rem;
+}
+
+/* Details/Summary Styles */
+details {
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 1rem;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+details:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+summary {
+  padding: 1rem;
+  background-color: white;
+  font-weight: 500;
+  color: var(--primary-dark);
+  cursor: pointer;
+  position: relative;
+  list-style: none;
+  display: flex;
+  align-items: center;
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+summary::after {
+  content: '▼';
+  font-size: 0.8rem;
+  margin-left: auto;
+  transform: rotate(0);
+  transition: transform 0.3s ease;
+}
+
+details[open] summary::after {
+  transform: rotate(180deg);
+}
+
+details > div {
+  padding: 1rem;
+  background-color: white;
+}
+
+/* Forms */
+.teacher-form,
+.subject-form,
+.room-form,
+.grade-form,
+.subject_grade-form,
+.class-form {
+  background-color: var(--gray-100);
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  transition: var(--transition);
+}
+
+.teacher-form:hover,
+.subject-form:hover,
+.room-form:hover,
+.grade-form:hover,
+.subject_grade-form:hover,
+.class-form:hover {
+  background-color: var(--gray-200);
+}
+
+/* Form controls */
+input[type="text"],
+input[type="number"],
+select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius);
+  background-color: white;
+  font-size: 1rem;
+  flex: 1;
+  min-width: 150px;
+  transition: var(--transition);
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.2);
+}
+
+select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1rem;
+  padding-right: 2rem;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+label {
+  color: var(--gray-700);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+/* Buttons */
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: white;
+  background-color: var(--primary);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+button:hover {
+  background-color: var(--primary-dark);
+}
+
+button[type="submit"] {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--accent);
+  font-weight: 600;
+}
+
+button[type="submit"]:hover {
+  background-color: #e67a4e;
+}
+
+.delete-btn {
+  background-color: var(--error);
+  padding: 0.4rem 0.6rem;
+  line-height: 1;
+}
+
+.delete-btn:hover {
+  background-color: #c0392b;
+}
+
+button i {
+  margin-right: 0.25rem;
+}
+
+button i:only-child {
+  margin-right: 0;
+}
+
+/* Status messages */
+.saving-status {
+  margin-top: 5px;
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  display: inline-block;
+  font-weight: 500;
+}
+
+.status-info {
+  background-color: #e6f7ff;
+  border: 1px solid #91d5ff;
+  color: #1890ff;
+}
+
+.status-success {
+  background-color: #f6ffed;
+  border: 1px solid #b7eb8f;
+  color: var(--success);
+}
+
+.status-error {
+  background-color: #fff2f0;
+  border: 1px solid #ffccc7;
+  color: var(--error);
+}
+
+.status-warning {
+  background-color: #fffbe6;
+  border: 1px solid #ffe58f;
+  color: var(--warning);
+}
+
+/* Select2 styling improvement */
+.select2-container--default .select2-selection--single,
+.select2-container--default .select2-selection--multiple {
+  border: 1px solid var(--gray-300) !important;
+  border-radius: var(--radius) !important;
+  height: auto !important;
+  min-height: 38px !important;
+  padding: 0.25rem 0.5rem !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+  height: 38px !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+  background-color: var(--primary-light) !important;
+  border: none !important;
+  color: white !important;
+  border-radius: 4px !important;
+  padding: 2px 8px !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+  color: white !important;
+  margin-right: 5px !important;
+}
+
+.select2-dropdown {
+  border-color: var(--gray-300) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+.select2-results__option--highlighted {
+  background-color: var(--primary) !important;
+}
+
+/* Responsive layout */
+@media (max-width: 768px) {
+  .teacher-form,
+  .subject-form,
+  .room-form,
+  .grade-form,
+  .subject_grade-form,
+  .class-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  input[type="text"],
+  input[type="number"],
+  select {
+    width: 100%;
+    min-width: 0;
+  }
+  
+  .delete-btn {
+    align-self: flex-end;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+details[open] > div {
+  animation: fadeIn 0.3s ease;
+}
+
+/* Form-group specific styles */
+.form-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   margin-right: 10px;
 }
-/*
-.django-select2 {
-	width: 100%;
-}*/
+
+/* Clean up existing overrides */
+input[type="checkbox"][name$="-DELETE"] {
+  display: none;
+}
+
+/* Helper class for flexbox layouts */
+.flex-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
