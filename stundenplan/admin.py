@@ -69,6 +69,7 @@ class LessonAdmin(admin.ModelAdmin):
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
     list_display = ("room_number",)
+    list_filter = ('faecher',)
     actions = ['delete_selected']
 
 @admin.register(Week)
