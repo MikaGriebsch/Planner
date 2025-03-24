@@ -21,7 +21,7 @@ body {
 
 .header {
     position: fixed;
-    background-color: #234567;
+    background-color: var(--dark-accent);
     width: 100%;
     left: 0;
     top: 0;
@@ -35,15 +35,32 @@ body {
 }
 
 .header-heading {
-    padding-left: 30px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     font-size: 1.5rem;
+    text-align: center;
 }
 
-.logout-container {
+
+.logout-container-right {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     flex-direction: column;
+    justify-content: flex-end;
+    position: absolute;
+    right: 20px;
 }
+
+.logout-container-left {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    position: absolute;
+    justify-content: flex-start;
+    left: 20px;
+}
+
 
 .logout {
     height: 30px;
@@ -128,3 +145,15 @@ tbody tr {
     cursor: pointer;
 }
 
+.horizontal {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.text {
+    padding-left: 10px;
+    text-decoration: none;
+    color: var(--ligth-font);
+}
