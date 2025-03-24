@@ -96,7 +96,7 @@ class StundenplanGenerator:
             bricks.extend([{'fach': sg.subject, 'dauer': 2}] * (wochenstunden // 2))
 
         # Verteile Einzelstunden (slabs) - 1. und 2. Stunde für alle Tage
-        for slot in ['1', '2']:
+        for slot in ['2', '1']:
             for day in ['MO', 'DI', 'MI', 'DO', 'FR']:
                 if not slabs:
                     break
