@@ -71,13 +71,7 @@ class RoomAdmin(admin.ModelAdmin):
     list_display = ("room_number",)
     list_filter = ('faecher',)
     actions = ['delete_selected']
-
-@admin.register(Week)
-class WeekAdmin(admin.ModelAdmin):
-    list_display = ('week_choice',)
-    search_fields = ('week_choice',)
-    actions = ['delete_selected']
-
+    
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'first_name', 'last_name', 'klasse')

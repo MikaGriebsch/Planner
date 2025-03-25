@@ -203,8 +203,8 @@ class UserProfile(models.Model):
     first_login = models.BooleanField(default=True)
 
     class Meta:
-        verbose_name = 'Schüler Profile'
-        verbose_name_plural = 'Schüler Profile'
+        verbose_name = 'Nutzer Profile'
+        verbose_name_plural = 'Nutzer Profile'
 
     @property
     def first_name(self):
