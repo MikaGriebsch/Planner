@@ -9,18 +9,7 @@ $(document).ready(function() {
   setupSubjectAutoSave();
 	setupGradeAutoSave();
 	showErrorsInForms();
-
-  initGradeIfEmpty();
 });
-
-function initGradeIfEmpty() {
-  let existingGrades = Array.from(document.querySelectorAll('.grade-form'))
-  .filter(sel => sel.offsetParent !== null);
-  if (existingGrades.length === 0) {
-      console.log("Keine bestehenden Grades gefunden, erstelle eine neue...");
-      addGradeForm('empty-grade-form', 'grade-forms');
-    }
-  }
 
 function initSelect2(selection) {
 	$(selection).select2({
@@ -318,7 +307,7 @@ function saveGrade(form) {
         }
         
         console.log(`Grade ${idField.value} saved successfully`);
-        //showSavingStatus(form, "✓ Gespeichert", "success");
+        showSavingStatus(form, "✓ Gespeichert", "success");
       } else {
         console.log(data.message || "Fehler beim Speichern");
         showSavingStatus(form, data.message || "Fehler beim Speichern", "error");
@@ -490,19 +479,6 @@ deleteGradeForm = function(formId) {
 };
 
 function setupNewGradeContainers(gradeForm, gradeId) {
-  const columnsContainer = document.createElement('div');
-  columnsContainer.className = 'columns-container';
-  gradeForm.appendChild(columnsContainer);
-  
-  // Erstelle die zwei Spalten
-  const leftColumn = document.createElement('div');
-  leftColumn.className = 'column';
-  columnsContainer.appendChild(leftColumn);
-  
-  const rightColumn = document.createElement('div');
-  rightColumn.className = 'column';
-  columnsContainer.appendChild(rightColumn);
-  
   const subjectGradeContainer = document.createElement('div');
   subjectGradeContainer.id = `subject_grade${gradeId}-forms`;
   subjectGradeContainer.innerHTML = `
@@ -512,19 +488,13 @@ function setupNewGradeContainers(gradeForm, gradeId) {
     <input type="hidden" name="subject_grade${gradeId}-MIN_NUM_FORMS" value="0" id="id_subject_grade${gradeId}-MIN_NUM_FORMS">
     <input type="hidden" name="subject_grade${gradeId}-MAX_NUM_FORMS" value="1000" id="id_subject_grade${gradeId}-MAX_NUM_FORMS">
   `;
-  leftColumn.appendChild(subjectGradeContainer);
-  
-  // Subject_Grade Button in einem Button-Container in der linken Spalte
-  const subjectGradeButtonContainer = document.createElement('div');
-  subjectGradeButtonContainer.className = 'button-container';
-  leftColumn.appendChild(subjectGradeButtonContainer);
-  
+  gradeForm.appendChild(subjectGradeContainer);
+
   const addSubjectGradeButton = document.createElement('button');
   addSubjectGradeButton.type = 'button';
-  addSubjectGradeButton.className = 'add-button';
   addSubjectGradeButton.innerHTML = '<i class="fa-solid fa-plus"></i>';
-  addSubjectGradeButton.setAttribute('onclick', `addSubjectGradeForm('empty-subject_grade-form', 'subject_grade${gradeId}-forms', ${gradeId})`);
-  subjectGradeButtonContainer.appendChild(addSubjectGradeButton);
+  addSubjectGradeButton.setAttribute('onclick', `addForm('empty-subject_grade-form', 'subject_grade${gradeId}-forms', ${gradeId}, true)`);
+  gradeForm.appendChild(addSubjectGradeButton);
   
   const classContainer = document.createElement('div');
   classContainer.id = `class${gradeId}-forms`;
@@ -535,41 +505,14 @@ function setupNewGradeContainers(gradeForm, gradeId) {
     <input type="hidden" name="class${gradeId}-MIN_NUM_FORMS" value="0" id="id_class${gradeId}-MIN_NUM_FORMS">
     <input type="hidden" name="class${gradeId}-MAX_NUM_FORMS" value="1000" id="id_class${gradeId}-MAX_NUM_FORMS">
   `;
-  rightColumn.appendChild(classContainer);
-  
-  const classButtonContainer = document.createElement('div');
-  classButtonContainer.className = 'button-container';
-  rightColumn.appendChild(classButtonContainer);
+  gradeForm.appendChild(classContainer);
   
   const addClassButton = document.createElement('button');
   addClassButton.type = 'button';
-  addClassButton.className = 'add-button';
   addClassButton.innerHTML = '<i class="fa-solid fa-plus"></i>';
-  addClassButton.setAttribute('onclick', `addClassForm('empty-class-form', 'class${gradeId}-forms', ${gradeId})`);
-  classButtonContainer.appendChild(addClassButton);
+  addClassButton.setAttribute('onclick', `addForm('empty-class-form', 'class${gradeId}-forms', ${gradeId})`);
+  gradeForm.appendChild(addClassButton);
 
-  addClassForm('empty-class-form', classContainer.id, gradeId);
-  addSubjectGradeForm('empty-subject_grade-form', subjectGradeContainer.id, gradeId);
-}
-
-function addClassForm(templateId, targetId, gradeId) {
-  const container = addForm(templateId, targetId, false);
-  
-  const gradeField = container.querySelector('select[name$="-grade"]');
-  if (gradeField) {
-    gradeField.value = gradeId;
-  }
-  
-  return container;
-}
-
-function addSubjectGradeForm(templateId, targetId, gradeId) {
-  const container = addForm(templateId, targetId, true);
-  
-  const gradeField = container.querySelector('select[name$="-grade"]');
-  if (gradeField) {
-    gradeField.value = gradeId;
-  }
-  
-  return container;
+  addForm('empty-class-form', classContainer.id);
+  addForm('empty-subject_grade-form', subjectGradeContainer.id, true);
 }

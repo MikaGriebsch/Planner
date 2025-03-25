@@ -6,7 +6,7 @@ from django.db.models import Model
 from django.db.models.constraints import UniqueConstraint
 
 class Grade(models.Model):
-    name = models.IntegerField(unique=True, validators=[MinValueValidator(1), MaxValueValidator(15)])
+    name = models.IntegerField(unique=True, validators=[MinValueValidator(1), MaxValueValidator(1000)])
 
     class Meta:
         verbose_name = 'Klassenstufe'

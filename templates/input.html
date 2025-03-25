@@ -93,22 +93,24 @@
             <div id="empty-grade-form">
                 <div class="grade-form">
                     <h2></h2>
-                    {{ grade_form_set.empty_form.id }}
-                    {{ grade_form_set.empty_form.name }}
-                    {{ grade_form_set.empty_form.DELETE}}
+                    <div class="form-fields">
+                        {{ grade_form_set.empty_form.id }}
+                        {{ grade_form_set.empty_form.name }}
+                        {{ grade_form_set.empty_form.DELETE}}
 
-                    <!-- Fehlermeldungen anzeigen -->
-                    {% if grade_form_set.empty_form.errors %}
-                        {% for field, errors in grade_form_set.empty_form.errors.items %}
-                            {% for error in errors %}
-                                <div class="field-error">{{ field|title }}: {{ error }}</div>
+                        <!-- Fehlermeldungen anzeigen -->
+                        {% if grade_form_set.empty_form.errors %}
+                            {% for field, errors in grade_form_set.empty_form.errors.items %}
+                                {% for error in errors %}
+                                    <div class="field-error">{{ field|title }}: {{ error }}</div>
+                                {% endfor %}
                             {% endfor %}
-                        {% endfor %}
-                    {% endif %}
+                        {% endif %}
 
-                    <button type="button" class="delete-btn">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
+                        <button type="button" class="delete-btn">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
             <div id="empty-class-form">
@@ -163,196 +165,222 @@
             <details >
                 <summary>Fächer</summary>
                 {{ subject_form_set.management_form }}
-                <div id = "subject-forms">
-                    {% for subject in subject_form_set %}
-                    <div class="subject-form" id="subject-form-{{ forloop.counter0 }}">
-                        {{ subject.id }}
-                        {{ subject.name }}
-                        {{ subject.abkuerzung}}
+                <div class="formset-container">
+                    <div id = "subject-forms">
+                        {% for subject in subject_form_set %}
+                        <div class="subject-form" id="subject-form-{{ forloop.counter0 }}">
+                            {{ subject.id }}
+                            {{ subject.name }}
+                            {{ subject.abkuerzung}}
 
-                        <!--Fehlermeldung anzeigen -->
-                        {% if subject.errors %}
-                            {% for field, errors in subject.errors.items %}
-                                {% for error in errors %}
-                                    <div class="field-error">{{ field|title }}: {{ error }}</div>
+                            <!--Fehlermeldung anzeigen -->
+                            {% if subject.errors %}
+                                {% for field, errors in subject.errors.items %}
+                                    {% for error in errors %}
+                                        <div class="field-error">{{ field|title }}: {{ error }}</div>
+                                    {% endfor %}
                                 {% endfor %}
-                            {% endfor %}
-                        {% endif %}
+                            {% endif %}
 
-                        <button type="button" class="delete-btn" onclick="deleteSubjectForm('subject-form-{{ forloop.counter0 }}')">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                        <!-- DELETE-Feld (wird per JavaScript versteckt) -->
-                        {{ subject.DELETE }}
+                            <button type="button" class="delete-btn" onclick="deleteSubjectForm('subject-form-{{ forloop.counter0 }}')">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                            <!-- DELETE-Feld (wird per JavaScript versteckt) -->
+                            {{ subject.DELETE }}
+                        </div>
+                        {% endfor%}
                     </div>
-                    {% endfor%}
+                    <div class="button-container">
+                        <button type="button" class="add-button" onclick="addSubjectForm('empty-subject-form', 'subject-forms')">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
                 </div>
-                <button type="button" onclick="addForm('empty-subject-form', 'subject-forms')">
-                    <i class="fa-solid fa-plus"></i>
-                </button>
             </details>
             <details>
                 <summary>Lehrer</summary>
                 {{ teacher_form_set.management_form }} 
-                <div id = "teacher-forms">
-                    {% for teacher in teacher_form_set %}
-                    <div class="teacher-form" id="teacher-form-{{ forloop.counter0 }}">
-                        {{ teacher.id }}
-                        {{ teacher.first_name }}
-                        {{ teacher.last_name }}
-                        {{ teacher.short_name }}
-                        {{ teacher.subjects }}
+                <div class="formset-container">
+                    <div id = "teacher-forms">
+                        {% for teacher in teacher_form_set %}
+                        <div class="teacher-form" id="teacher-form-{{ forloop.counter0 }}">
+                            {{ teacher.id }}
+                            {{ teacher.first_name }}
+                            {{ teacher.last_name }}
+                            {{ teacher.short_name }}
+                            {{ teacher.subjects }}
 
-                        <!--Fehlermeldung anzeigen -->
-                        {% if teacher.errors %}
-                            {% for field, errors in teacher.errors.items %}
-                                {% for error in errors %}
-                                    <div class="field-error">{{ field|title }}: {{ error }}</div>
+                            <!--Fehlermeldung anzeigen -->
+                            {% if teacher.errors %}
+                                {% for field, errors in teacher.errors.items %}
+                                    {% for error in errors %}
+                                        <div class="field-error">{{ field|title }}: {{ error }}</div>
+                                    {% endfor %}
                                 {% endfor %}
-                            {% endfor %}
-                        {% endif %}
+                            {% endif %}
 
-                        <button type="button" class="delete-btn" onclick="deleteForm('teacher-form-{{ forloop.counter0 }}')">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                        <!-- DELETE-Feld (wird per JavaScript versteckt) -->
-                        {{ teacher.DELETE }}
+                            <button type="button" class="delete-btn" onclick="deleteForm('teacher-form-{{ forloop.counter0 }}')">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                            <!-- DELETE-Feld (wird per JavaScript versteckt) -->
+                            {{ teacher.DELETE }}
+                        </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
+                    <div class="button-container">
+                        <button type="button" class="add-button" onclick="addForm('empty-teacher-form', 'teacher-forms', true)">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
                 </div>
-                <button type="button" onclick="addForm('empty-teacher-form', 'teacher-forms', true)">
-                    <i class="fa-solid fa-plus"></i>
-                </button>
             </details>
             <details>
                 <summary>Räume</summary>
                 {{ room_form_set.management_form }}
-                <div id = "room-forms">
-                    {% for room in room_form_set %}
-                    <div class="room-form" id="room-form-{{ forloop.counter0 }}">
-                        {{ room.id }}
-                        {{ room.room_number }}
+                <div class="formset-container">
+                    <div id = "room-forms">
+                        {% for room in room_form_set %}
+                        <div class="room-form" id="room-form-{{ forloop.counter0 }}">
+                            {{ room.id }}
+                            {{ room.room_number }}
 
-                        <!--Fehlermeldung anzeigen -->
-                        {% if room.errors %}
-                            {% for field, errors in room.errors.items %}
-                                {% for error in errors %}
-                                    <div class="field-error">{{ field|title }}: {{ error }}</div>
+                            <!--Fehlermeldung anzeigen -->
+                            {% if room.errors %}
+                                {% for field, errors in room.errors.items %}
+                                    {% for error in errors %}
+                                        <div class="field-error">{{ field|title }}: {{ error }}</div>
+                                    {% endfor %}
                                 {% endfor %}
-                            {% endfor %}
-                        {% endif %}
+                            {% endif %}
 
-                        <button type="button" class="delete-btn" onclick="deleteForm('room-form-{{ forloop.counter0 }}')">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                        <!-- DELETE-Feld (wird per JavaScript versteckt) -->
-                        {{ room.DELETE }}
+                            <button type="button" class="delete-btn" onclick="deleteForm('room-form-{{ forloop.counter0 }}')">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                            <!-- DELETE-Feld (wird per JavaScript versteckt) -->
+                            {{ room.DELETE }}
+                        </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
+                    <div class="button-container">
+                        <button type="button" class="add-button" onclick="addForm('empty-room-form', 'room-forms')">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
                 </div>
-                <button type="button" onclick="addForm('empty-room-form', 'room-forms')">
-                    <i class="fa-solid fa-plus"></i>
-                </button>
             </details>
-            <details>
-                <summary>Klassenstufen</summary>
-                {{ grade_form_set.management_form }}
+            {{ grade_form_set.management_form }}
+            <div class="formset-container">
                 <div id = "grade-forms">
                     {% for grade in grade_form_set %}
                     <div class="grade-form" id="grade-form-{{ forloop.counter0 }}">
                         <h2>Klassenstufe {{grade.instance.name}}</h2>
-                        {{ grade.id }}
-                        {{ grade.name}}
-
-                        <!--Fehlermeldung anzeigen -->
-                        {% if grade.errors %}
-                            {% for field, errors in grade.errors.items %}
-                                {% for error in errors %}
-                                    <div class="field-error">{{ field|title }}: {{ error }}</div>
+                        
+                        <div class="form-fields">
+                            {{ grade.id }}
+                            {{ grade.name}}
+                    
+                            <!--Fehlermeldung anzeigen -->
+                            {% if grade.errors %}
+                                {% for field, errors in grade.errors.items %}
+                                    {% for error in errors %}
+                                        <div class="field-error">{{ field|title }}: {{ error }}</div>
+                                    {% endfor %}
                                 {% endfor %}
-                            {% endfor %}
-                        {% endif %}
-
-                        <button type="button" class="delete-btn" onclick="deleteForm('grade-form-{{ forloop.counter0 }}')">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                        <!-- DELETE-Feld (wird per JavaScript versteckt) -->
-                        {{ grade.DELETE }}
-
-                        <!-- Subject_Grade-Formulare-->
-                        {% with subject_grade_form_sets|get_item:grade.instance.pk as subject_grade_formset %}
-                        {{ subject_grade_formset.management_form }}
-                        <div id="subject_grade{{ grade.instance.pk }}-forms">
-                            <h3>Unterrichtete Fächer</h3>
-                            {% for subject_grade in subject_grade_formset %}
-                                <div class="subject_grade-form" id="subject-grade{{ grade.instance.pk }}-form-{{ forloop.counter0 }}">
-                                    {{ subject_grade.id }}
-                                    {{ subject_grade.subject }}
-                                    {{ subject_grade.wochenstunden}}
-                                    {{ subject_grade.grade }}
-
-                                    <!--Fehlermeldung anzeigen -->
-                                    {% if subject_grade.errors %}
-                                        {% for field, errors in subject_grade.errors.items %}
-                                            {% for error in errors %}
-                                                <div class="field-error">{{ field|title }}: {{ error }}</div>
-                                            {% endfor %}
-                                        {% endfor %}
-                                    {% endif %}
-
-                                    <button type="button" class="delete-btn" onclick="deleteForm('subject-grade{{ grade.instance.pk }}-form-{{ forloop.counter0 }}')">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </button>
-                                    <!-- DELETE-Feld (wird per JavaScript versteckt) -->
-                                    {{ subject_grade.DELETE }}
-                                </div>
-                            {% endfor %}
+                            {% endif %}
+                    
+                            <button type="button" class="delete-btn" onclick="deleteGradeForm('grade-form-{{ forloop.counter0 }}')">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                            <!-- DELETE-Feld (wird per JavaScript versteckt) -->
+                            {{ grade.DELETE }}
                         </div>
-                        <button type="button" onclick="addForm('empty-subject_grade-form', 'subject_grade{{ grade.instance.pk }}-forms', true)">
-                            <i class="fa-solid fa-plus"></i>
-                        </button>
-                        {% endwith %}
-
-                        <!-- Klassenformulare -->
-                        {% with class_form_sets|get_item:grade.instance.pk as class_formset %}
-                        {{ class_formset.management_form }}
-                        <div id="class{{ grade.instance.pk }}-forms">
-                            <h3>Klassen</h3>
-                            {% for class in class_formset %}
-                                <div class="class-form" id="class{{ grade.instance.pk }}-form-{{ forloop.counter0 }}">
-                                    {{ class.id }}
-                                    {{ class.name }}
-                                    {{ class.schueleranzahl }}
-                                    {{ class.grade }}
-
-                                    <!--Fehlermeldung anzeigen -->
-                                    {% if class.errors %}
-                                        {% for field, errors in class.errors.items %}
-                                            {% for error in errors %}
-                                                <div class="field-error">{{ field|title }}: {{ error }}</div>
-                                            {% endfor %}
+                    
+                        <div class="columns-container">
+                            <div class="column">
+                                {% with subject_grade_form_sets|get_item:grade.instance.pk as subject_grade_formset %}
+                                {{ subject_grade_formset.management_form }}
+                                <div class="formset-container">
+                                    <div id="subject_grade{{ grade.instance.pk }}-forms">
+                                        <h3>Unterrichtete Fächer</h3>
+                                        {% for subject_grade in subject_grade_formset %}
+                                            <div class="subject_grade-form" id="subject-grade{{ grade.instance.pk }}-form-{{ forloop.counter0 }}">
+                                                {{ subject_grade.id }}
+                                                {{ subject_grade.subject }}
+                                                {{ subject_grade.wochenstunden}}
+                                                {{ subject_grade.grade }}
+                    
+                                                <!--Fehlermeldung anzeigen -->
+                                                {% if subject_grade.errors %}
+                                                    {% for field, errors in subject_grade.errors.items %}
+                                                        {% for error in errors %}
+                                                            <div class="field-error">{{ field|title }}: {{ error }}</div>
+                                                        {% endfor %}
+                                                    {% endfor %}
+                                                {% endif %}
+                    
+                                                <button type="button" class="delete-btn" onclick="deleteForm('subject-grade{{ grade.instance.pk }}-form-{{ forloop.counter0 }}')">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </button>
+                                                <!-- DELETE-Feld (wird per JavaScript versteckt) -->
+                                                {{ subject_grade.DELETE }}
+                                            </div>
                                         {% endfor %}
-                                    {% endif %}
-
-                                    <button type="button" class="delete-btn" onclick="deleteForm('class{{ grade.instance.pk }}-form-{{ forloop.counter0 }}')">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </button>
-                                    <!-- DELETE-Feld (wird per JavaScript versteckt) -->
-                                    {{ class.DELETE }}
+                                    </div>
+                                    <div class="button-container">
+                                        <button type="button" class="add-button" onclick="addSubjectGradeForm('empty-subject_grade-form', 'subject_grade{{ grade.instance.pk }}-forms', {{grade.instance.pk}})">
+                                            <i class="fa-solid fa-plus"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                            {% endfor %}
+                                {% endwith %}
+                            </div>
+                    
+                            <div class="column">
+                                {% with class_form_sets|get_item:grade.instance.pk as class_formset %}
+                                {{ class_formset.management_form }}
+                                <div class="formset-container">
+                                    <div id="class{{ grade.instance.pk }}-forms">
+                                        <h3>Klassen</h3>
+                                        {% for class in class_formset %}
+                                            <div class="class-form" id="class{{ grade.instance.pk }}-form-{{ forloop.counter0 }}">
+                                                {{ class.id }}
+                                                {{ class.name }}
+                                                {{ class.schueleranzahl }}
+                                                {{ class.grade }}
+                    
+                                                <!--Fehlermeldung anzeigen -->
+                                                {% if class.errors %}
+                                                    {% for field, errors in class.errors.items %}
+                                                        {% for error in errors %}
+                                                            <div class="field-error">{{ field|title }}: {{ error }}</div>
+                                                        {% endfor %}
+                                                    {% endfor %}
+                                                {% endif %}
+                    
+                                                <button type="button" class="delete-btn" onclick="deleteForm('class{{ grade.instance.pk }}-form-{{ forloop.counter0 }}')">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </button>
+                                                <!-- DELETE-Feld (wird per JavaScript versteckt) -->
+                                                {{ class.DELETE }}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="button-container">
+                                        <button type="button" class="add-button" onclick="addClassForm('empty-class-form', 'class{{ grade.instance.pk }}-forms', {{grade.instance.pk}})">
+                                            <i class="fa-solid fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                {% endwith %}
+                            </div>
                         </div>
-                        <button type="button" onclick="addForm('empty-class-form', 'class{{ grade.instance.pk }}-forms')">
-                            <i class="fa-solid fa-plus"></i>
-                        </button>
-                        {% endwith %}
                     </div>
                     {% endfor %}
                 </div>
-                <button type="button" onclick="addGradeForm('empty-grade-form', 'grade-forms')">
-                    <i class="fa-solid fa-plus"></i>
-                </button>
-            </details>
+                    <button type="button" class="add-button" onclick="addGradeForm('empty-grade-form', 'grade-forms', )">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+            </div>
             <button type="submit">Speichern</button>
         </form>
     </body>
