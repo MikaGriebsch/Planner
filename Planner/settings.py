@@ -27,11 +27,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-hy#xbz!153ga&$h%1mi1x@2%i1
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
-    'https://planner-v18v.onrender.com',
-    os.getenv("RENDER_EXTERNAL_HOSTNAME", "localhost"),
-    'localhost',
-    '0.0.0.0',
-    '127.0.0.1'
+    "*",
 ]
 
 CSRF_TRUSTED_ORIGINS = [f"https://{os.getenv('RENDER_EXTERNAL_HOSTNAME', '')}"]
