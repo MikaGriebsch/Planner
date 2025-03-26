@@ -26,8 +26,10 @@ def index_view(request, bezeichnung):
 def default_view(request):
     return render(request, 'default.html')
 
-#@login_required
+@login_required
 def input_view(request):
+    if not request.user.is_superuser:
+        return render('404.html')
 
     teacher_form_set = TeacherFormSet(prefix="teacher", queryset=Teacher.objects.all())
     subject_form_set = SubjectFormSet(prefix="subject", queryset=Subject.objects.all())  
