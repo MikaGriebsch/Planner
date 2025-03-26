@@ -55,9 +55,10 @@ class SubjectForm(forms.ModelForm):
 class RoomForm(forms.ModelForm):
     class Meta:
         model = Room
-        fields = ['room_number']
+        fields = ['room_number', 'faecher']
         widgets = {
             'room_number': forms.TextInput(attrs={'placeholder': 'Raumnummer eingeben...'}),
+            'faecher': Select2MultipleWidget(attrs={'placeholder': 'Fächer auswählen...'}),
         }
 
 TeacherFormSet = forms.modelformset_factory(

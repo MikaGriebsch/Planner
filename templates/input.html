@@ -74,6 +74,7 @@
                 <div class="room-form">
                     {{ room_form_set.empty_form.id }}
                     {{ room_form_set.empty_form.room_number}}
+                    {{ room_form_set.empty_form.faecher }}
                     {{ room_form_set.empty_form.DELETE }}
 
                     <!-- Fehlermeldungen anzeigen -->
@@ -243,6 +244,7 @@
                         <div class="room-form" id="room-form-{{ forloop.counter0 }}">
                             {{ room.id }}
                             {{ room.room_number }}
+                            {{ room.faecher }}
 
                             <!--Fehlermeldung anzeigen -->
                             {% if room.errors %}
@@ -262,7 +264,7 @@
                         {% endfor %}
                     </div>
                     <div class="button-container">
-                        <button type="button" class="add-button" onclick="addForm('empty-room-form', 'room-forms')">
+                        <button type="button" class="add-button" onclick="addForm('empty-room-form', 'room-forms', true)">
                             <i class="fa-solid fa-plus"></i>
                         </button>
                     </div>
