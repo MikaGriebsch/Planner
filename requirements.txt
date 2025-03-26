@@ -12,3 +12,4 @@ psycopg2
 whitenoise
 python-dotenv
 gunicorn
+django_select2
