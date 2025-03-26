@@ -6,7 +6,7 @@ from django.db.models import Model
 from django.db.models.constraints import UniqueConstraint
 
 class Grade(models.Model):
-    name = models.IntegerField(unique=True, validators=[MinValueValidator(1), MaxValueValidator(12)])
+    name = models.IntegerField(unique=True, validators=[MinValueValidator(1), MaxValueValidator(1000)])
 
     class Meta:
         verbose_name = 'Klassenstufe'
@@ -16,7 +16,7 @@ class Grade(models.Model):
         return f"{self.name}"
 
 class Subject(models.Model):
-    abkuerzung = models.CharField(max_length=10, unique=True)
+    abkuerzung = models.CharField(max_length=3, unique=True)
     name = models.CharField(max_length=100, unique=True)
     grade = models.ManyToManyField(Grade, through='Subject_Grade')
 
@@ -44,16 +44,9 @@ class Teacher(models.Model):
     pass
 
 class Class(models.Model):
-    NAME_CHOICES = [
-        ('a', 'a'),
-        ('b', 'b'),
-        ('c', 'c'),
-        ('l', 'l')
-    ]
-
-    name = models.CharField(max_length=1, choices=NAME_CHOICES)
-    schueleranzahl = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(30)], default=30)
-    schueler_in_class = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(30)], default=0)
+    name = models.CharField(max_length=2)
+    schueleranzahl = models.IntegerField(validators=[MinValueValidator(1)])
+    schueler_in_class = models.IntegerField(validators=[MinValueValidator(0)], default=0)
     grade = models.ForeignKey(Grade, on_delete=models.CASCADE, default=-1)  # wenn ID==1 ist etwas falsch
     bezeichnung = models.CharField(max_length=20, blank=True)
 
@@ -82,6 +75,14 @@ class Subject_Grade(models.Model):
         verbose_name_plural = 'Klassenstufe-Fach'
 
     def clean(self):
+        if not hasattr(self, 'subject') or self.subject is None:
+            if self._state.adding and getattr(self, 'DELETE', False):
+                return
+            raise ValidationError("Ein Fach muss ausgewählt werden.")
+        
+        if self.wochenstunden <= 0:
+            raise ValidationError("Wochenstunden müssen größer als 0 sein.")
+        
         if Subject_Grade.objects.filter(
             subject=self.subject,
             grade=self.grade
