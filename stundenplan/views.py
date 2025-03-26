@@ -181,7 +181,7 @@ def save_input(request):
 
 
     if valid:
-        return redirect("/schedule/create")
+        return redirect("/admin")
     else:
         # empty forms für Erstellung neuer Forms
         some_class_formset = next(iter(class_form_sets.values()), ClassFormSet())

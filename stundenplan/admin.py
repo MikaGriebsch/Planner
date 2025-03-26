@@ -1,11 +1,13 @@
 import os
 from django.contrib import messages
 from django.conf import settings
+from django.shortcuts import redirect
 from django.utils.html import format_html
 from django.templatetags.static import static
 from django.contrib import admin
 from django.core.management import call_command
 from .models import Teacher, Grade, Class, Subject, Subject_Grade, Lesson, UserProfile, Room, StundentDataImport, Week
+from django.contrib.admin.models import LogEntry
 
 admin.site.disable_action("delete_selected")
 
@@ -187,6 +189,15 @@ def delete_stundenplan_view(request):
             messages.error(request, f"Fehler: {str(e)}")
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/admin/'))
 
+@admin.site.admin_view
+def redirect_to_input_view(request):
+    if request.method == "GET":
+        try:
+            return redirect('input_view') 
+        except Exception as e:
+            messages.error(request, f"Fehler bei der Weiterleitung: {str(e)}")
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/admin/'))
+
 # URLs erweitern (für beide Buttons)
 def extend_admin_urls(get_urls_func):
     def wrapper():
@@ -194,6 +205,7 @@ def extend_admin_urls(get_urls_func):
         custom_urls = [
             path('create-stundenplan/', create_stundenplan_view, name='create-stundenplan'),
             path('delete-stundenplan/', delete_stundenplan_view, name='delete-stundenplan'),
+            path('input-page/', redirect_to_input_view, name='admin-redirect-to-input'),
         ]
         return custom_urls + original_urls
     return wrapper
