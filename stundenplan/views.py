@@ -42,7 +42,7 @@ def input_view(request):
             queryset=Class.objects.filter(grade=grade)
         ) for grade in Grade.objects.all().order_by('name')
     }
-    some_class_formset = next(iter(class_form_sets.values()), ClassFormSet())
+    some_class_formset = ClassFormSet()
     empty_class_form = some_class_formset.empty_form if some_class_formset else None
 
     # Initiierung SubjectGrade Formsets
@@ -53,7 +53,7 @@ def input_view(request):
             queryset=Subject_Grade.objects.filter(grade=grade)
         ) for grade in Grade.objects.all()
     }
-    some_subject_grade_formset = next(iter(subject_grade_form_sets.values()), SubjectGradeFormSet())
+    some_subject_grade_formset = SubjectGradeFormSet()
     empty_subject_grade_form = some_subject_grade_formset.empty_form if some_subject_grade_formset else None
 
     return render(request, 'input.html', {
@@ -74,6 +74,8 @@ def save_input(request):
     print("Posted ID fields:")
     for key in request.POST.keys():
         if '-id' in key:
+            print(f"{key}: {request.POST[key]}")
+        if '-DELETE' in key:
             print(f"{key}: {request.POST[key]}")
 
     teacher_form_set = TeacherFormSet(request.POST, prefix="teacher", queryset=Teacher.objects.all())

@@ -37,7 +37,7 @@ function hideDeleteCheckboxes() {
 }
 
 function addForm(templateId, targetId, select2 = false) {
-	let prefix = targetId.split('-')[0];
+	let prefix = targetId.split('-')[0]; 
   let formIdx = parseInt(document.querySelector(`input[name="${prefix}-TOTAL_FORMS"]`).value, 10);
 	let template = document.getElementById(templateId).innerHTML;
 	let newForm = template.replace(/__prefix__/g, formIdx);
@@ -553,23 +553,22 @@ function setupNewGradeContainers(gradeForm, gradeId) {
 }
 
 function addClassForm(templateId, targetId, gradeId) {
-  const container = addForm(templateId, targetId, false);
+  const form = addForm(templateId, targetId, false);
+
+  const html = form.innerHTML;
+  form.innerHTML = html.replace(/class_set-/g, `class${gradeId}-`);
   
-  const gradeField = container.querySelector('select[name$="-grade"]');
-  if (gradeField) {
-    gradeField.value = gradeId;
-  }
-  
-  return container;
+  return form;
 }
 
+
 function addSubjectGradeForm(templateId, targetId, gradeId) {
-  const container = addForm(templateId, targetId, true);
+  const form = addForm(templateId, targetId, false); 
   
-  const gradeField = container.querySelector('select[name$="-grade"]');
-  if (gradeField) {
-    gradeField.value = gradeId;
-  }
+  const html = form.innerHTML;
+  form.innerHTML = html.replace(/subject_grade_set-/g, `subject_grade${gradeId}-`);
+
+  initSelect2(form.querySelector('.django-select2'));
   
-  return container;
+  return form;
 }

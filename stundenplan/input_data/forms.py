@@ -7,7 +7,7 @@ class ClassForm(forms.ModelForm):
         model = Class 
         fields = ['name', 'schueleranzahl']
         widgets = {
-            'name': forms.Select(attrs={'placeholder': 'Name eingeben...'}),
+            'name': forms.TextInput(attrs={'placeholder': 'Name eingeben...'}),
             'schueleranzahl': forms.NumberInput(attrs={'placeholder': 'Schüleranzahl eingeben...'})
         }
     
@@ -95,6 +95,6 @@ SubjectGradeFormSet = forms.inlineformset_factory(
     Grade,
     Subject_Grade,
     form=SubjectGradeForm,
-    extra=1,
+    extra=0,
     can_delete=True
 )
