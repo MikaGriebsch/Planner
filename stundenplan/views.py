@@ -5,7 +5,7 @@ from stundenplan import get_plan
 from django.shortcuts import render
 from stundenplan.models import Teacher
 from .get_plan import get_plan
-from .input_data.forms import *
+from .forms import *
 from django.http import JsonResponse
 import json
 from django.http import JsonResponse
